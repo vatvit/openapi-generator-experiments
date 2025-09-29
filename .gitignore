@@ -1,0 +1,26 @@
+# Generated code directories
+generated/
+
+# Extracted default templates (regenerated as needed)
+templates/php-default/
+
+# Custom generator builds
+generators/*/target/
+generators/*/*.jar
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+
+# Logs
+*.log

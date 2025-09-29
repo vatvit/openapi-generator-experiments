@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  openapi-generator:
+    image: openapitools/openapi-generator-cli:latest
+    volumes:
+      - .:/local
+    working_dir: /local
+    command: --help
+
+  # Service for generating PHP code
+  generate-php:
+    image: openapitools/openapi-generator-cli:latest
+    volumes:
+      - .:/local
+    working_dir: /local
+    command: >
+      generate
+      -i /local/openapi.yaml
+      -g php
+      -o /local/generated/php
+      -c /local/config/php-config.json
+      --template-dir /local/templates/php
+    profiles:
+      - generate
+
+  # Service for generating code with custom PHP generator
+  generate-custom-php:
+    image: openapitools/openapi-generator-cli:latest
+    volumes:
+      - .:/local
+    working_dir: /local
+    command: >
+      generate
+      -i /local/openapi.yaml
+      -g php
+      -o /local/generated/custom-php
+      -c /local/config/custom-php-config.json
+      --template-dir /local/templates/custom-php
+    profiles:
+      - generate
+
+  # Service for creating a new custom generator
+  create-generator:
+    image: openapitools/openapi-generator-cli:latest
+    volumes:
+      - .:/local
+    working_dir: /local
+    command: >
+      meta
+      -o /local/generators/my-php-generator
+      -n my-php-generator
+      -p com.app.openapi.codegen
+    profiles:
+      - meta

@@ -4,16 +4,36 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an OpenAPI Generator experiments repository. The project is currently empty and ready for experimentation with OpenAPI code generation tools and workflows.
+This is an OpenAPI Generator experiments repository for creating and testing custom PHP generators. The project includes:
 
-## Repository Status
+1. **OpenAPI Generator Tools**: Docker-based code generation for PHP clients
+2. **Laravel API Server**: A complete Laravel 12 API that serves endpoints based on the OpenAPI specification
 
-This repository has been initialized with Git but does not yet contain any source code, build configuration, or documentation. As the project develops, this file should be updated to include:
+The project uses OpenAPITools/openapi-generator in Docker containers to generate PHP client code from OpenAPI specifications, and includes a Laravel API server for testing and development.
 
-- Build and development commands
-- Project architecture and structure
-- Testing and linting procedures
-- OpenAPI generator configurations and workflows
+## Project Structure
+
+```
+.
+├── openapi.yaml                 # Sample OpenAPI specification
+├── docker-compose.yml           # Docker services for code generation
+├── config/                      # Generator configuration files
+│   ├── php-config.json         # Standard PHP generator config
+│   └── custom-php-config.json  # Custom PHP generator config
+├── templates/                   # Custom template directories
+│   └── custom-php/             # Custom PHP generator templates
+├── scripts/                     # Convenience scripts
+│   ├── generate-php.sh         # Generate with standard PHP generator
+│   ├── generate-custom-php.sh  # Generate with custom templates
+│   ├── extract-default-templates.sh  # Extract default templates
+│   └── create-custom-generator.sh    # Create custom generator skeleton
+├── generated/                   # Generated code output
+├── laravel-api/                 # Laravel API server
+│   ├── app/Http/Controllers/Api/ # API controllers
+│   ├── routes/api.php          # API routes
+│   ├── docker-compose.yml      # Laravel development environment
+│   └── API-README.md           # Laravel API documentation
+└── Makefile                    # Make targets for common tasks
 
 ## Development Setup
 
@@ -32,25 +52,75 @@ When adding project files, include:
 
 ## Common Commands
 
-All commands should be executed through Docker containers. Examples of Docker-based command patterns:
-
+### Quick Start with Make
 ```bash
-# Example Node.js commands
-docker run --rm -v $(pwd):/app -w /app node:18 npm install
-docker run --rm -v $(pwd):/app -w /app node:18 npm run build
-docker run --rm -v $(pwd):/app -w /app node:18 npm test
-
-# Example PHP commands
-docker run --rm -v $(pwd):/app -w /app php:8.2 composer install
-docker run --rm -v $(pwd):/app -w /app php:8.2 php vendor/bin/phpunit
-
-# Example Python commands
-docker run --rm -v $(pwd):/app -w /app python:3.11 pip install -r requirements.txt
-docker run --rm -v $(pwd):/app -w /app python:3.11 python -m pytest
+make help                    # Show all available commands
+make generate-php           # Generate PHP client using standard generator
+make generate-custom-php    # Generate PHP client using custom templates
+make extract-templates      # Extract default templates for customization
+make create-generator       # Create custom generator skeleton
+make validate-spec          # Validate OpenAPI specification
+make clean                  # Clean generated files
 ```
 
-Specific build, test, and lint commands will be added as the project structure is established.
+### Docker Commands
+```bash
+# Generate PHP client with standard generator
+docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate \
+  -i /local/openapi.yaml -g php -o /local/generated/php -c /local/config/php-config.json
 
-## Architecture
+# Generate with custom templates
+docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate \
+  -i /local/openapi.yaml -g php -o /local/generated/custom-php \
+  -c /local/config/custom-php-config.json --template-dir /local/templates/custom-php
 
-Project architecture will be documented here as the codebase develops.
+# Extract default templates for customization
+docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli author template \
+  -g php -o /local/templates/php-default
+
+# Validate OpenAPI spec
+docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli validate \
+  -i /local/openapi.yaml
+```
+
+### Docker Compose
+```bash
+# Generate PHP client
+docker-compose --profile generate run generate-php
+
+# Generate with custom templates
+docker-compose --profile generate run generate-custom-php
+
+# Create custom generator skeleton
+docker-compose --profile meta run create-generator
+```
+
+## Generator Customization Workflow
+
+### 1. Template Customization (Recommended for beginners)
+1. Extract default templates: `make extract-templates`
+2. Copy desired templates from `templates/php-default/` to `templates/custom-php/`
+3. Modify templates using Mustache syntax
+4. Generate code: `make generate-custom-php`
+
+### 2. Configuration Customization
+- Modify `config/php-config.json` or `config/custom-php-config.json`
+- Available options: `make config-help`
+
+### 3. Custom Generator Creation (Advanced)
+1. Create generator skeleton: `make create-generator`
+2. Implement custom logic in `generators/my-php-generator/`
+3. Build custom generator JAR
+4. Use with `--custom-generator` option
+
+## Template Variables
+Common variables available in Mustache templates:
+- `{{packageName}}` - PHP package name
+- `{{invokerPackage}}` - Base namespace
+- `{{modelPackage}}` - Model namespace
+- `{{apiPackage}}` - API namespace
+- `{{classname}}` - Generated class name
+- `{{operations}}` - API operations
+- `{{models}}` - Data models
+
+See OpenAPI Generator PHP documentation for complete variable list.
