@@ -16,8 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
  * 1. Register in bootstrap/app.php:
  *    ->withMiddleware(function (Middleware $middleware) {
  *        $middleware->alias([
- *            'findPets' => \App\Http\Middleware\OperationMiddleware::class,
- *            'addPet' => \App\Http\Middleware\OperationMiddleware::class,
+ *            'api.operation.findPets' => \App\Http\Middleware\OperationMiddleware::class,
+ *            'api.operation.addPet' => \App\Http\Middleware\OperationMiddleware::class,
  *            // ... or create dedicated middleware classes per operation
  *        ]);
  *    })

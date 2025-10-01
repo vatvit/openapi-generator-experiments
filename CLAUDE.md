@@ -191,19 +191,19 @@ abstract class DefaultController extends Controller
 ```php
 $router->GET('/v2/pets', 'PetStoreApiController@findPets')
     ->name('api.findPets')
-    ->middleware('findPets');
+    ->middleware('api.operation.findPets');
 ```
 
 #### Operation-Specific Middleware
-Each route has a unique middleware alias based on its operationId. Register them in `bootstrap/app.php`:
+Each route has a unique middleware alias based on its operationId with `api.operation.` prefix to avoid collisions. Register them in `bootstrap/app.php`:
 
 ```php
 ->withMiddleware(function (Middleware $middleware): void {
     $middleware->alias([
-        'findPets' => \App\Http\Middleware\OperationMiddleware::class,
-        'addPet' => \App\Http\Middleware\OperationMiddleware::class,
-        'deletePet' => \App\Http\Middleware\OperationMiddleware::class,
-        'findPetById' => \App\Http\Middleware\OperationMiddleware::class,
+        'api.operation.findPets' => \App\Http\Middleware\OperationMiddleware::class,
+        'api.operation.addPet' => \App\Http\Middleware\OperationMiddleware::class,
+        'api.operation.deletePet' => \App\Http\Middleware\OperationMiddleware::class,
+        'api.operation.findPetById' => \App\Http\Middleware\OperationMiddleware::class,
     ]);
 })
 ```
@@ -337,7 +337,7 @@ docker-compose exec app tail -f storage/logs/laravel.log
 1. **Verify middleware aliases** in `bootstrap/app.php`:
    ```php
    $middleware->alias([
-       'findPets' => \App\Http\Middleware\OperationMiddleware::class,
+       'api.operation.findPets' => \App\Http\Middleware\OperationMiddleware::class,
    ]);
    ```
 
@@ -345,7 +345,7 @@ docker-compose exec app tail -f storage/logs/laravel.log
 
 3. **Verify route middleware syntax** in generated routes:
    ```php
-   ->middleware('findPets')  // Correct
+   ->middleware('api.operation.findPets')  // Correct
    // NOT: ->middleware('operation-middleware-group:findPets')
    ```
 
@@ -453,13 +453,14 @@ See OpenAPI Generator PHP documentation for complete variable list.
 **Alternative Considered**: Fully qualified class names - rejected as it would require hardcoding or complex template logic
 
 ### 3. Operation-Specific Middleware Aliases
-**Decision**: Each route has unique middleware alias based on operationId (e.g., `->middleware('findPets')`)
+**Decision**: Each route has unique middleware alias based on operationId with `api.operation.` prefix (e.g., `->middleware('api.operation.findPets')`)
 
 **Reasoning**:
 - Maximum flexibility - can register different middleware per operation
 - Supports both dedicated middleware classes and shared middleware
 - Middleware can detect operation via route name if sharing single class
 - Clear intent in generated routes
+- **Prefix avoids collisions** with other middleware aliases in the application
 
 **Previous Approach**: `->middleware('operation-middleware-group:findPets')` - rejected as it used parameter instead of unique aliases
 
@@ -505,16 +506,18 @@ Generated controllers MUST follow PSR-4 naming:
 
 ### Middleware Pattern Agreement
 
-**Agreed Pattern**: Each route has unique middleware alias based on operationId
+**Agreed Pattern**: Each route has unique middleware alias based on operationId with `api.operation.` prefix
 ```php
-->middleware('findPets')      // Correct
-->middleware('addPet')        // Correct
+->middleware('api.operation.findPets')      // Correct
+->middleware('api.operation.addPet')        // Correct
 ```
 
 **Rejected Pattern**: Single middleware with parameter
 ```php
 ->middleware('operation-middleware-group:findPets')  // WRONG - don't use this
 ```
+
+**Reasoning for Prefix**: The `api.operation.` prefix prevents collisions with other middleware aliases in the application (e.g., if you have a `findPets` middleware for web routes).
 
 ### Controller Naming Convention
 

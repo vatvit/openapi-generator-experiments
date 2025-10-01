@@ -7,8 +7,8 @@
  *
  * Controller name is defined in OpenAPI spec: info.title
  *
- * Each route has a unique middleware alias based on its operationId.
- * For example: 'findPets', 'addPet', 'deletePet', etc.
+ * Each route has a unique middleware alias based on its operationId with 'api.operation.' prefix.
+ * For example: 'api.operation.findPets', 'api.operation.addPet', 'api.operation.deletePet', etc.
  *
  * Usage in routes/api.php:
  * ```php
@@ -28,16 +28,16 @@
  * ->withMiddleware(function (Middleware $middleware): void {
  *     $middleware->alias([
  *         // Register middleware for each operation
- *         'findPets' => \App\Http\Middleware\FindPetsMiddleware::class,
- *         'addPet' => \App\Http\Middleware\AddPetMiddleware::class,
- *         'deletePet' => \App\Http\Middleware\DeletePetMiddleware::class,
- *         'findPetById' => \App\Http\Middleware\FindPetByIdMiddleware::class,
+ *         'api.operation.findPets' => \App\Http\Middleware\FindPetsMiddleware::class,
+ *         'api.operation.addPet' => \App\Http\Middleware\AddPetMiddleware::class,
+ *         'api.operation.deletePet' => \App\Http\Middleware\DeletePetMiddleware::class,
+ *         'api.operation.findPetById' => \App\Http\Middleware\FindPetByIdMiddleware::class,
  *
  *         // Or use a single middleware that handles all operations
- *         'findPets' => \App\Http\Middleware\OperationMiddleware::class,
- *         'addPet' => \App\Http\Middleware\OperationMiddleware::class,
- *         'deletePet' => \App\Http\Middleware\OperationMiddleware::class,
- *         'findPetById' => \App\Http\Middleware\OperationMiddleware::class,
+ *         'api.operation.findPets' => \App\Http\Middleware\OperationMiddleware::class,
+ *         'api.operation.addPet' => \App\Http\Middleware\OperationMiddleware::class,
+ *         'api.operation.deletePet' => \App\Http\Middleware\OperationMiddleware::class,
+ *         'api.operation.findPetById' => \App\Http\Middleware\OperationMiddleware::class,
  *     ]);
  * })
  * ```
@@ -78,7 +78,7 @@ if (!isset($router)) {
  */
 $router->{{httpMethod}}('{{{basePathWithoutHost}}}{{{path}}}', '{{appName}}@{{operationId}}')
     ->name('api.{{operationId}}')
-    ->middleware('{{operationId}}');
+    ->middleware('api.operation.{{operationId}}');
 
 {{/operation}}
 {{/operations}}
