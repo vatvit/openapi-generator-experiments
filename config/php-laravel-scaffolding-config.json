@@ -1,0 +1,27 @@
+{
+  "invokerPackage": "PetStoreApi\\Scaffolding",
+  "modelPackage": "PetStoreApi\\Scaffolding\\Models",
+  "apiPackage": "PetStoreApi\\Scaffolding\\Api",
+  "packageName": "petstore-api-scaffolding",
+  "packageVersion": "1.0.0",
+  "packageUrl": "",
+  "packageDescription": "Generated PetStore API scaffolding",
+  "packageKeywords": ["petstore", "api", "scaffolding", "openapi"],
+  "packageCompany": "",
+  "packageCompanyUrl": "",
+  "packageAuthors": [
+    {
+      "name": "OpenAPI Generator",
+      "homepage": "https://openapi-generator.tech"
+    }
+  ],
+  "composerVendorName": "petstore-api",
+  "composerPackageName": "scaffolding",
+  "gitUserId": "",
+  "gitRepoId": "",
+  "artifactVersion": "1.0.0",
+  "srcBasePath": "lib",
+  "variableNamingConvention": "camelCase",
+  "hideGenerationTimestamp": true,
+  "withGeneratorVersionComment": false
+}

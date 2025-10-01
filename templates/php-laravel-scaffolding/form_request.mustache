@@ -1,0 +1,137 @@
+<?php declare(strict_types=1);
+
+namespace {{package}}\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+/**
+ * {{classname}}{{operationIdCamelCase}}Request
+ *
+ * Validation request for {{operationId}} operation
+ * {{#description}}{{description}}{{/description}}
+ *
+ * GENERATED VALIDATION RULES - CUSTOMIZE AS NEEDED
+ */
+class {{classname}}{{operationIdCamelCase}}Request extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * TODO: Implement your authorization logic
+     */
+    public function authorize(): bool
+    {
+        // TODO: Implement authorization logic
+        // Examples:
+        // - return true; // Allow all users
+        // - return $this->user()->can('{{operationId}}'); // Check permissions
+        // - return $this->user()->role === 'admin'; // Role-based access
+
+        return true; // Default: allow all (change this!)
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+{{#allParams}}
+{{#isQueryParam}}
+            '{{paramName}}' => [{{#required}}'required', {{/required}}{{^required}}'sometimes', {{/required}}{{#isString}}'string'{{/isString}}{{#isInteger}}'integer'{{/isInteger}}{{#isLong}}'integer'{{/isLong}}{{#isFloat}}'numeric'{{/isFloat}}{{#isDouble}}'numeric'{{/isDouble}}{{#isBool}}'boolean'{{/isBool}}{{#isEmail}}, 'email'{{/isEmail}}{{#hasMin}}, 'min:{{min}}'{{/hasMin}}{{#hasMax}}, 'max:{{max}}'{{/hasMax}}{{#isEnum}}, 'in:{{#allowableValues}}{{#values}}{{.}}{{^-last}},{{/-last}}{{/values}}{{/allowableValues}}'{{/isEnum}}],
+{{/isQueryParam}}
+{{#isBodyParam}}
+{{#vars}}
+            '{{name}}' => [{{#required}}'required', {{/required}}{{^required}}'sometimes', {{/required}}{{#isString}}'string'{{/isString}}{{#isInteger}}'integer'{{/isInteger}}{{#isLong}}'integer'{{/isLong}}{{#isFloat}}'numeric'{{/isFloat}}{{#isDouble}}'numeric'{{/isDouble}}{{#isBool}}'boolean'{{/isBool}}{{#isEmail}}, 'email'{{/isEmail}}{{#hasMin}}, 'min:{{min}}'{{/hasMin}}{{#hasMax}}, 'max:{{max}}'{{/hasMax}}{{#isEnum}}, 'in:{{#allowableValues}}{{#values}}{{.}}{{^-last}},{{/-last}}{{/values}}{{/allowableValues}}'{{/isEnum}}],
+{{/vars}}
+{{/isBodyParam}}
+{{/allParams}}
+        ];
+    }
+
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+{{#allParams}}
+{{#isQueryParam}}
+            '{{paramName}}' => '{{#description}}{{description}}{{/description}}{{^description}}{{paramName}}{{/description}}',
+{{/isQueryParam}}
+{{#isBodyParam}}
+{{#vars}}
+            '{{name}}' => '{{#description}}{{description}}{{/description}}{{^description}}{{name}}{{/description}}',
+{{/vars}}
+{{/isBodyParam}}
+{{/allParams}}
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            // TODO: Add custom validation messages if needed
+            // 'email.email' => 'Please provide a valid email address.',
+            // 'password.min' => 'Password must be at least 8 characters.',
+        ];
+    }
+
+{{#hasQueryParams}}
+    /**
+     * Get validated query parameters
+     *
+     * @return array
+     */
+    public function getQueryParams(): array
+    {
+        return $this->only([
+{{#queryParams}}
+            '{{paramName}}'{{^-last}},{{/-last}}
+{{/queryParams}}
+        ]);
+    }
+{{/hasQueryParams}}
+
+{{#hasBodyParams}}
+    /**
+     * Get validated body data
+     *
+     * @return array
+     */
+    public function getBodyData(): array
+    {
+        return $this->only([
+{{#bodyParams}}
+{{#vars}}
+            '{{name}}'{{^-last}},{{/-last}}
+{{/vars}}
+{{/bodyParams}}
+        ]);
+    }
+{{/hasBodyParams}}
+
+{{#allParams}}
+{{#isQueryParam}}
+    /**
+     * Get {{paramName}} parameter
+     *
+     * @return {{#isNullable}}?{{/isNullable}}{{dataType}}
+     */
+    public function get{{operationIdCamelCase}}{{paramName}}(): {{#isNullable}}?{{/isNullable}}{{dataType}}
+    {
+        return $this->query('{{paramName}}');
+    }
+
+{{/isQueryParam}}
+{{/allParams}}
+}

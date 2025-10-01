@@ -1,0 +1,43 @@
+{{>php_file_header}}
+/**
+ * GENERATED API ROUTES
+ *
+ * This file is generated from OpenAPI specification.
+ * Include this file from your Laravel routes/api.php with a controller mapping.
+ *
+ * Usage in routes/api.php:
+ * ```php
+ * $controllerMapping = [
+ *     'DefaultApiInterface' => \App\Http\Controllers\Api\PetStoreController::class,
+ * ];
+ * require base_path('generated/scaffolding/routes.php');
+ * ```
+ */
+
+// Controller mapping should be provided by the including file
+if (!isset($controllerMapping)) {
+    throw new \RuntimeException('$controllerMapping must be defined before including generated routes.php');
+}
+
+use Illuminate\Support\Facades\Route;
+
+{{#apiInfo}}
+{{#apis}}
+{{#operations}}
+{{#operation}}
+/**
+ * {{httpMethod}} {{{path}}}
+ * {{#summary}}{{summary}}{{/summary}}
+ * {{#notes}}{{notes}}{{/notes}}
+ */
+$controllerClass{{classname}} = $controllerMapping['{{classname}}'] ?? null;
+if (!$controllerClass{{classname}}) {
+    throw new \RuntimeException('Controller mapping not found for {{classname}}');
+}
+Route::{{httpMethod}}('{{{basePathWithoutHost}}}{{{path}}}', [$controllerClass{{classname}}, '{{operationId}}'])
+    ->name('api.{{operationId}}');
+
+{{/operation}}
+{{/operations}}
+{{/apis}}
+{{/apiInfo}}

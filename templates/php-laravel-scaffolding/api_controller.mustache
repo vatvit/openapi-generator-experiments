@@ -1,0 +1,112 @@
+<?php declare(strict_types=1);
+
+namespace {{invokerPackage}}\Http\Controllers;
+
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+
+/**
+ * Abstract Default Controller
+ *
+ * Generated scaffolding from OpenAPI specification
+ * Extend this class in your Laravel project to implement business logic
+ */
+abstract class AbstractDefaultController extends Controller
+{
+{{#apiDocumentationUrl}}
+    /**
+     * {{description}}
+     * {{summary}}
+     */
+{{/apiDocumentationUrl}}
+{{#operations}}
+{{#operation}}
+    /**
+     * {{summary}}
+     *
+{{#notes}}
+     * {{notes}}
+     *
+{{/notes}}
+{{#hasParams}}
+{{#hasQueryParams}}
+     * Query parameters validation (from OpenAPI spec):
+{{#queryParams}}
+     * - {{paramName}}: {{dataType}}{{#hasMore}},{{/hasMore}}{{#minimum}}, min: {{minimum}}{{/minimum}}{{#maximum}}, max: {{maximum}}{{/maximum}}{{#hasValidation}}{{#pattern}}, pattern: {{pattern}}{{/pattern}}{{/hasValidation}}
+{{/queryParams}}
+     *
+{{/hasQueryParams}}
+{{#hasBodyParam}}
+     * Request body validation (from OpenAPI spec):
+{{#bodyParams}}
+     * - {{paramName}}: {{#required}}required, {{/required}}{{^required}}optional, {{/required}}{{dataType}}{{#minimum}}, min: {{minimum}}{{/minimum}}{{#maximum}}, max: {{maximum}}{{/maximum}}
+{{/bodyParams}}
+     *
+{{/hasBodyParam}}
+{{#hasPathParams}}
+     * Path parameters validation (from OpenAPI spec):
+{{#pathParams}}
+     * - {{paramName}}: {{dataType}}{{#hasMore}},{{/hasMore}}
+{{/pathParams}}
+     *
+{{/hasPathParams}}
+{{/hasParams}}
+     * @param Request $request
+{{#hasPathParams}}
+{{#pathParams}}
+     * @param {{dataType}} ${{paramName}}
+{{/pathParams}}
+{{/hasPathParams}}
+     * @return JsonResponse
+     */
+    abstract public function {{operationId}}(Request $request{{#hasPathParams}}{{#pathParams}}, {{dataType}} ${{paramName}}{{/pathParams}}{{/hasPathParams}}): JsonResponse;
+
+{{/operation}}
+{{/operations}}
+{{#operations}}
+{{#operation}}
+{{#hasParams}}
+    /**
+     * Get validation rules for {{operationId}} request
+     * Generated from OpenAPI specification
+     *
+     * @return array
+     */
+    protected function {{operationId}}ValidationRules({{#hasPathParams}}{{#pathParams}}{{^-first}}, {{/-first}}{{dataType}} ${{paramName}}{{/pathParams}}{{/hasPathParams}}): array
+    {
+        return [
+{{#allParams}}
+{{^isPathParam}}
+            '{{paramName}}' => '{{#required}}required{{/required}}{{^required}}sometimes{{/required}}{{#isInteger}}|integer{{/isInteger}}{{#isLong}}|integer{{/isLong}}{{#isFloat}}|numeric{{/isFloat}}{{#isDouble}}|numeric{{/isDouble}}{{#isString}}|string{{/isString}}{{#isBoolean}}|boolean{{/isBoolean}}{{#isArray}}|array{{/isArray}}{{#minimum}}|min:{{minimum}}{{/minimum}}{{#maximum}}|max:{{maximum}}{{/maximum}}{{#minLength}}|min:{{minLength}}{{/minLength}}{{#maxLength}}|max:{{maxLength}}{{/maxLength}}{{#pattern}}|regex:{{pattern}}{{/pattern}}{{#hasValidation}}{{#_enum}}|in:{{#allowableValues}}{{#values}}{{.}}{{#hasMore}},{{/hasMore}}{{/values}}{{/allowableValues}}{{/_enum}}{{/hasValidation}}',
+{{/isPathParam}}
+{{/allParams}}
+        ];
+    }
+
+{{#hasPathParams}}
+    /**
+     * Validate path parameter(s) for {{operationId}}
+     * Generated from OpenAPI specification
+     *
+{{#pathParams}}
+     * @param {{dataType}} ${{paramName}}
+{{/pathParams}}
+     * @return bool
+     */
+    protected function validate{{operationId}}PathParams({{#pathParams}}{{^-first}}, {{/-first}}{{dataType}} ${{paramName}}{{/pathParams}}): bool
+    {
+{{#pathParams}}
+        // Validate {{paramName}} ({{dataType}})
+        if ({{#isInteger}}!is_int(${{paramName}}) || ${{paramName}} < 1{{/isInteger}}{{#isString}}empty(${{paramName}}){{/isString}}{{#isNumeric}}!is_numeric(${{paramName}}){{/isNumeric}}) {
+            return false;
+        }
+{{/pathParams}}
+        return true;
+    }
+
+{{/hasPathParams}}
+{{/hasParams}}
+{{/operation}}
+{{/operations}}
+}

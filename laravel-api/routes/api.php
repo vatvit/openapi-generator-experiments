@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,38 +18,42 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// API v1 routes
-Route::prefix('v1')->group(function () {
-
-    // Health check endpoint
-    Route::get('/health', function () {
-        return response()->json([
-            'status' => 'healthy',
-            'timestamp' => now()->toISOString(),
-            'version' => '1.0.0'
-        ]);
-    });
-
-    // User management endpoints (will match OpenAPI spec)
-    Route::apiResource('users', UserController::class);
-
-    // Additional endpoints based on OpenAPI spec
-    // These will be implemented to match the openapi.yaml specification
+// Health check endpoint
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'healthy',
+        'timestamp' => now()->toISOString(),
+        'version' => '1.0.0'
+    ]);
 });
+
+// Include generated API routes from scaffolding
+// Map API interface classes to Laravel controller implementations
+$controllerMapping = [
+    'DefaultApiInterface' => \App\Http\Controllers\Api\PetStoreController::class,
+];
+
+// Generated routes file path (mounted in Docker at /var/www/generated/scaffolding)
+$generatedRoutesPath = base_path('generated/scaffolding/routes.php');
+if (file_exists($generatedRoutesPath)) {
+    require $generatedRoutesPath;
+} else {
+    // Fallback: log warning but don't fail
+    \Log::warning('Generated routes file not found at: ' . $generatedRoutesPath);
+}
 
 // API documentation endpoint
 Route::get('/docs', function () {
     return response()->json([
-        'message' => 'API Documentation',
-        'openapi_spec' => url('/api/openapi.yaml'),
+        'message' => 'PetStore API Documentation',
+        'openapi_spec' => url('/petshop-extended.yaml'),
         'version' => '1.0.0',
         'endpoints' => [
-            'GET /api/v1/health' => 'Health check',
-            'GET /api/v1/users' => 'List users',
-            'POST /api/v1/users' => 'Create user',
-            'GET /api/v1/users/{id}' => 'Get user by ID',
-            'PUT /api/v1/users/{id}' => 'Update user',
-            'DELETE /api/v1/users/{id}' => 'Delete user',
+            'GET /api/health' => 'Health check',
+            'GET /api/v2/pets' => 'List pets',
+            'POST /api/v2/pets' => 'Create pet',
+            'GET /api/v2/pets/{id}' => 'Get pet by ID',
+            'DELETE /api/v2/pets/{id}' => 'Delete pet',
         ]
     ]);
 });

@@ -1,0 +1,64 @@
+{{>php_file_header}}
+
+namespace {{apiPackage}};
+
+{{#vendorExtensions.x-autowire}}
+use Attributes\Autowire;
+{{/vendorExtensions.x-autowire}}
+
+{{#operations}}
+{{#vendorExtensions.x-autowire}}
+#[Autowire]
+{{/vendorExtensions.x-autowire}}
+interface {{classname}} {
+
+{{#operation}}
+
+    /**
+     * Operation {{{operationId}}}
+    {{#summary}}
+     *
+     * {{{.}}}
+    {{/summary}}
+    {{#description}}
+     *
+     * {{.}}
+    {{/description}}
+    {{#allParams}}
+     * @param {{^required}}null | {{/required}}{{{dataType}}} ${{paramName}}
+    {{/allParams}}
+     * @return {{#responses}}{{{dataType}}}{{^-last}} | {{/-last}}{{/responses}}
+    {{#isDeprecated}}
+     * @deprecated
+    {{/isDeprecated}}
+     */
+    public function {{operationId}}(
+        {{#allParams}}
+            {{#isContainer}}
+            {{^required}}?{{/required}}array ${{paramName}},
+            {{/isContainer}}
+            {{^isContainer}}
+            {{^required}}?{{/required}}{{dataType}} ${{paramName}},
+            {{/isContainer}}
+        {{/allParams}}
+    ):
+    {{#responses}}
+    {{#isArray}}
+        array{{^-last}} | {{/-last}}
+    {{/isArray}}
+    {{#isMap}}
+        array{{^-last}} | {{/-last}}
+    {{/isMap}}
+    {{^isArray}}
+    {{^isMap}}
+    {{#dataType}}
+        {{dataType}}{{^-last}} | {{/-last}}
+    {{/dataType}}
+    {{/isMap}}
+    {{/isArray}}
+    {{/responses}}
+    ;
+
+{{/operation}}
+}
+{{/operations}}
