@@ -185,63 +185,47 @@ abstract class DefaultController extends Controller
 #### Auto-Generated Routes
 - **Laravel route syntax** using `$router` variable from Route::group
 - **Named routes** with 'api.' prefix (e.g., 'api.findPets')
-- **Operation-specific middleware** using operationId as middleware alias
+- **Conditional middleware attachment** - Only attaches middleware if group is defined
 - **Service Container resolution** via string notation
 
 ```php
-$router->GET('/v2/pets', 'PetStoreApiController@findPets')
-    ->name('api.findPets')
-    ->middleware('api.operation.findPets');
+// Route definition
+$route = $router->GET('/v2/pets', 'PetStoreApiController@findPets')
+    ->name('api.findPets');
+
+// Middleware attached only if group exists
+if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
+    $route->middleware('api.middlewareGroup.findPets');
+}
 ```
 
 #### Operation-Specific Middleware Groups
-Each route uses a middleware group based on its operationId with `api.operation.` prefix. These groups are **empty by default** - you append custom middleware in `bootstrap/app.php` as needed:
+Routes **conditionally** use middleware groups based on operationId with `api.middlewareGroup.` prefix. Middleware is only attached if the group is defined in your application:
 
 ```php
 ->withMiddleware(function (Middleware $middleware): void {
-    // Append custom middleware to specific operation groups
-    $middleware->appendToGroup('api.operation.findPets', [
+    // Define middleware groups for operations that need custom middleware
+    $middleware->group('api.middlewareGroup.findPets', [
         \App\Http\Middleware\CacheResponse::class,
     ]);
 
-    $middleware->appendToGroup('api.operation.addPet', [
+    $middleware->group('api.middlewareGroup.addPet', [
         \App\Http\Middleware\ValidateOwnership::class,
         \App\Http\Middleware\LogCreation::class,
     ]);
 
-    $middleware->appendToGroup('api.operation.deletePet', [
+    $middleware->group('api.middlewareGroup.deletePet', [
         \App\Http\Middleware\RequireAdmin::class,
-    ]);
-
-    // Or prepend middleware to run before others
-    $middleware->prependToGroup('api.operation.findPetById', [
-        \App\Http\Middleware\CheckRateLimit::class,
     ]);
 })
 ```
 
 **Key Benefits**:
+- **On-demand middleware** - Routes only have middleware if you define the group
+- **Zero overhead** - Operations without defined groups have no middleware performance impact
 - **No template modification needed** - Add/remove middleware without regenerating
-- **Multiple middleware per operation** - Append as many as needed
-- **Operations can have no middleware** - Groups default to empty
-- **Flexible ordering** - Use `appendToGroup` or `prependToGroup`
-
-```php
-class OperationMiddleware {
-    public function handle(Request $request, Closure $next): Response {
-        $route = $request->route();
-        $operationId = $route->getName(); // e.g., 'api.findPets'
-
-        match ($operationId) {
-            'api.findPets' => $this->handleFindPets($request),
-            'api.addPet' => $this->handleAddPet($request),
-            default => null,
-        };
-
-        return $next($request);
-    }
-}
-```
+- **Multiple middleware per operation** - Define as many as needed in each group
+- **Clean generated code** - No automatic empty group registration
 
 ### Configuration: Customizing Controller Names
 
@@ -348,22 +332,23 @@ docker-compose exec app tail -f storage/logs/laravel.log
 ```
 
 **Solutions**:
-1. **Verify middleware groups** in `bootstrap/app.php`:
+1. **Verify middleware groups** in `bootstrap/app.php` (if you defined any):
    ```php
-   $middleware->appendToGroup('api.operation.findPets', [
-       \App\Http\Middleware\OperationMiddleware::class,
+   $middleware->group('api.middlewareGroup.findPets', [
+       \App\Http\Middleware\CacheResponse::class,
    ]);
    ```
 
-2. **Check middleware class exists** at `app/Http/Middleware/OperationMiddleware.php`
+2. **Check middleware class exists** at the path specified in your group definition
 
 3. **Verify route middleware syntax** in generated routes:
    ```php
-   ->middleware('api.operation.findPets')  // Correct - middleware group
-   // NOT: ->middleware('operation-middleware-group:findPets')
+   if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
+       $route->middleware('api.middlewareGroup.findPets');
+   }
    ```
 
-4. **Remember groups are empty by default** - If you removed all `appendToGroup` calls, middleware won't execute
+4. **Remember groups are only attached if defined** - Routes without defined middleware groups have no middleware
 
 #### Issue 6: Port 8080 vs 8000
 **Symptom**: `curl http://localhost:8080/api/v2/pets` returns connection error
@@ -468,17 +453,19 @@ See OpenAPI Generator PHP documentation for complete variable list.
 
 **Alternative Considered**: Fully qualified class names - rejected as it would require hardcoding or complex template logic
 
-### 3. Operation-Specific Middleware Groups
-**Decision**: Each route uses a middleware group based on operationId with `api.operation.` prefix (e.g., `->middleware('api.operation.findPets')`). Groups are empty by default.
+### 3. Operation-Specific Middleware Groups (Conditional)
+**Decision**: Routes conditionally attach middleware groups based on operationId with `api.middlewareGroup.` prefix. Middleware is only attached if the group is defined in the application.
 
 **Reasoning**:
-- **No template modification required** - Developers append middleware via `appendToGroup()` in bootstrap/app.php
+- **On-demand middleware** - Routes only have middleware if you define the group
+- **Zero overhead** - Operations without defined groups have no middleware performance impact
+- **No template modification required** - Developers define groups via `group()` in bootstrap/app.php only when needed
 - **Multiple middleware per operation** - Can add as many middleware as needed to each group
-- **Zero middleware overhead** - Operations without custom logic have no middleware (empty group)
-- **Flexible ordering** - Use `appendToGroup` or `prependToGroup` as needed
+- **Clean generated code** - No automatic empty group registration
 - **Prefix avoids collisions** with other middleware groups in the application
 
 **Previous Approaches**:
+- Automatic empty group registration - rejected to reduce generated code overhead
 - Middleware aliases - rejected because each alias can only map to one class
 - `->middleware('operation-middleware-group:findPets')` - rejected as it used parameter instead of groups
 
@@ -524,19 +511,24 @@ Generated controllers MUST follow PSR-4 naming:
 
 ### Middleware Pattern Agreement
 
-**Agreed Pattern**: Each route uses a middleware group based on operationId with `api.operation.` prefix. Groups are empty by default.
+**Agreed Pattern**: Routes conditionally attach middleware groups based on operationId with `api.middlewareGroup.` prefix. Middleware is only attached if the group is defined.
 ```php
-->middleware('api.operation.findPets')      // Correct - middleware group
-->middleware('api.operation.addPet')        // Correct - middleware group
+// Generated route code
+$route = $router->GET('/v2/pets', 'PetStoreApiController@findPets')
+    ->name('api.findPets');
+
+if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
+    $route->middleware('api.middlewareGroup.findPets');
+}
 ```
 
-**Usage**: Append custom middleware to groups in `bootstrap/app.php`
+**Usage**: Define middleware groups in `bootstrap/app.php` only when needed
 ```php
-$middleware->appendToGroup('api.operation.findPets', [
+$middleware->group('api.middlewareGroup.findPets', [
     \App\Http\Middleware\CacheResponse::class,
 ]);
 
-$middleware->appendToGroup('api.operation.addPet', [
+$middleware->group('api.middlewareGroup.addPet', [
     \App\Http\Middleware\ValidateOwnership::class,
     \App\Http\Middleware\LogCreation::class,
 ]);
@@ -548,7 +540,8 @@ $middleware->appendToGroup('api.operation.addPet', [
 ```
 
 **Key Benefits**:
-- **Groups default to empty** - No middleware overhead for operations that don't need it
+- **On-demand middleware** - Routes only have middleware if you define the group
+- **Zero overhead** - Operations without defined groups have no middleware
 - **Multiple middleware per operation** - Not limited to one class per operation
 - **No template changes needed** - Add/remove middleware without regenerating
 - **Prefix prevents collisions** with other middleware groups (e.g., web route groups)

@@ -49,10 +49,8 @@
  * Operations without defined middleware groups will have no middleware applied.
  */
 
-// Use $router variable from Route::group closure (if available), otherwise fallback to Route facade
-if (!isset($router)) {
-    $router = app('router');
-}
+// Use $router variable passed from Route::group closure
+// This file expects $router to be available from the including context
 
 {{#apiInfo}}
 {{#apis}}

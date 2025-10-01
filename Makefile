@@ -14,23 +14,17 @@ help: ## Show this help message
 # Main scaffolding generator
 generate-scaffolding: ## Generate Laravel scaffolding (models, controllers) from petshop-extended.yaml
 	@echo "🏗️  Generating Laravel API scaffolding..."
-	@rm -rf generated/scaffolding
-	@mkdir -p generated/scaffolding
-	@chmod 777 generated/scaffolding
+	@rm -rf laravel-api/generated/scaffolding
+	@mkdir -p laravel-api/generated
 	@echo "📋 Using OpenAPI spec: petshop-extended.yaml"
 	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli generate \
 		-i /local/petshop-extended.yaml \
 		-g php-laravel \
-		-o /local/generated/scaffolding \
+		-o /local/laravel-api/generated/scaffolding \
 		-c /local/config/php-laravel-scaffolding-config.json \
 		--template-dir /local/templates/php-laravel-scaffolding
 	@echo "✅ Laravel API scaffolding generated!"
-	@echo "📁 Output: generated/scaffolding"
-	@echo ""
-	@echo "📋 Next Steps:"
-	@echo "   1. Review generated models in generated/scaffolding/"
-	@echo "   2. Copy models to laravel-api/app/Models/Generated/"
-	@echo "   3. Update controllers in laravel-api/app/Http/Controllers/Api/"
+	@echo "📁 Output: laravel-api/generated/scaffolding"
 
 # Utilities
 extract-templates: ## Extract default PHP client templates for customization
@@ -51,8 +45,7 @@ validate-spec: ## Validate the OpenAPI specification
 
 clean: ## Clean generated files
 	@echo "🧹 Cleaning generated files..."
-	@rm -rf generated/scaffolding
-	@rm -rf laravel-api/app/Models/Generated
+	@rm -rf laravel-api/generated/scaffolding
 	@echo "✅ Generated files cleaned!"
 
 # Testing targets
@@ -66,10 +59,10 @@ test-complete: ## Complete test: generate scaffolding, start Laravel, and test e
 	@echo "📋 Step 2: Generating Laravel scaffolding..."
 	@$(MAKE) generate-scaffolding
 	@echo ""
-	@echo "📋 Step 3: Checking generated models..."
-	@if [ -d "generated/scaffolding" ]; then \
+	@echo "📋 Step 3: Checking generated scaffolding..."
+	@if [ -d "laravel-api/generated/scaffolding" ]; then \
 		echo "✅ Scaffolding generated successfully"; \
-		find generated/scaffolding -name "*.php" -type f | wc -l | xargs echo "   📄 Generated files:"; \
+		find laravel-api/generated/scaffolding -name "*.php" -type f | wc -l | xargs echo "   📄 Generated files:"; \
 	else \
 		echo "❌ Scaffolding generation failed"; \
 		exit 1; \
@@ -102,11 +95,11 @@ test-laravel: ## Test Laravel application endpoints
 		echo "  GET /api/health"; \
 		curl -s http://localhost:8000/api/health | jq . || echo "❌ Health check failed"; \
 		echo ""; \
-		echo "  GET /api/pets"; \
-		curl -s http://localhost:8000/api/pets | jq . || echo "⚠️  Pets endpoint (may be empty)"; \
+		echo "  GET /v2/pets"; \
+		curl -s http://localhost:8000/v2/pets | jq . || echo "⚠️  Pets endpoint (may be empty)"; \
 		echo ""; \
-		echo "  GET /api/users"; \
-		curl -s http://localhost:8000/api/users | jq . || echo "⚠️  Users endpoint (may be empty)"; \
+		echo "  GET /v2/pets?limit=3"; \
+		curl -s 'http://localhost:8000/v2/pets?limit=3' | jq . || echo "⚠️  Pets endpoint with params (may be empty)"; \
 	else \
 		echo "❌ Laravel containers not running"; \
 		echo "   Start with: cd laravel-api && docker-compose up -d"; \
