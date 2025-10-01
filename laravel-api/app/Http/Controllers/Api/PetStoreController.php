@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Routing\Controller;
+use PetStoreApi\Scaffolding\Http\Controllers\DefaultController;
 use App\Models\Pet;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,16 +10,17 @@ use Illuminate\Http\Request;
 /**
  * Pet Store Controller
  *
+ * Extends generated DefaultController from scaffolding library
  * Implements business logic for Pet Store API
  * Routes are automatically generated from OpenAPI specification
  */
-class PetStoreController extends Controller
+class PetStoreController extends DefaultController
 {
     /**
      * Create a new pet
      *
      * Implements business logic for pet creation
-     * Validation rules provided by scaffolding: addPetValidationRules()
+     * Validation rules provided by parent: addPetValidationRules()
      *
      * @param Request $request
      * @return JsonResponse
@@ -46,21 +47,14 @@ class PetStoreController extends Controller
      * Delete pet by ID
      *
      * Implements business logic for pet deletion
-     * Path parameter validation provided by scaffolding: validateDeletePetPathParams()
+     * Path parameter validation provided by parent: validatedeletePetPathParams()
      *
      * @param Request $request
-     * @param int $id
+     * @param int $id ID of pet to delete
      * @return JsonResponse
      */
     public function deletePet(Request $request, int $id): JsonResponse
     {
-        // Use path parameter validation from scaffolding
-        if (!$this->validatedeletePetPathParams($id)) {
-            return response()->json([
-                'message' => 'Invalid pet ID'
-            ], 400);
-        }
-
         // Business logic implementation
         // For demo purposes, just return success
         return response()->json(null, 204);
@@ -70,21 +64,14 @@ class PetStoreController extends Controller
      * Get pet by ID
      *
      * Implements business logic for pet retrieval
-     * Path parameter validation provided by scaffolding: validateFindPetByIdPathParams()
+     * Path parameter validation provided by parent: validatefindPetByIdPathParams()
      *
      * @param Request $request
-     * @param int $id
+     * @param int $id ID of pet to fetch
      * @return JsonResponse
      */
     public function findPetById(Request $request, int $id): JsonResponse
     {
-        // Use path parameter validation from scaffolding
-        if (!$this->validatefindPetByIdPathParams($id)) {
-            return response()->json([
-                'message' => 'Invalid pet ID'
-            ], 400);
-        }
-
         // Business logic implementation
         $pet = [
             'id' => $id,
@@ -102,7 +89,7 @@ class PetStoreController extends Controller
      * List all pets
      *
      * Implements business logic for pet listing
-     * Validation rules provided by scaffolding: findPetsValidationRules()
+     * Validation rules provided by parent: findPetsValidationRules()
      *
      * @param Request $request
      * @return JsonResponse

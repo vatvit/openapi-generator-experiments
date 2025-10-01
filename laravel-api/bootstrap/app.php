@@ -12,7 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Register operation-specific middleware for generated routes
+        // Each route has unique middleware alias based on operationId
+        // You can either create dedicated middleware per operation or reuse same class
+        $middleware->alias([
+            'findPets' => \App\Http\Middleware\OperationMiddleware::class,
+            'addPet' => \App\Http\Middleware\OperationMiddleware::class,
+            'deletePet' => \App\Http\Middleware\OperationMiddleware::class,
+            'findPetById' => \App\Http\Middleware\OperationMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

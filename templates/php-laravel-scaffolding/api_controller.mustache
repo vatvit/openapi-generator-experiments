@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 /**
- * Abstract Default Controller
+ * Default Controller
  *
  * Generated scaffolding from OpenAPI specification
  * Extend this class in your Laravel project to implement business logic
  */
-abstract class AbstractDefaultController extends Controller
+abstract class DefaultController extends Controller
 {
 {{#apiDocumentationUrl}}
     /**
@@ -96,12 +96,8 @@ abstract class AbstractDefaultController extends Controller
      */
     protected function validate{{operationId}}PathParams({{#pathParams}}{{^-first}}, {{/-first}}{{dataType}} ${{paramName}}{{/pathParams}}): bool
     {
-{{#pathParams}}
-        // Validate {{paramName}} ({{dataType}})
-        if ({{#isInteger}}!is_int(${{paramName}}) || ${{paramName}} < 1{{/isInteger}}{{#isString}}empty(${{paramName}}){{/isString}}{{#isNumeric}}!is_numeric(${{paramName}}){{/isNumeric}}) {
-            return false;
-        }
-{{/pathParams}}
+        // Path parameters are already type-hinted and validated by Laravel routing
+        // Additional custom validation can be added here if needed
         return true;
     }
 

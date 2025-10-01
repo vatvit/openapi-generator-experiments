@@ -5,16 +5,60 @@
  * This file is generated from OpenAPI specification.
  * Include this file from your Laravel routes/api.php within a Route::group.
  *
- * Controller name is defined in OpenAPI spec: info.x-controller-name
+ * Controller name is defined in OpenAPI spec: info.title
+ *
+ * Each route has a unique middleware alias based on its operationId.
+ * For example: 'findPets', 'addPet', 'deletePet', etc.
  *
  * Usage in routes/api.php:
  * ```php
  * // Bind controller name to concrete implementation in Service Container
  * app()->bind('{{appName}}', \App\Http\Controllers\Api\YourController::class);
  *
+ * // Wrap generated routes in a group
  * Route::group(['prefix' => 'v2', 'middleware' => ['api']], function ($router) {
  *     require base_path('generated/scaffolding/routes.php');
  * });
+ * ```
+ *
+ * MIDDLEWARE USAGE:
+ *
+ * Register operation-specific middleware in bootstrap/app.php:
+ * ```php
+ * ->withMiddleware(function (Middleware $middleware): void {
+ *     $middleware->alias([
+ *         // Register middleware for each operation
+ *         'findPets' => \App\Http\Middleware\FindPetsMiddleware::class,
+ *         'addPet' => \App\Http\Middleware\AddPetMiddleware::class,
+ *         'deletePet' => \App\Http\Middleware\DeletePetMiddleware::class,
+ *         'findPetById' => \App\Http\Middleware\FindPetByIdMiddleware::class,
+ *
+ *         // Or use a single middleware that handles all operations
+ *         'findPets' => \App\Http\Middleware\OperationMiddleware::class,
+ *         'addPet' => \App\Http\Middleware\OperationMiddleware::class,
+ *         'deletePet' => \App\Http\Middleware\OperationMiddleware::class,
+ *         'findPetById' => \App\Http\Middleware\OperationMiddleware::class,
+ *     ]);
+ * })
+ * ```
+ *
+ * Example OperationMiddleware that detects which operation is being called:
+ * ```php
+ * class OperationMiddleware {
+ *     public function handle(Request $request, Closure $next): Response {
+ *         $route = $request->route();
+ *         $operationId = $route->getName(); // e.g., 'api.findPets'
+ *
+ *         // Apply operation-specific logic based on route name
+ *         match ($operationId) {
+ *             'api.findPets' => $this->handleFindPets($request),
+ *             'api.addPet' => $this->handleAddPet($request),
+ *             default => null,
+ *         };
+ *
+ *         return $next($request);
+ *     }
+ * }
  * ```
  */
 
@@ -33,7 +77,8 @@ if (!isset($router)) {
  * {{#notes}}{{notes}}{{/notes}}
  */
 $router->{{httpMethod}}('{{{basePathWithoutHost}}}{{{path}}}', '{{appName}}@{{operationId}}')
-    ->name('api.{{operationId}}');
+    ->name('api.{{operationId}}')
+    ->middleware('{{operationId}}');
 
 {{/operation}}
 {{/operations}}
