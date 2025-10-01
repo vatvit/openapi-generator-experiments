@@ -12,15 +12,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Register operation-specific middleware for generated routes
-        // Each route has unique middleware alias with 'api.operation.' prefix to avoid collisions
-        // You can either create dedicated middleware per operation or reuse same class
-        $middleware->alias([
-            'api.operation.findPets' => \App\Http\Middleware\OperationMiddleware::class,
-            'api.operation.addPet' => \App\Http\Middleware\OperationMiddleware::class,
-            'api.operation.deletePet' => \App\Http\Middleware\OperationMiddleware::class,
-            'api.operation.findPetById' => \App\Http\Middleware\OperationMiddleware::class,
-        ]);
+        // Define middleware groups for API operations that need custom middleware
+        // Generated routes will automatically use these groups if they exist
+
+        // Example: Define middleware for specific operations
+        // $middleware->group('api.middlewareGroup.findPets', [
+        //     \App\Http\Middleware\CacheResponse::class,
+        // ]);
+        //
+        // $middleware->group('api.middlewareGroup.addPet', [
+        //     \App\Http\Middleware\ValidateOwnership::class,
+        //     \App\Http\Middleware\LogCreation::class,
+        // ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

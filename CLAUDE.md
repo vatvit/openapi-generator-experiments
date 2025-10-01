@@ -194,23 +194,37 @@ $router->GET('/v2/pets', 'PetStoreApiController@findPets')
     ->middleware('api.operation.findPets');
 ```
 
-#### Operation-Specific Middleware
-Each route has a unique middleware alias based on its operationId with `api.operation.` prefix to avoid collisions. Register them in `bootstrap/app.php`:
+#### Operation-Specific Middleware Groups
+Each route uses a middleware group based on its operationId with `api.operation.` prefix. These groups are **empty by default** - you append custom middleware in `bootstrap/app.php` as needed:
 
 ```php
 ->withMiddleware(function (Middleware $middleware): void {
-    $middleware->alias([
-        'api.operation.findPets' => \App\Http\Middleware\OperationMiddleware::class,
-        'api.operation.addPet' => \App\Http\Middleware\OperationMiddleware::class,
-        'api.operation.deletePet' => \App\Http\Middleware\OperationMiddleware::class,
-        'api.operation.findPetById' => \App\Http\Middleware\OperationMiddleware::class,
+    // Append custom middleware to specific operation groups
+    $middleware->appendToGroup('api.operation.findPets', [
+        \App\Http\Middleware\CacheResponse::class,
+    ]);
+
+    $middleware->appendToGroup('api.operation.addPet', [
+        \App\Http\Middleware\ValidateOwnership::class,
+        \App\Http\Middleware\LogCreation::class,
+    ]);
+
+    $middleware->appendToGroup('api.operation.deletePet', [
+        \App\Http\Middleware\RequireAdmin::class,
+    ]);
+
+    // Or prepend middleware to run before others
+    $middleware->prependToGroup('api.operation.findPetById', [
+        \App\Http\Middleware\CheckRateLimit::class,
     ]);
 })
 ```
 
-Two approaches:
-1. **Dedicated middleware per operation** - Create separate class for each operation
-2. **Shared middleware** - One class detects operation via route name
+**Key Benefits**:
+- **No template modification needed** - Add/remove middleware without regenerating
+- **Multiple middleware per operation** - Append as many as needed
+- **Operations can have no middleware** - Groups default to empty
+- **Flexible ordering** - Use `appendToGroup` or `prependToGroup`
 
 ```php
 class OperationMiddleware {
@@ -334,10 +348,10 @@ docker-compose exec app tail -f storage/logs/laravel.log
 ```
 
 **Solutions**:
-1. **Verify middleware aliases** in `bootstrap/app.php`:
+1. **Verify middleware groups** in `bootstrap/app.php`:
    ```php
-   $middleware->alias([
-       'api.operation.findPets' => \App\Http\Middleware\OperationMiddleware::class,
+   $middleware->appendToGroup('api.operation.findPets', [
+       \App\Http\Middleware\OperationMiddleware::class,
    ]);
    ```
 
@@ -345,9 +359,11 @@ docker-compose exec app tail -f storage/logs/laravel.log
 
 3. **Verify route middleware syntax** in generated routes:
    ```php
-   ->middleware('api.operation.findPets')  // Correct
+   ->middleware('api.operation.findPets')  // Correct - middleware group
    // NOT: ->middleware('operation-middleware-group:findPets')
    ```
+
+4. **Remember groups are empty by default** - If you removed all `appendToGroup` calls, middleware won't execute
 
 #### Issue 6: Port 8080 vs 8000
 **Symptom**: `curl http://localhost:8080/api/v2/pets` returns connection error
@@ -452,17 +468,19 @@ See OpenAPI Generator PHP documentation for complete variable list.
 
 **Alternative Considered**: Fully qualified class names - rejected as it would require hardcoding or complex template logic
 
-### 3. Operation-Specific Middleware Aliases
-**Decision**: Each route has unique middleware alias based on operationId with `api.operation.` prefix (e.g., `->middleware('api.operation.findPets')`)
+### 3. Operation-Specific Middleware Groups
+**Decision**: Each route uses a middleware group based on operationId with `api.operation.` prefix (e.g., `->middleware('api.operation.findPets')`). Groups are empty by default.
 
 **Reasoning**:
-- Maximum flexibility - can register different middleware per operation
-- Supports both dedicated middleware classes and shared middleware
-- Middleware can detect operation via route name if sharing single class
-- Clear intent in generated routes
-- **Prefix avoids collisions** with other middleware aliases in the application
+- **No template modification required** - Developers append middleware via `appendToGroup()` in bootstrap/app.php
+- **Multiple middleware per operation** - Can add as many middleware as needed to each group
+- **Zero middleware overhead** - Operations without custom logic have no middleware (empty group)
+- **Flexible ordering** - Use `appendToGroup` or `prependToGroup` as needed
+- **Prefix avoids collisions** with other middleware groups in the application
 
-**Previous Approach**: `->middleware('operation-middleware-group:findPets')` - rejected as it used parameter instead of unique aliases
+**Previous Approaches**:
+- Middleware aliases - rejected because each alias can only map to one class
+- `->middleware('operation-middleware-group:findPets')` - rejected as it used parameter instead of groups
 
 ### 4. Abstract Controllers with Validation Methods
 **Decision**: Generate abstract controllers that application controllers extend
@@ -506,10 +524,22 @@ Generated controllers MUST follow PSR-4 naming:
 
 ### Middleware Pattern Agreement
 
-**Agreed Pattern**: Each route has unique middleware alias based on operationId with `api.operation.` prefix
+**Agreed Pattern**: Each route uses a middleware group based on operationId with `api.operation.` prefix. Groups are empty by default.
 ```php
-->middleware('api.operation.findPets')      // Correct
-->middleware('api.operation.addPet')        // Correct
+->middleware('api.operation.findPets')      // Correct - middleware group
+->middleware('api.operation.addPet')        // Correct - middleware group
+```
+
+**Usage**: Append custom middleware to groups in `bootstrap/app.php`
+```php
+$middleware->appendToGroup('api.operation.findPets', [
+    \App\Http\Middleware\CacheResponse::class,
+]);
+
+$middleware->appendToGroup('api.operation.addPet', [
+    \App\Http\Middleware\ValidateOwnership::class,
+    \App\Http\Middleware\LogCreation::class,
+]);
 ```
 
 **Rejected Pattern**: Single middleware with parameter
@@ -517,7 +547,11 @@ Generated controllers MUST follow PSR-4 naming:
 ->middleware('operation-middleware-group:findPets')  // WRONG - don't use this
 ```
 
-**Reasoning for Prefix**: The `api.operation.` prefix prevents collisions with other middleware aliases in the application (e.g., if you have a `findPets` middleware for web routes).
+**Key Benefits**:
+- **Groups default to empty** - No middleware overhead for operations that don't need it
+- **Multiple middleware per operation** - Not limited to one class per operation
+- **No template changes needed** - Add/remove middleware without regenerating
+- **Prefix prevents collisions** with other middleware groups (e.g., web route groups)
 
 ### Controller Naming Convention
 

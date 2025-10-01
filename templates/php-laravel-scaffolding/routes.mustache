@@ -7,8 +7,9 @@
  *
  * Controller name is defined in OpenAPI spec: info.title
  *
- * Each route has a unique middleware alias based on its operationId with 'api.operation.' prefix.
- * For example: 'api.operation.findPets', 'api.operation.addPet', 'api.operation.deletePet', etc.
+ * Routes will use middleware groups with 'api.middlewareGroup.' prefix if they are defined.
+ * For example: 'api.middlewareGroup.findPets', 'api.middlewareGroup.addPet', etc.
+ * Define these groups in bootstrap/app.php only when you need custom middleware for an operation.
  *
  * Usage in routes/api.php:
  * ```php
@@ -23,43 +24,29 @@
  *
  * MIDDLEWARE USAGE:
  *
- * Register operation-specific middleware in bootstrap/app.php:
+ * Routes will automatically use middleware groups named 'api.middlewareGroup.{operationId}'
+ * if they are defined in your application. Define middleware groups in bootstrap/app.php:
+ *
  * ```php
  * ->withMiddleware(function (Middleware $middleware): void {
- *     $middleware->alias([
- *         // Register middleware for each operation
- *         'api.operation.findPets' => \App\Http\Middleware\FindPetsMiddleware::class,
- *         'api.operation.addPet' => \App\Http\Middleware\AddPetMiddleware::class,
- *         'api.operation.deletePet' => \App\Http\Middleware\DeletePetMiddleware::class,
- *         'api.operation.findPetById' => \App\Http\Middleware\FindPetByIdMiddleware::class,
+ *     // Define middleware groups for specific operations
+ *     $middleware->group('api.middlewareGroup.findPets', [
+ *         \App\Http\Middleware\CacheResponse::class,
+ *     ]);
  *
- *         // Or use a single middleware that handles all operations
- *         'api.operation.findPets' => \App\Http\Middleware\OperationMiddleware::class,
- *         'api.operation.addPet' => \App\Http\Middleware\OperationMiddleware::class,
- *         'api.operation.deletePet' => \App\Http\Middleware\OperationMiddleware::class,
- *         'api.operation.findPetById' => \App\Http\Middleware\OperationMiddleware::class,
+ *     $middleware->group('api.middlewareGroup.addPet', [
+ *         \App\Http\Middleware\ValidateOwnership::class,
+ *         \App\Http\Middleware\LogCreation::class,
+ *     ]);
+ *
+ *     $middleware->group('api.middlewareGroup.deletePet', [
+ *         \App\Http\Middleware\RequireAdmin::class,
  *     ]);
  * })
  * ```
  *
- * Example OperationMiddleware that detects which operation is being called:
- * ```php
- * class OperationMiddleware {
- *     public function handle(Request $request, Closure $next): Response {
- *         $route = $request->route();
- *         $operationId = $route->getName(); // e.g., 'api.findPets'
- *
- *         // Apply operation-specific logic based on route name
- *         match ($operationId) {
- *             'api.findPets' => $this->handleFindPets($request),
- *             'api.addPet' => $this->handleAddPet($request),
- *             default => null,
- *         };
- *
- *         return $next($request);
- *     }
- * }
- * ```
+ * Routes will only have middleware attached if their corresponding group is defined.
+ * Operations without defined middleware groups will have no middleware applied.
  */
 
 // Use $router variable from Route::group closure (if available), otherwise fallback to Route facade
@@ -76,9 +63,13 @@ if (!isset($router)) {
  * {{#summary}}{{summary}}{{/summary}}
  * {{#notes}}{{notes}}{{/notes}}
  */
-$router->{{httpMethod}}('{{{basePathWithoutHost}}}{{{path}}}', '{{appName}}@{{operationId}}')
-    ->name('api.{{operationId}}')
-    ->middleware('api.operation.{{operationId}}');
+$route = $router->{{httpMethod}}('{{{basePathWithoutHost}}}{{{path}}}', '{{appName}}@{{operationId}}')
+    ->name('api.{{operationId}}');
+
+// Only attach middleware if the group is registered in the application
+if ($router->hasMiddlewareGroup('api.middlewareGroup.{{operationId}}')) {
+    $route->middleware('api.middlewareGroup.{{operationId}}');
+}
 
 {{/operation}}
 {{/operations}}
