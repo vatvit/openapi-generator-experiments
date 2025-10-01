@@ -27,16 +27,21 @@ Route::get('/health', function () {
     ]);
 });
 
-// Include generated API routes from scaffolding
-// Map API interface classes to Laravel controller implementations
-$controllerMapping = [
-    'DefaultApiInterface' => \App\Http\Controllers\Api\PetStoreController::class,
-];
-
-// Generated routes file path (mounted in Docker at /var/www/generated/scaffolding)
+// Include generated API routes from scaffolding with route group configuration
 $generatedRoutesPath = base_path('generated/scaffolding/routes.php');
 if (file_exists($generatedRoutesPath)) {
-    require $generatedRoutesPath;
+    // Bind the controller name (from OpenAPI spec) to concrete implementation in Service Container
+    // Controller name is defined in config: php-laravel-scaffolding-config.json -> appName
+    app()->bind('PetStoreApiController', \App\Http\Controllers\Api\PetStoreController::class);
+
+    // Wrap generated routes in a group for shared configuration
+    Route::group([
+        // 'prefix' => 'v2',           // Add prefix if needed (already in OpenAPI spec)
+        // 'middleware' => ['throttle:60,1'],  // Add rate limiting or other middleware
+        // 'as' => 'petstore.',        // Add route name prefix
+    ], function ($router) use ($generatedRoutesPath) {
+        require $generatedRoutesPath;
+    });
 } else {
     // Fallback: log warning but don't fail
     \Log::warning('Generated routes file not found at: ' . $generatedRoutesPath);

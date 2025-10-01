@@ -23,5 +23,6 @@
   "srcBasePath": "lib",
   "variableNamingConvention": "camelCase",
   "hideGenerationTimestamp": true,
-  "withGeneratorVersionComment": false
+  "withGeneratorVersionComment": false,
+  "appName": "PetStoreApiController"
 }

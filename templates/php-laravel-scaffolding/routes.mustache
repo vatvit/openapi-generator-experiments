@@ -3,23 +3,25 @@
  * GENERATED API ROUTES
  *
  * This file is generated from OpenAPI specification.
- * Include this file from your Laravel routes/api.php with a controller mapping.
+ * Include this file from your Laravel routes/api.php within a Route::group.
+ *
+ * Controller name is defined in OpenAPI spec: info.x-controller-name
  *
  * Usage in routes/api.php:
  * ```php
- * $controllerMapping = [
- *     'DefaultApiInterface' => \App\Http\Controllers\Api\PetStoreController::class,
- * ];
- * require base_path('generated/scaffolding/routes.php');
+ * // Bind controller name to concrete implementation in Service Container
+ * app()->bind('{{appName}}', \App\Http\Controllers\Api\YourController::class);
+ *
+ * Route::group(['prefix' => 'v2', 'middleware' => ['api']], function ($router) {
+ *     require base_path('generated/scaffolding/routes.php');
+ * });
  * ```
  */
 
-// Controller mapping should be provided by the including file
-if (!isset($controllerMapping)) {
-    throw new \RuntimeException('$controllerMapping must be defined before including generated routes.php');
+// Use $router variable from Route::group closure (if available), otherwise fallback to Route facade
+if (!isset($router)) {
+    $router = app('router');
 }
-
-use Illuminate\Support\Facades\Route;
 
 {{#apiInfo}}
 {{#apis}}
@@ -30,11 +32,7 @@ use Illuminate\Support\Facades\Route;
  * {{#summary}}{{summary}}{{/summary}}
  * {{#notes}}{{notes}}{{/notes}}
  */
-$controllerClass{{classname}} = $controllerMapping['{{classname}}'] ?? null;
-if (!$controllerClass{{classname}}) {
-    throw new \RuntimeException('Controller mapping not found for {{classname}}');
-}
-Route::{{httpMethod}}('{{{basePathWithoutHost}}}{{{path}}}', [$controllerClass{{classname}}, '{{operationId}}'])
+$router->{{httpMethod}}('{{{basePathWithoutHost}}}{{{path}}}', '{{appName}}@{{operationId}}')
     ->name('api.{{operationId}}');
 
 {{/operation}}
