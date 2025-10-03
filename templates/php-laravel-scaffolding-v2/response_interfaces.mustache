@@ -1,0 +1,29 @@
+{{>php_file_header}}
+
+namespace {{invokerPackage}}\Http\Responses;
+
+use Illuminate\Http\JsonResponse;
+
+/**
+ * Response interfaces for all API operations
+ *
+ * Each operation has its own response interface that all possible
+ * response types for that operation must implement
+ */
+
+{{#apiInfo}}
+{{#apis}}
+{{#operations}}
+{{#operation}}
+/**
+ * Response interface for {{operationId}} operation
+ */
+interface {{operationIdCamelCase}}ResponseInterface
+{
+    public function toJsonResponse(): JsonResponse;
+}
+
+{{/operation}}
+{{/operations}}
+{{/apis}}
+{{/apiInfo}}

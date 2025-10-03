@@ -1,0 +1,153 @@
+<?php declare(strict_types=1);
+
+namespace {{invokerPackage}}\Http\Controllers;
+
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+{{#operations}}
+{{#operation}}
+use {{apiPackage}}\{{operationIdCamelCase}}HandlerInterface;
+use {{apiPackage}}\{{operationIdCamelCase}}ResponseInterface;
+{{/operation}}
+{{/operations}}
+{{#operations}}
+{{#operation}}
+{{#bodyParams}}
+{{^isPrimitiveType}}
+use {{{dataType}}};
+{{/isPrimitiveType}}
+{{/bodyParams}}
+{{/operation}}
+{{/operations}}
+use Crell\Serde\SerdeCommon;
+
+{{#operations}}
+/**
+ * {{classname}} Controller
+ *
+ * Generated scaffolding from OpenAPI specification
+ * Uses dependency injection to call business logic handlers
+ * Handlers return response models that enforce API specification
+ */
+class {{controllerName}} extends Controller
+{
+{{#operation}}
+    /**
+     * {{summary}}
+     *
+{{#notes}}
+     * {{notes}}
+     *
+{{/notes}}
+{{#hasParams}}
+{{#hasQueryParams}}
+     * Query parameters validation (from OpenAPI spec):
+{{#queryParams}}
+     * - {{paramName}}: {{dataType}}{{#minimum}}, min: {{minimum}}{{/minimum}}{{#maximum}}, max: {{maximum}}{{/maximum}}
+{{/queryParams}}
+     *
+{{/hasQueryParams}}
+{{#hasBodyParam}}
+     * Request body validation (from OpenAPI spec):
+{{#bodyParams}}
+     * - {{paramName}}: {{#required}}required, {{/required}}{{dataType}}
+{{/bodyParams}}
+     *
+{{/hasBodyParam}}
+{{#hasPathParams}}
+     * Path parameters:
+{{#pathParams}}
+     * - {{paramName}}: {{dataType}}
+{{/pathParams}}
+     *
+{{/hasPathParams}}
+{{/hasParams}}
+     * @param {{operationIdCamelCase}}HandlerInterface $handler Injected business logic handler
+     * @param Request $request
+{{#hasPathParams}}
+{{#pathParams}}
+     * @param {{dataType}} ${{paramName}}
+{{/pathParams}}
+{{/hasPathParams}}
+     * @return JsonResponse
+     */
+    public function {{operationId}}(
+        {{operationIdCamelCase}}HandlerInterface $handler,
+        Request $request{{#hasPathParams}}{{#pathParams}},
+        {{dataType}} ${{paramName}}{{/pathParams}}{{/hasPathParams}}
+    ): JsonResponse
+    {
+        // Validate request using generated rules
+{{#hasParams}}
+        $validated = $request->validate($this->{{operationId}}ValidationRules({{#hasPathParams}}{{#pathParams}}{{^-first}}, {{/-first}}${{paramName}}{{/pathParams}}{{/hasPathParams}}));
+{{/hasParams}}
+
+        // Extract validated parameters
+{{#allParams}}
+{{#isQueryParam}}
+        ${{paramName}} = $request->query('{{paramName}}'{{#defaultValue}}, {{{defaultValue}}}{{/defaultValue}}{{^defaultValue}}, null{{/defaultValue}});
+{{#isInteger}}
+        // Cast to int if present
+        if (${{paramName}} !== null) {
+            ${{paramName}} = (int) ${{paramName}};
+        }
+{{/isInteger}}
+{{#isLong}}
+        // Cast to int if present
+        if (${{paramName}} !== null) {
+            ${{paramName}} = (int) ${{paramName}};
+        }
+{{/isLong}}
+{{/isQueryParam}}
+{{#isBodyParam}}
+{{#isPrimitiveType}}
+        // Extract primitive body parameter
+        ${{paramName}} = json_decode($request->getContent(), true);
+{{/isPrimitiveType}}
+{{^isPrimitiveType}}
+        // Deserialize request body to {{dataType}} model
+        $serde = new SerdeCommon();
+        ${{paramName}} = $serde->deserialize($request->getContent(), from: 'json', to: {{{dataType}}}::class);
+{{/isPrimitiveType}}
+{{/isBodyParam}}
+{{/allParams}}
+
+        // Call handler with validated parameters
+        $response = $handler->handle(
+{{#allParams}}
+            ${{paramName}}{{^-last}},{{/-last}}
+{{/allParams}}
+        );
+
+        // Convert response model to JSON (enforced by interface)
+        return $response->toJsonResponse();
+    }
+
+{{/operation}}
+
+{{#operation}}
+{{#hasParams}}
+    /**
+     * Get validation rules for {{operationId}} request
+     * Generated from OpenAPI specification
+     *
+     * @return array
+     */
+    protected function {{operationId}}ValidationRules({{#hasPathParams}}{{#pathParams}}{{^-first}}, {{/-first}}{{dataType}} ${{paramName}}{{/pathParams}}{{/hasPathParams}}): array
+    {
+        return [
+{{#allParams}}
+{{^isPathParam}}
+{{^isBodyParam}}
+            '{{paramName}}' => '{{#required}}required{{/required}}{{^required}}sometimes{{/required}}{{#isInteger}}|integer{{/isInteger}}{{#isLong}}|integer{{/isLong}}{{#isFloat}}|numeric{{/isFloat}}{{#isDouble}}|numeric{{/isDouble}}{{#isString}}|string{{/isString}}{{#isBoolean}}|boolean{{/isBoolean}}{{#isArray}}|array{{/isArray}}{{#minimum}}|min:{{minimum}}{{/minimum}}{{#maximum}}|max:{{maximum}}{{/maximum}}{{#minLength}}|min:{{minLength}}{{/minLength}}{{#maxLength}}|max:{{maxLength}}{{/maxLength}}{{#pattern}}|regex:{{pattern}}{{/pattern}}{{#hasValidation}}{{#_enum}}|in:{{#allowableValues}}{{#values}}{{.}}{{#hasMore}},{{/hasMore}}{{/values}}{{/allowableValues}}{{/_enum}}{{/hasValidation}}',
+{{/isBodyParam}}
+{{/isPathParam}}
+{{/allParams}}
+        ];
+    }
+
+{{/hasParams}}
+{{/operation}}
+}
+{{/operations}}

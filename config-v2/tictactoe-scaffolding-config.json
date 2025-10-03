@@ -1,0 +1,29 @@
+{
+  "invokerPackage": "TicTacToeApiV2\\Scaffolding",
+  "modelPackage": "Models",
+  "apiPackage": "Api",
+  "packageName": "tictactoe-api-scaffolding-v2",
+  "packageVersion": "1.0.0",
+  "packageUrl": "",
+  "packageDescription": "Generated TicTacToe API scaffolding (Solution 2 - Single Controller)",
+  "packageKeywords": ["tictactoe", "api", "scaffolding", "openapi"],
+  "packageCompany": "",
+  "packageCompanyUrl": "",
+  "packageAuthors": [
+    {
+      "name": "OpenAPI Generator",
+      "homepage": "https://openapi-generator.tech"
+    }
+  ],
+  "composerVendorName": "tictactoe-api-v2",
+  "composerPackageName": "scaffolding",
+  "gitUserId": "",
+  "gitRepoId": "",
+  "artifactVersion": "1.0.0",
+  "srcBasePath": "lib",
+  "variableNamingConvention": "camelCase",
+  "hideGenerationTimestamp": true,
+  "withGeneratorVersionComment": false,
+  "appName": "TicTacToeApiController",
+  "skipOperationExample": true
+}

@@ -1,4 +1,4 @@
-.PHONY: help generate-scaffolding generate-petstore generate-tictactoe extract-templates extract-laravel-templates validate-spec clean test-laravel test-complete start-laravel stop-laravel logs-laravel
+.PHONY: help generate-scaffolding generate-petstore generate-tictactoe generate-scaffolding-v2 generate-petshop-v2 generate-tictactoe-v2 extract-templates extract-laravel-templates validate-spec clean clean-v2 test-laravel test-complete test-complete-v2 start-laravel stop-laravel logs-laravel
 
 help: ## Show this help message
 	@echo "Laravel OpenAPI Generator - Development Commands"
@@ -28,8 +28,8 @@ generate-petstore: ## Generate PetStore API scaffolding
 	@echo "✅ PetStore API scaffolding generated!"
 	@echo "📁 Output: laravel-api/generated/petstore"
 
-generate-tictactoe: ## Generate TicTacToe API scaffolding
-	@echo "🏗️  Generating TicTacToe API scaffolding..."
+generate-tictactoe: ## Generate TicTacToe API scaffolding (Solution 1)
+	@echo "🏗️  Generating TicTacToe API scaffolding (Solution 1)..."
 	@rm -rf laravel-api/generated/tictactoe
 	@mkdir -p laravel-api/generated
 	@echo "📋 Using OpenAPI spec: specs/tictactoe.json"
@@ -41,6 +41,46 @@ generate-tictactoe: ## Generate TicTacToe API scaffolding
 		--template-dir /local/templates/php-laravel-scaffolding
 	@echo "✅ TicTacToe API scaffolding generated!"
 	@echo "📁 Output: laravel-api/generated/tictactoe"
+
+generate-petshop-v2: ## Generate PetStore API scaffolding (Solution 2 - Post-processing)
+	@echo "🏗️  Generating PetStore API scaffolding (Solution 2)..."
+	@rm -rf laravel-api/generated-v2/petstore
+	@mkdir -p laravel-api/generated-v2
+	@echo "📋 Using OpenAPI spec: specs/petshop-extended.yaml"
+	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli generate \
+		-i /local/specs/petshop-extended.yaml \
+		-g php-laravel \
+		-o /local/laravel-api/generated-v2/petstore \
+		-c /local/config-v2/petshop-scaffolding-config.json \
+		--template-dir /local/templates/php-laravel-scaffolding-v2
+	@echo "✅ PetStore API scaffolding generated!"
+	@echo "📋 Post-processing: Merging tag-based controllers (if any)..."
+	@docker run --rm -v $$(pwd):/app -w /app php:8.3-cli php scripts/merge-controllers-simple.php \
+		laravel-api/generated-v2/petstore/lib/Http/Controllers \
+		laravel-api/generated-v2/petstore/lib/Http/Controllers/DefaultController.php || echo "ℹ️  No duplicate controllers to merge"
+	@echo "✅ PetStore scaffolding completed!"
+	@echo "📁 Output: laravel-api/generated-v2/petstore"
+
+generate-tictactoe-v2: ## Generate TicTacToe API scaffolding (Solution 2 - Merged Controller via Post-processing)
+	@echo "🏗️  Generating TicTacToe API scaffolding (Solution 2 - Merged Controller)..."
+	@rm -rf laravel-api/generated-v2/tictactoe
+	@mkdir -p laravel-api/generated-v2
+	@echo "📋 Using OpenAPI spec: specs/tictactoe.json"
+	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli generate \
+		-i /local/specs/tictactoe.json \
+		-g php-laravel \
+		-o /local/laravel-api/generated-v2/tictactoe \
+		-c /local/config-v2/tictactoe-scaffolding-config.json \
+		--template-dir /local/templates/php-laravel-scaffolding-v2
+	@echo "✅ TicTacToe API scaffolding generated!"
+	@echo "📋 Post-processing: Merging tag-based controllers into single DefaultController..."
+	@docker run --rm -v $$(pwd):/app -w /app php:8.3-cli php scripts/merge-controllers-simple.php \
+		laravel-api/generated-v2/tictactoe/lib/Http/Controllers \
+		laravel-api/generated-v2/tictactoe/lib/Http/Controllers/DefaultController.php
+	@echo "✅ TicTacToe scaffolding completed!"
+	@echo "📁 Output: laravel-api/generated-v2/tictactoe"
+
+generate-scaffolding-v2: generate-petshop-v2 generate-tictactoe-v2 ## Generate all API scaffolding (Solution 2 - with Post-processing)
 
 # Utilities
 extract-templates: ## Extract default PHP client templates for customization
@@ -64,10 +104,16 @@ validate-spec: ## Validate the OpenAPI specification
 		-i /local/specs/tictactoe.json
 	@echo "✅ TicTacToe specification is valid!"
 
-clean: ## Clean generated files
-	@echo "🧹 Cleaning generated files..."
+clean: ## Clean generated files (Solution 1)
+	@echo "🧹 Cleaning generated files (Solution 1)..."
 	@rm -rf laravel-api/generated/petstore
 	@rm -rf laravel-api/generated/tictactoe
+	@echo "✅ Generated files cleaned!"
+
+clean-v2: ## Clean generated files (Solution 2)
+	@echo "🧹 Cleaning generated files (Solution 2)..."
+	@rm -rf laravel-api/generated-v2/petstore
+	@rm -rf laravel-api/generated-v2/tictactoe
 	@echo "✅ Generated files cleaned!"
 
 # Testing targets
@@ -109,6 +155,66 @@ test-complete: ## Complete test: generate scaffolding, start Laravel, and test e
 	@$(MAKE) test-laravel
 	@echo ""
 	@echo "🎉 Complete test finished!"
+
+test-complete-v2: ## Complete test for Solution 2 (Post-processing with both specs)
+	@echo "🎯 Running Complete Solution 2 Test (Post-processing)"
+	@echo "====================================================="
+	@echo ""
+	@echo "📋 Step 1: Validating OpenAPI specifications..."
+	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli validate \
+		-i /local/specs/petshop-extended.yaml
+	@echo "✅ PetStore specification is valid!"
+	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli validate \
+		-i /local/specs/tictactoe.json
+	@echo "✅ TicTacToe specification is valid!"
+	@echo ""
+	@echo "📋 Step 2: Generating scaffolding for both specs (Solution 2)..."
+	@$(MAKE) generate-scaffolding-v2
+	@echo ""
+	@echo "📋 Step 3: Checking generated scaffolding..."
+	@if [ -d "laravel-api/generated-v2/petstore" ]; then \
+		echo "✅ PetStore V2 scaffolding generated successfully"; \
+		find laravel-api/generated-v2/petstore -name "*.php" -type f | wc -l | xargs echo "   📄 PetStore files:"; \
+	else \
+		echo "❌ PetStore scaffolding generation failed"; \
+		exit 1; \
+	fi
+	@if [ -d "laravel-api/generated-v2/tictactoe" ]; then \
+		echo "✅ TicTacToe V2 scaffolding generated successfully"; \
+		find laravel-api/generated-v2/tictactoe -name "*.php" -type f | wc -l | xargs echo "   📄 TicTacToe files:"; \
+		if [ -f "laravel-api/generated-v2/tictactoe/lib/Http/Controllers/DefaultController.php" ]; then \
+			echo "✅ DefaultController merged successfully (TicTacToe)"; \
+			grep -c "public function" laravel-api/generated-v2/tictactoe/lib/Http/Controllers/DefaultController.php | xargs echo "   📝 Methods:"; \
+		else \
+			echo "❌ DefaultController not found"; \
+			exit 1; \
+		fi; \
+	else \
+		echo "❌ TicTacToe scaffolding generation failed"; \
+		exit 1; \
+	fi
+	@echo ""
+	@echo "📋 Step 4: Ensuring Laravel is running..."
+	@if ! docker ps | grep -q laravel-api; then \
+		echo "🚀 Starting Laravel containers..."; \
+		cd laravel-api && docker-compose up -d; \
+		echo "⏳ Waiting for Laravel to be ready..."; \
+		sleep 5; \
+	else \
+		echo "✅ Laravel containers already running"; \
+	fi
+	@echo ""
+	@echo "📋 Step 5: Running composer dumpautoload..."
+	@cd laravel-api && docker-compose exec -T app composer dumpautoload || echo "⚠️  Autoload update skipped"
+	@echo ""
+	@echo "📋 Step 6: Testing API endpoints..."
+	@$(MAKE) test-laravel
+	@echo ""
+	@echo "🎉 Solution 2 test completed for both PetStore and TicTacToe!"
+	@echo ""
+	@echo "📊 Comparison:"
+	@echo "   Solution 1 (spec modification): Separate controllers per tag"
+	@echo "   Solution 2 (post-processing): Single DefaultController with merged unique methods"
 
 test-laravel: ## Test Laravel application endpoints
 	@echo "🧪 Testing Laravel application..."
