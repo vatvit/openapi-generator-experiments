@@ -19,32 +19,43 @@
 
 
 /**
- * Status
+ * Pagination
  */
 namespace TicTacToeApiV2\Scaffolding\Models;
 
 /**
- * Status
- * @description Current game status including board state and winner
+ * Pagination
  */
 use Crell\Serde\Renaming\Cases;
 use Crell\Serde\Attributes as Serde;
 
 #[Serde\ClassSettings(renameWith: Cases::snake_case)]
-class Status
+class Pagination
 {
     /**
     *
-    * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Winner $winner
+    * Current page number
+    * @param int $page
     *
-    * 3x3 game board represented as nested arrays
-    * @param \TicTacToeApiV2\Scaffolding\Models\Mark[][] $board
+    * Items per page
+    * @param int $limit
+    *
+    * Total number of items
+    * @param int $total
+    *
+    * Whether there is a next page
+    * @param bool $hasNext
+    *
+    * Whether there is a previous page
+    * @param bool $hasPrevious
     */
 
     public function __construct(
-        public \TicTacToeApiV2\Scaffolding\Models\Winner $winner,
-        public array $board,
+        public int $page,
+        public int $limit,
+        public int $total,
+        public bool $hasNext,
+        public bool $hasPrevious,
     ) {}
 }
 

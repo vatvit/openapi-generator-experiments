@@ -6,12 +6,28 @@ use Crell\Serde\SerdeCommon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use TicTacToeApiV2\Scaffolding\Api\CreateGameHandlerInterface;
+use TicTacToeApiV2\Scaffolding\Api\CreateGameResponseInterface;
+use TicTacToeApiV2\Scaffolding\Api\DeleteGameHandlerInterface;
+use TicTacToeApiV2\Scaffolding\Api\DeleteGameResponseInterface;
 use TicTacToeApiV2\Scaffolding\Api\GetBoardHandlerInterface;
 use TicTacToeApiV2\Scaffolding\Api\GetBoardResponseInterface;
+use TicTacToeApiV2\Scaffolding\Api\GetGameHandlerInterface;
+use TicTacToeApiV2\Scaffolding\Api\GetGameResponseInterface;
+use TicTacToeApiV2\Scaffolding\Api\GetLeaderboardHandlerInterface;
+use TicTacToeApiV2\Scaffolding\Api\GetLeaderboardResponseInterface;
+use TicTacToeApiV2\Scaffolding\Api\GetMovesHandlerInterface;
+use TicTacToeApiV2\Scaffolding\Api\GetMovesResponseInterface;
+use TicTacToeApiV2\Scaffolding\Api\GetPlayerStatsHandlerInterface;
+use TicTacToeApiV2\Scaffolding\Api\GetPlayerStatsResponseInterface;
 use TicTacToeApiV2\Scaffolding\Api\GetSquareHandlerInterface;
 use TicTacToeApiV2\Scaffolding\Api\GetSquareResponseInterface;
+use TicTacToeApiV2\Scaffolding\Api\ListGamesHandlerInterface;
+use TicTacToeApiV2\Scaffolding\Api\ListGamesResponseInterface;
 use TicTacToeApiV2\Scaffolding\Api\PutSquareHandlerInterface;
 use TicTacToeApiV2\Scaffolding\Api\PutSquareResponseInterface;
+use \TicTacToeApiV2\Scaffolding\Models\CreateGameRequest;
+use \TicTacToeApiV2\Scaffolding\Models\MoveRequest;
 
 /**
  * DefaultController - Merged Controller
@@ -22,25 +38,266 @@ use TicTacToeApiV2\Scaffolding\Api\PutSquareResponseInterface;
 class DefaultController extends Controller
 {
     /**
-     * Get the whole board
+     * Create a new game
      *
-     * Retrieves the current state of the board and the winner.
+     * Creates a new TicTacToe game with specified configuration.
      *
-     * @param GetBoardHandlerInterface $handler Injected business logic handler
+     * Request body validation (from OpenAPI spec):
+     * - createGameRequest: required, \TicTacToeApiV2\Scaffolding\Models\CreateGameRequest
+     *
+     * @param CreateGameHandlerInterface $handler Injected business logic handler
      * @param Request $request
      * @return JsonResponse
      */
-    public function getBoard(
-        GetBoardHandlerInterface $handler,
+    public function createGame(
+        CreateGameHandlerInterface $handler,
         Request $request
     ): JsonResponse
     {
         // Validate request using generated rules
+        $validated = $request->validate($this->createGameValidationRules());
+
+        // Extract validated parameters
+        // Deserialize request body to \TicTacToeApiV2\Scaffolding\Models\CreateGameRequest model
+        $serde = new SerdeCommon();
+        $createGameRequest = $serde->deserialize($request->getContent(), from: 'json', to: \TicTacToeApiV2\Scaffolding\Models\CreateGameRequest::class);
+
+        // Call handler with validated parameters
+        $response = $handler->handle(
+            $createGameRequest
+        );
+
+        // Convert response model to JSON (enforced by interface)
+        return $response->toJsonResponse();
+    }
+
+    /**
+     * Delete a game
+     *
+     * Deletes a game. Only allowed for game creators or admins.
+     *
+     * Path parameters:
+     * - gameId: string
+     *
+     * @param DeleteGameHandlerInterface $handler Injected business logic handler
+     * @param Request $request
+     * @param string $gameId
+     * @return JsonResponse
+     */
+    public function deleteGame(
+        DeleteGameHandlerInterface $handler,
+        Request $request,
+        string $gameId
+    ): JsonResponse
+    {
+        // Validate request using generated rules
+        $validated = $request->validate($this->deleteGameValidationRules($gameId));
 
         // Extract validated parameters
 
         // Call handler with validated parameters
         $response = $handler->handle(
+            $gameId
+        );
+
+        // Convert response model to JSON (enforced by interface)
+        return $response->toJsonResponse();
+    }
+
+    /**
+     * Get game details
+     *
+     * Retrieves detailed information about a specific game.
+     *
+     * Path parameters:
+     * - gameId: string
+     *
+     * @param GetGameHandlerInterface $handler Injected business logic handler
+     * @param Request $request
+     * @param string $gameId
+     * @return JsonResponse
+     */
+    public function getGame(
+        GetGameHandlerInterface $handler,
+        Request $request,
+        string $gameId
+    ): JsonResponse
+    {
+        // Validate request using generated rules
+        $validated = $request->validate($this->getGameValidationRules($gameId));
+
+        // Extract validated parameters
+
+        // Call handler with validated parameters
+        $response = $handler->handle(
+            $gameId
+        );
+
+        // Convert response model to JSON (enforced by interface)
+        return $response->toJsonResponse();
+    }
+
+    /**
+     * List all games
+     *
+     * Retrieves a paginated list of games with optional filtering.
+     *
+     * Query parameters validation (from OpenAPI spec):
+     * - page: int, min: 1
+     * - limit: int, min: 1, max: 100
+     * - status: \TicTacToeApiV2\Scaffolding\Models\GameStatus
+     * - playerId: string
+     *
+     * @param ListGamesHandlerInterface $handler Injected business logic handler
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function listGames(
+        ListGamesHandlerInterface $handler,
+        Request $request
+    ): JsonResponse
+    {
+        // Validate request using generated rules
+        $validated = $request->validate($this->listGamesValidationRules());
+
+        // Extract validated parameters
+        $page = $request->query('page', 1);
+        // Cast to int if present
+        if ($page !== null) {
+            $page = (int) $page;
+        }
+        $limit = $request->query('limit', 20);
+        // Cast to int if present
+        if ($limit !== null) {
+            $limit = (int) $limit;
+        }
+        $status = $request->query('status', null);
+        $playerId = $request->query('playerId', null);
+
+        // Call handler with validated parameters
+        $response = $handler->handle(
+            $page,
+            $limit,
+            $status,
+            $playerId
+        );
+
+        // Convert response model to JSON (enforced by interface)
+        return $response->toJsonResponse();
+    }
+
+    /**
+     * Get validation rules for createGame request
+     * Generated from OpenAPI specification
+     *
+     * @return array
+     */
+    protected function createGameValidationRules(): array
+    {
+        return [
+        ];
+    }
+
+    /**
+     * Get validation rules for deleteGame request
+     * Generated from OpenAPI specification
+     *
+     * @return array
+     */
+    protected function deleteGameValidationRules(string $gameId): array
+    {
+        return [
+        ];
+    }
+
+    /**
+     * Get validation rules for getGame request
+     * Generated from OpenAPI specification
+     *
+     * @return array
+     */
+    protected function getGameValidationRules(string $gameId): array
+    {
+        return [
+        ];
+    }
+
+    /**
+     * Get validation rules for listGames request
+     * Generated from OpenAPI specification
+     *
+     * @return array
+     */
+    protected function listGamesValidationRules(): array
+    {
+        return [
+            'page' => 'sometimes|integer|min:1',
+            'limit' => 'sometimes|integer|min:1|max:100',
+            'status' => 'sometimes',
+            'playerId' => 'sometimes|string',
+        ];
+    }
+
+    /**
+     * Get the game board
+     *
+     * Retrieves the current state of the board and the winner.
+     *
+     * Path parameters:
+     * - gameId: string
+     *
+     * @param GetBoardHandlerInterface $handler Injected business logic handler
+     * @param Request $request
+     * @param string $gameId
+     * @return JsonResponse
+     */
+    public function getBoard(
+        GetBoardHandlerInterface $handler,
+        Request $request,
+        string $gameId
+    ): JsonResponse
+    {
+        // Validate request using generated rules
+        $validated = $request->validate($this->getBoardValidationRules($gameId));
+
+        // Extract validated parameters
+
+        // Call handler with validated parameters
+        $response = $handler->handle(
+            $gameId
+        );
+
+        // Convert response model to JSON (enforced by interface)
+        return $response->toJsonResponse();
+    }
+
+    /**
+     * Get move history
+     *
+     * Retrieves the complete move history for a game.
+     *
+     * Path parameters:
+     * - gameId: string
+     *
+     * @param GetMovesHandlerInterface $handler Injected business logic handler
+     * @param Request $request
+     * @param string $gameId
+     * @return JsonResponse
+     */
+    public function getMoves(
+        GetMovesHandlerInterface $handler,
+        Request $request,
+        string $gameId
+    ): JsonResponse
+    {
+        // Validate request using generated rules
+        $validated = $request->validate($this->getMovesValidationRules($gameId));
+
+        // Extract validated parameters
+
+        // Call handler with validated parameters
+        $response = $handler->handle(
+            $gameId
         );
 
         // Convert response model to JSON (enforced by interface)
@@ -53,11 +310,13 @@ class DefaultController extends Controller
      * Retrieves the requested square.
      *
      * Path parameters:
+     * - gameId: string
      * - row: int
      * - column: int
      *
      * @param GetSquareHandlerInterface $handler Injected business logic handler
      * @param Request $request
+     * @param string $gameId
      * @param int $row
      * @param int $column
      * @return JsonResponse
@@ -65,17 +324,19 @@ class DefaultController extends Controller
     public function getSquare(
         GetSquareHandlerInterface $handler,
         Request $request,
+        string $gameId,
         int $row,
         int $column
     ): JsonResponse
     {
         // Validate request using generated rules
-        $validated = $request->validate($this->getSquareValidationRules($row, $column));
+        $validated = $request->validate($this->getSquareValidationRules($gameId, $row, $column));
 
         // Extract validated parameters
 
         // Call handler with validated parameters
         $response = $handler->handle(
+            $gameId,
             $row,
             $column
         );
@@ -90,14 +351,16 @@ class DefaultController extends Controller
      * Places a mark on the board and retrieves the whole board and the winner (if any).
      *
      * Request body validation (from OpenAPI spec):
-     * - body: required, string
+     * - moveRequest: required, \TicTacToeApiV2\Scaffolding\Models\MoveRequest
      *
      * Path parameters:
+     * - gameId: string
      * - row: int
      * - column: int
      *
      * @param PutSquareHandlerInterface $handler Injected business logic handler
      * @param Request $request
+     * @param string $gameId
      * @param int $row
      * @param int $column
      * @return JsonResponse
@@ -105,26 +368,53 @@ class DefaultController extends Controller
     public function putSquare(
         PutSquareHandlerInterface $handler,
         Request $request,
+        string $gameId,
         int $row,
         int $column
     ): JsonResponse
     {
         // Validate request using generated rules
-        $validated = $request->validate($this->putSquareValidationRules($row, $column));
+        $validated = $request->validate($this->putSquareValidationRules($gameId, $row, $column));
 
         // Extract validated parameters
-        // Extract primitive body parameter
-        $body = json_decode($request->getContent(), true);
+        // Deserialize request body to \TicTacToeApiV2\Scaffolding\Models\MoveRequest model
+        $serde = new SerdeCommon();
+        $moveRequest = $serde->deserialize($request->getContent(), from: 'json', to: \TicTacToeApiV2\Scaffolding\Models\MoveRequest::class);
 
         // Call handler with validated parameters
         $response = $handler->handle(
+            $gameId,
             $row,
             $column,
-            $body
+            $moveRequest
         );
 
         // Convert response model to JSON (enforced by interface)
         return $response->toJsonResponse();
+    }
+
+    /**
+     * Get validation rules for getBoard request
+     * Generated from OpenAPI specification
+     *
+     * @return array
+     */
+    protected function getBoardValidationRules(string $gameId): array
+    {
+        return [
+        ];
+    }
+
+    /**
+     * Get validation rules for getMoves request
+     * Generated from OpenAPI specification
+     *
+     * @return array
+     */
+    protected function getMovesValidationRules(string $gameId): array
+    {
+        return [
+        ];
     }
 
     /**
@@ -133,7 +423,7 @@ class DefaultController extends Controller
      *
      * @return array
      */
-    protected function getSquareValidationRules(int $row, int $column): array
+    protected function getSquareValidationRules(string $gameId, int $row, int $column): array
     {
         return [
         ];
@@ -145,7 +435,105 @@ class DefaultController extends Controller
      *
      * @return array
      */
-    protected function putSquareValidationRules(int $row, int $column): array
+    protected function putSquareValidationRules(string $gameId, int $row, int $column): array
+    {
+        return [
+        ];
+    }
+
+    /**
+     * Get leaderboard
+     *
+     * Retrieves the global leaderboard with top players.
+     *
+     * Query parameters validation (from OpenAPI spec):
+     * - timeframe: \TicTacToeApiV2\Scaffolding\Models\GetLeaderboardTimeframeParameter
+     * - limit: int, min: 1, max: 100
+     *
+     * @param GetLeaderboardHandlerInterface $handler Injected business logic handler
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getLeaderboard(
+        GetLeaderboardHandlerInterface $handler,
+        Request $request
+    ): JsonResponse
+    {
+        // Validate request using generated rules
+        $validated = $request->validate($this->getLeaderboardValidationRules());
+
+        // Extract validated parameters
+        $timeframe = $request->query('timeframe', null);
+        $limit = $request->query('limit', 10);
+        // Cast to int if present
+        if ($limit !== null) {
+            $limit = (int) $limit;
+        }
+
+        // Call handler with validated parameters
+        $response = $handler->handle(
+            $timeframe,
+            $limit
+        );
+
+        // Convert response model to JSON (enforced by interface)
+        return $response->toJsonResponse();
+    }
+
+    /**
+     * Get player statistics
+     *
+     * Retrieves comprehensive statistics for a player.
+     *
+     * Path parameters:
+     * - playerId: string
+     *
+     * @param GetPlayerStatsHandlerInterface $handler Injected business logic handler
+     * @param Request $request
+     * @param string $playerId
+     * @return JsonResponse
+     */
+    public function getPlayerStats(
+        GetPlayerStatsHandlerInterface $handler,
+        Request $request,
+        string $playerId
+    ): JsonResponse
+    {
+        // Validate request using generated rules
+        $validated = $request->validate($this->getPlayerStatsValidationRules($playerId));
+
+        // Extract validated parameters
+
+        // Call handler with validated parameters
+        $response = $handler->handle(
+            $playerId
+        );
+
+        // Convert response model to JSON (enforced by interface)
+        return $response->toJsonResponse();
+    }
+
+    /**
+     * Get validation rules for getLeaderboard request
+     * Generated from OpenAPI specification
+     *
+     * @return array
+     */
+    protected function getLeaderboardValidationRules(): array
+    {
+        return [
+            'timeframe' => 'sometimes',
+            'limit' => 'sometimes|integer|min:1|max:100',
+        ];
+    }
+
+    /**
+     * Get validation rules for getPlayerStats request
+     * Generated from OpenAPI specification
+     *
+     * @return array
+     */
+    protected function getPlayerStatsValidationRules(string $playerId): array
     {
         return [
         ];

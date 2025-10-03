@@ -19,32 +19,47 @@
 
 
 /**
- * Status
+ * Move
  */
 namespace TicTacToeApiV2\Scaffolding\Models;
 
 /**
- * Status
- * @description Current game status including board state and winner
+ * Move
  */
 use Crell\Serde\Renaming\Cases;
 use Crell\Serde\Attributes as Serde;
 
 #[Serde\ClassSettings(renameWith: Cases::snake_case)]
-class Status
+class Move
 {
     /**
     *
-    * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Winner $winner
+    * Sequential move number
+    * @param int $moveNumber
     *
-    * 3x3 game board represented as nested arrays
-    * @param \TicTacToeApiV2\Scaffolding\Models\Mark[][] $board
+    * Player who made the move
+    * @param string $playerId
+    *
+    * 
+    * @param \TicTacToeApiV2\Scaffolding\Models\MoveMark $mark
+    *
+    * Board coordinate (1-3)
+    * @param int $row
+    *
+    * Board coordinate (1-3)
+    * @param int $column
+    *
+    * When the move was made
+    * @param \DateTime $timestamp
     */
 
     public function __construct(
-        public \TicTacToeApiV2\Scaffolding\Models\Winner $winner,
-        public array $board,
+        public int $moveNumber,
+        public string $playerId,
+        public \TicTacToeApiV2\Scaffolding\Models\MoveMark $mark,
+        public int $row,
+        public int $column,
+        public \DateTime $timestamp,
     ) {}
 }
 

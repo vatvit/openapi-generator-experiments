@@ -19,32 +19,28 @@
 
 
 /**
- * Status
+ * NoContent422
  */
 namespace TicTacToeApiV2\Scaffolding\Models;
 
 /**
- * Status
- * @description Current game status including board state and winner
+ * NoContent422
+ * @description No content for 422
  */
 use Crell\Serde\Renaming\Cases;
 use Crell\Serde\Attributes as Serde;
 
 #[Serde\ClassSettings(renameWith: Cases::snake_case)]
-class Status
+class NoContent422
 {
     /**
     *
-    * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Winner $winner
-    *
-    * 3x3 game board represented as nested arrays
-    * @param \TicTacToeApiV2\Scaffolding\Models\Mark[][] $board
+    * dummy property for no-content responses
+    * @param null | string $dummy
     */
 
     public function __construct(
-        public \TicTacToeApiV2\Scaffolding\Models\Winner $winner,
-        public array $board,
+        public ?string $dummy = null,
     ) {}
 }
 

@@ -19,32 +19,18 @@
 
 
 /**
- * Status
+ * GameMode
  */
 namespace TicTacToeApiV2\Scaffolding\Models;
 
 /**
- * Status
- * @description Current game status including board state and winner
+ * GameMode
+ * @description Game mode - Player vs Player or AI difficulty
  */
-use Crell\Serde\Renaming\Cases;
-use Crell\Serde\Attributes as Serde;
-
-#[Serde\ClassSettings(renameWith: Cases::snake_case)]
-class Status
+enum GameMode: string
 {
-    /**
-    *
-    * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Winner $winner
-    *
-    * 3x3 game board represented as nested arrays
-    * @param \TicTacToeApiV2\Scaffolding\Models\Mark[][] $board
-    */
-
-    public function __construct(
-        public \TicTacToeApiV2\Scaffolding\Models\Winner $winner,
-        public array $board,
-    ) {}
+        case PVP = 'pvp';
+        case AI_EASY = 'ai_easy';
+        case AI_MEDIUM = 'ai_medium';
+        case AI_HARD = 'ai_hard';
 }
-

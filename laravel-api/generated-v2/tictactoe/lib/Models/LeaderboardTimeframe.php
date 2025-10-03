@@ -19,32 +19,17 @@
 
 
 /**
- * Status
+ * LeaderboardTimeframe
  */
 namespace TicTacToeApiV2\Scaffolding\Models;
 
 /**
- * Status
- * @description Current game status including board state and winner
+ * LeaderboardTimeframe
  */
-use Crell\Serde\Renaming\Cases;
-use Crell\Serde\Attributes as Serde;
-
-#[Serde\ClassSettings(renameWith: Cases::snake_case)]
-class Status
+enum LeaderboardTimeframe: string
 {
-    /**
-    *
-    * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Winner $winner
-    *
-    * 3x3 game board represented as nested arrays
-    * @param \TicTacToeApiV2\Scaffolding\Models\Mark[][] $board
-    */
-
-    public function __construct(
-        public \TicTacToeApiV2\Scaffolding\Models\Winner $winner,
-        public array $board,
-    ) {}
+        case DAILY = 'daily';
+        case WEEKLY = 'weekly';
+        case MONTHLY = 'monthly';
+        case ALL_TIME = 'all-time';
 }
-

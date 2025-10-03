@@ -19,32 +19,31 @@
 
 
 /**
- * Status
+ * GameListResponse
  */
 namespace TicTacToeApiV2\Scaffolding\Models;
 
 /**
- * Status
- * @description Current game status including board state and winner
+ * GameListResponse
  */
 use Crell\Serde\Renaming\Cases;
 use Crell\Serde\Attributes as Serde;
 
 #[Serde\ClassSettings(renameWith: Cases::snake_case)]
-class Status
+class GameListResponse
 {
     /**
     *
     * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Winner $winner
+    * @param \TicTacToeApiV2\Scaffolding\Models\Game[] $games
     *
-    * 3x3 game board represented as nested arrays
-    * @param \TicTacToeApiV2\Scaffolding\Models\Mark[][] $board
+    * 
+    * @param \TicTacToeApiV2\Scaffolding\Models\Pagination $pagination
     */
 
     public function __construct(
-        public \TicTacToeApiV2\Scaffolding\Models\Winner $winner,
-        public array $board,
+        public array $games,
+        public \TicTacToeApiV2\Scaffolding\Models\Pagination $pagination,
     ) {}
 }
 

@@ -29,10 +29,12 @@ interface TicTacApiInterface {
     /**
      * Operation getBoard
      *
-     * Get the whole board
+     * Get the game board
+     * @param string $gameId
      * @return GetBoardResponseInterface
      */
     public function getBoard(
+            string $gameId,
     ): GetBoardResponseInterface;
 
 }
@@ -78,6 +80,25 @@ class GetBoard200Response implements GetBoardResponseInterface
     }
 }
 
+/**
+ * HTTP 404 response for getBoard operation
+ * Not Found - Resource does not exist
+ */
+class GetBoard404Response implements GetBoardResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        return response()->json($serialized, 404);
+    }
+}
+
 
 // ============================================================================
 // Handler Interfaces - One per operation
@@ -94,9 +115,11 @@ interface GetBoardHandlerInterface
      *
      * Retrieves the current state of the board and the winner.
      *
+     * @param string $gameId Unique game identifier
      * @return GetBoardResponseInterface
      */
     public function handle(
+        string $gameId
     ): GetBoardResponseInterface;
 }
 

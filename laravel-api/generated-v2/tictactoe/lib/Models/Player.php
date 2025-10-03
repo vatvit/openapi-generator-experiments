@@ -19,32 +19,39 @@
 
 
 /**
- * Status
+ * Player
  */
 namespace TicTacToeApiV2\Scaffolding\Models;
 
 /**
- * Status
- * @description Current game status including board state and winner
+ * Player
  */
 use Crell\Serde\Renaming\Cases;
 use Crell\Serde\Attributes as Serde;
 
 #[Serde\ClassSettings(renameWith: Cases::snake_case)]
-class Status
+class Player
 {
     /**
     *
-    * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Winner $winner
+    * Unique player identifier
+    * @param string $id
     *
-    * 3x3 game board represented as nested arrays
-    * @param \TicTacToeApiV2\Scaffolding\Models\Mark[][] $board
+    * Player username
+    * @param string $username
+    *
+    * Player display name
+    * @param string $displayName
+    *
+    * URL to player avatar image
+    * @param string $avatarUrl
     */
 
     public function __construct(
-        public \TicTacToeApiV2\Scaffolding\Models\Winner $winner,
-        public array $board,
+        public string $id,
+        public string $username,
+        public string $displayName,
+        public string $avatarUrl,
     ) {}
 }
 

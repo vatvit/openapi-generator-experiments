@@ -5,20 +5,240 @@
     "description": "This API allows writing down marks on a Tic Tac Toe board\nand requesting the state of the board or of individual squares.\n",
     "version": "1.0.0"
   },
-  "tags": [
+  "servers": [
     {
-      "name": "TicTac Toe"
+      "url": "https://api.tictactoe.example.com/v1",
+      "description": "Production server"
     },
     {
-      "name": "Gameplay"
+      "url": "https://staging-api.tictactoe.example.com/v1",
+      "description": "Staging server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Tic Tac",
+      "description": "Operations for managing TicTacToe games"
+    },
+    {
+      "name": "Gameplay",
+      "description": "Core gameplay operations"
+    },
+    {
+      "name": "Game Management",
+      "description": "Create, list, and manage games"
+    },
+    {
+      "name": "Statistics",
+      "description": "Player statistics and leaderboards"
     }
   ],
   "paths": {
-    "/board": {
+    "/games": {
       "get": {
-        "summary": "Get the whole board",
+        "summary": "List all games",
+        "description": "Retrieves a paginated list of games with optional filtering.",
+        "tags": ["Game Management"],
+        "operationId": "list-games",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by game status",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/gameStatus"
+            }
+          },
+          {
+            "name": "playerId",
+            "in": "query",
+            "description": "Filter games by player ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gameListResponse"
+                }
+              }
+            },
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total number of games",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Number": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearerHttpAuthentication": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a new game",
+        "description": "Creates a new TicTacToe game with specified configuration.",
+        "tags": ["Game Management"],
+        "operationId": "create-game",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createGameRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Game created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/game"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "URL of the created game",
+                "schema": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          }
+        },
+        "security": [
+          {
+            "bearerHttpAuthentication": []
+          }
+        ]
+      }
+    },
+    "/games/{gameId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/gameIdParam"
+        }
+      ],
+      "get": {
+        "summary": "Get game details",
+        "description": "Retrieves detailed information about a specific game.",
+        "tags": ["Game Management", "Gameplay"],
+        "operationId": "get-game",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/game"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "security": [
+          {
+            "bearerHttpAuthentication": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete a game",
+        "description": "Deletes a game. Only allowed for game creators or admins.",
+        "tags": ["Game Management"],
+        "operationId": "delete-game",
+        "responses": {
+          "204": {
+            "description": "Game deleted successfully"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "security": [
+          {
+            "bearerHttpAuthentication": []
+          }
+        ]
+      }
+    },
+    "/games/{gameId}/board": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/gameIdParam"
+        }
+      ],
+      "get": {
+        "summary": "Get the game board",
         "description": "Retrieves the current state of the board and the winner.",
-        "tags": ["Tic Tac","Gameplay"],
+        "tags": ["Tic Tac", "Gameplay"],
         "operationId": "get-board",
         "responses": {
           "200": {
@@ -30,6 +250,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         },
         "security": [
@@ -42,8 +265,11 @@
         ]
       }
     },
-    "/board/{row}/{column}": {
+    "/games/{gameId}/board/{row}/{column}": {
       "parameters": [
+        {
+          "$ref": "#/components/parameters/gameIdParam"
+        },
         {
           "$ref": "#/components/parameters/rowParam"
         },
@@ -62,21 +288,16 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/mark"
+                  "$ref": "#/components/schemas/squareResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "The provided parameters are incorrect",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorMessage"
-                },
-                "example": "Illegal coordinates"
-              }
-            }
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         },
         "security": [
@@ -98,7 +319,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/mark"
+                "$ref": "#/components/schemas/moveRequest"
               }
             }
           }
@@ -115,22 +336,17 @@
             }
           },
           "400": {
-            "description": "The provided parameters are incorrect",
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "Conflict - Square already occupied or game finished",
             "content": {
-              "text/html": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/errorMessage"
-                },
-                "examples": {
-                  "illegalCoordinates": {
-                    "value": "Illegal coordinates."
-                  },
-                  "notEmpty": {
-                    "value": "Square is not empty."
-                  },
-                  "invalidMark": {
-                    "value": "Invalid Mark (X or O)."
-                  }
+                  "$ref": "#/components/schemas/error"
                 }
               }
             }
@@ -145,10 +361,138 @@
           }
         ]
       }
+    },
+    "/games/{gameId}/moves": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/gameIdParam"
+        }
+      ],
+      "get": {
+        "summary": "Get move history",
+        "description": "Retrieves the complete move history for a game.",
+        "tags": ["Gameplay"],
+        "operationId": "get-moves",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/moveHistory"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "security": [
+          {
+            "bearerHttpAuthentication": []
+          }
+        ]
+      }
+    },
+    "/players/{playerId}/stats": {
+      "parameters": [
+        {
+          "name": "playerId",
+          "in": "path",
+          "required": true,
+          "description": "Unique player identifier",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get player statistics",
+        "description": "Retrieves comprehensive statistics for a player.",
+        "tags": ["Statistics"],
+        "operationId": "get-player-stats",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/playerStats"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "security": [
+          {
+            "bearerHttpAuthentication": []
+          }
+        ]
+      }
+    },
+    "/leaderboard": {
+      "get": {
+        "summary": "Get leaderboard",
+        "description": "Retrieves the global leaderboard with top players.",
+        "tags": ["Statistics"],
+        "operationId": "get-leaderboard",
+        "parameters": [
+          {
+            "name": "timeframe",
+            "in": "query",
+            "description": "Timeframe for leaderboard statistics",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["daily", "weekly", "monthly", "all-time"],
+              "default": "all-time"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of top players to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/leaderboard"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "parameters": {
+      "gameIdParam": {
+        "name": "gameId",
+        "in": "path",
+        "required": true,
+        "description": "Unique game identifier",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
       "rowParam": {
         "description": "Board row (vertical coordinate)",
         "name": "row",
@@ -168,17 +512,65 @@
         }
       }
     },
-    "schemas": {
-      "errorMessage": {
-        "type": "string",
-        "maxLength": 256,
-        "description": "A text message describing an error"
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request - Invalid parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
       },
+      "Unauthorized": {
+        "description": "Unauthorized - Authentication required",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden - Insufficient permissions",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found - Resource does not exist",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "ValidationError": {
+        "description": "Validation Error - Request body validation failed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
       "coordinate": {
         "type": "integer",
         "minimum": 1,
         "maximum": 3,
-        "example": 1
+        "example": 1,
+        "description": "Board coordinate (1-3)"
       },
       "mark": {
         "type": "string",
@@ -197,7 +589,8 @@
           "items": {
             "$ref": "#/components/schemas/mark"
           }
-        }
+        },
+        "description": "3x3 game board represented as nested arrays"
       },
       "winner": {
         "type": "string",
@@ -207,6 +600,7 @@
       },
       "status": {
         "type": "object",
+        "required": ["winner", "board"],
         "properties": {
           "winner": {
             "$ref": "#/components/schemas/winner"
@@ -214,7 +608,399 @@
           "board": {
             "$ref": "#/components/schemas/board"
           }
+        },
+        "description": "Current game status including board state and winner"
+      },
+      "gameStatus": {
+        "type": "string",
+        "enum": ["pending", "in_progress", "completed", "abandoned"],
+        "description": "Current status of the game"
+      },
+      "gameMode": {
+        "type": "string",
+        "enum": ["pvp", "ai_easy", "ai_medium", "ai_hard"],
+        "description": "Game mode - Player vs Player or AI difficulty"
+      },
+      "player": {
+        "type": "object",
+        "required": ["id", "username"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique player identifier"
+          },
+          "username": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 50,
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "description": "Player username"
+          },
+          "displayName": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Player display name"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to player avatar image"
+          }
         }
+      },
+      "game": {
+        "type": "object",
+        "required": ["id", "status", "mode", "createdAt", "board"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique game identifier"
+          },
+          "status": {
+            "$ref": "#/components/schemas/gameStatus"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/gameMode"
+          },
+          "playerX": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/player"
+              }
+            ],
+            "description": "Player assigned to X marks"
+          },
+          "playerO": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/player"
+              }
+            ],
+            "description": "Player assigned to O marks"
+          },
+          "currentTurn": {
+            "$ref": "#/components/schemas/mark"
+          },
+          "winner": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/winner"
+              }
+            ],
+            "nullable": true
+          },
+          "board": {
+            "$ref": "#/components/schemas/board"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Game creation timestamp"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Game completion timestamp"
+          }
+        }
+      },
+      "createGameRequest": {
+        "type": "object",
+        "required": ["mode"],
+        "properties": {
+          "mode": {
+            "$ref": "#/components/schemas/gameMode"
+          },
+          "opponentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Opponent player ID (required for PvP mode)"
+          },
+          "isPrivate": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the game is private"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Additional game metadata"
+          }
+        }
+      },
+      "gameListResponse": {
+        "type": "object",
+        "required": ["games", "pagination"],
+        "properties": {
+          "games": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/game"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/pagination"
+          }
+        }
+      },
+      "pagination": {
+        "type": "object",
+        "required": ["page", "limit", "total"],
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Current page number"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Items per page"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total number of items"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "Whether there is a next page"
+          },
+          "hasPrevious": {
+            "type": "boolean",
+            "description": "Whether there is a previous page"
+          }
+        }
+      },
+      "moveRequest": {
+        "type": "object",
+        "required": ["mark"],
+        "properties": {
+          "mark": {
+            "type": "string",
+            "enum": ["X", "O"],
+            "description": "Mark to place on the board"
+          }
+        }
+      },
+      "squareResponse": {
+        "type": "object",
+        "required": ["row", "column", "mark"],
+        "properties": {
+          "row": {
+            "$ref": "#/components/schemas/coordinate"
+          },
+          "column": {
+            "$ref": "#/components/schemas/coordinate"
+          },
+          "mark": {
+            "$ref": "#/components/schemas/mark"
+          }
+        }
+      },
+      "move": {
+        "type": "object",
+        "required": ["moveNumber", "playerId", "mark", "row", "column", "timestamp"],
+        "properties": {
+          "moveNumber": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Sequential move number"
+          },
+          "playerId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Player who made the move"
+          },
+          "mark": {
+            "type": "string",
+            "enum": ["X", "O"]
+          },
+          "row": {
+            "$ref": "#/components/schemas/coordinate"
+          },
+          "column": {
+            "$ref": "#/components/schemas/coordinate"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the move was made"
+          }
+        }
+      },
+      "moveHistory": {
+        "type": "object",
+        "required": ["gameId", "moves"],
+        "properties": {
+          "gameId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "moves": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/move"
+            }
+          }
+        }
+      },
+      "playerStats": {
+        "type": "object",
+        "required": ["playerId", "gamesPlayed", "wins", "losses", "draws"],
+        "properties": {
+          "playerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "player": {
+            "$ref": "#/components/schemas/player"
+          },
+          "gamesPlayed": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total games played"
+          },
+          "wins": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total wins"
+          },
+          "losses": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total losses"
+          },
+          "draws": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total draws"
+          },
+          "winRate": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Win rate (0.0 to 1.0)"
+          },
+          "currentStreak": {
+            "type": "integer",
+            "description": "Current win/loss streak (positive for wins, negative for losses)"
+          },
+          "longestWinStreak": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Longest win streak"
+          }
+        }
+      },
+      "leaderboardEntry": {
+        "type": "object",
+        "required": ["rank", "player", "score", "wins"],
+        "properties": {
+          "rank": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Leaderboard rank"
+          },
+          "player": {
+            "$ref": "#/components/schemas/player"
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total score"
+          },
+          "wins": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "gamesPlayed": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "leaderboard": {
+        "type": "object",
+        "required": ["timeframe", "entries", "generatedAt"],
+        "properties": {
+          "timeframe": {
+            "type": "string",
+            "enum": ["daily", "weekly", "monthly", "all-time"]
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/leaderboardEntry"
+            }
+          },
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this leaderboard was generated"
+          }
+        }
+      },
+      "error": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Additional error details"
+          }
+        }
+      },
+      "validationError": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/error"
+          },
+          {
+            "type": "object",
+            "required": ["errors"],
+            "properties": {
+              "errors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["field", "message"],
+                  "properties": {
+                    "field": {
+                      "type": "string",
+                      "description": "Field that failed validation"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Validation error message"
+                    },
+                    "value": {
+                      "description": "The invalid value provided"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
       }
     },
     "securitySchemes": {
@@ -262,4 +1048,3 @@
     }
   }
 }
-

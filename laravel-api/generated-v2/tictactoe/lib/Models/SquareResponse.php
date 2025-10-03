@@ -19,32 +19,35 @@
 
 
 /**
- * Status
+ * SquareResponse
  */
 namespace TicTacToeApiV2\Scaffolding\Models;
 
 /**
- * Status
- * @description Current game status including board state and winner
+ * SquareResponse
  */
 use Crell\Serde\Renaming\Cases;
 use Crell\Serde\Attributes as Serde;
 
 #[Serde\ClassSettings(renameWith: Cases::snake_case)]
-class Status
+class SquareResponse
 {
     /**
     *
-    * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Winner $winner
+    * Board coordinate (1-3)
+    * @param int $row
     *
-    * 3x3 game board represented as nested arrays
-    * @param \TicTacToeApiV2\Scaffolding\Models\Mark[][] $board
+    * Board coordinate (1-3)
+    * @param int $column
+    *
+    * 
+    * @param \TicTacToeApiV2\Scaffolding\Models\Mark $mark
     */
 
     public function __construct(
-        public \TicTacToeApiV2\Scaffolding\Models\Winner $winner,
-        public array $board,
+        public int $row,
+        public int $column,
+        public \TicTacToeApiV2\Scaffolding\Models\Mark $mark,
     ) {}
 }
 

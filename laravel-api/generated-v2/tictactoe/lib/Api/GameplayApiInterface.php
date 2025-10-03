@@ -29,22 +29,50 @@ interface GameplayApiInterface {
     /**
      * Operation getBoard
      *
-     * Get the whole board
+     * Get the game board
+     * @param string $gameId
      * @return GetBoardResponseInterface
      */
     public function getBoard(
+            string $gameId,
     ): GetBoardResponseInterface;
+
+
+    /**
+     * Operation getGame
+     *
+     * Get game details
+     * @param string $gameId
+     * @return GetGameResponseInterface
+     */
+    public function getGame(
+            string $gameId,
+    ): GetGameResponseInterface;
+
+
+    /**
+     * Operation getMoves
+     *
+     * Get move history
+     * @param string $gameId
+     * @return GetMovesResponseInterface
+     */
+    public function getMoves(
+            string $gameId,
+    ): GetMovesResponseInterface;
 
 
     /**
      * Operation getSquare
      *
      * Get a single board square
+     * @param string $gameId
      * @param int $row
      * @param int $column
      * @return GetSquareResponseInterface
      */
     public function getSquare(
+            string $gameId,
             int $row,
             int $column,
     ): GetSquareResponseInterface;
@@ -54,15 +82,17 @@ interface GameplayApiInterface {
      * Operation putSquare
      *
      * Set a single board square
+     * @param string $gameId
      * @param int $row
      * @param int $column
-     * @param string $body
+     * @param \TicTacToeApiV2\Scaffolding\Models\MoveRequest $moveRequest
      * @return PutSquareResponseInterface
      */
     public function putSquare(
+            string $gameId,
             int $row,
             int $column,
-            string $body,
+            \TicTacToeApiV2\Scaffolding\Models\MoveRequest $moveRequest,
     ): PutSquareResponseInterface;
 
 }
@@ -76,6 +106,32 @@ interface GameplayApiInterface {
  * All possible responses for this operation must implement this interface
  */
 interface GetBoardResponseInterface
+{
+    /**
+     * Convert this response to a JSON response
+     * @return JsonResponse
+     */
+    public function toJsonResponse(): JsonResponse;
+}
+
+/**
+ * Response interface for getGame operation
+ * All possible responses for this operation must implement this interface
+ */
+interface GetGameResponseInterface
+{
+    /**
+     * Convert this response to a JSON response
+     * @return JsonResponse
+     */
+    public function toJsonResponse(): JsonResponse;
+}
+
+/**
+ * Response interface for getMoves operation
+ * All possible responses for this operation must implement this interface
+ */
+interface GetMovesResponseInterface
 {
     /**
      * Convert this response to a JSON response
@@ -135,13 +191,108 @@ class GetBoard200Response implements GetBoardResponseInterface
 }
 
 /**
+ * HTTP 404 response for getBoard operation
+ * Not Found - Resource does not exist
+ */
+class GetBoard404Response implements GetBoardResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        return response()->json($serialized, 404);
+    }
+}
+
+/**
+ * HTTP 200 response for getGame operation
+ * Successful response
+ */
+class GetGame200Response implements GetGameResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Scaffolding\Models\Game $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        return response()->json($serialized, 200);
+    }
+}
+
+/**
+ * HTTP 404 response for getGame operation
+ * Not Found - Resource does not exist
+ */
+class GetGame404Response implements GetGameResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        return response()->json($serialized, 404);
+    }
+}
+
+/**
+ * HTTP 200 response for getMoves operation
+ * Successful response
+ */
+class GetMoves200Response implements GetMovesResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Scaffolding\Models\MoveHistory $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        return response()->json($serialized, 200);
+    }
+}
+
+/**
+ * HTTP 404 response for getMoves operation
+ * Not Found - Resource does not exist
+ */
+class GetMoves404Response implements GetMovesResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        return response()->json($serialized, 404);
+    }
+}
+
+/**
  * HTTP 200 response for getSquare operation
  * OK
  */
 class GetSquare200Response implements GetSquareResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Mark $data
+        private readonly \TicTacToeApiV2\Scaffolding\Models\SquareResponse $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -155,12 +306,12 @@ class GetSquare200Response implements GetSquareResponseInterface
 
 /**
  * HTTP 400 response for getSquare operation
- * The provided parameters are incorrect
+ * Bad Request - Invalid parameters
  */
 class GetSquare400Response implements GetSquareResponseInterface
 {
     public function __construct(
-        private readonly string $data
+        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -169,6 +320,25 @@ class GetSquare400Response implements GetSquareResponseInterface
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
         return response()->json($serialized, 400);
+    }
+}
+
+/**
+ * HTTP 404 response for getSquare operation
+ * Not Found - Resource does not exist
+ */
+class GetSquare404Response implements GetSquareResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        return response()->json($serialized, 404);
     }
 }
 
@@ -193,12 +363,12 @@ class PutSquare200Response implements PutSquareResponseInterface
 
 /**
  * HTTP 400 response for putSquare operation
- * The provided parameters are incorrect
+ * Bad Request - Invalid parameters
  */
 class PutSquare400Response implements PutSquareResponseInterface
 {
     public function __construct(
-        private readonly string $data
+        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -207,6 +377,44 @@ class PutSquare400Response implements PutSquareResponseInterface
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
         return response()->json($serialized, 400);
+    }
+}
+
+/**
+ * HTTP 404 response for putSquare operation
+ * Not Found - Resource does not exist
+ */
+class PutSquare404Response implements PutSquareResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        return response()->json($serialized, 404);
+    }
+}
+
+/**
+ * HTTP 409 response for putSquare operation
+ * Conflict - Square already occupied or game finished
+ */
+class PutSquare409Response implements PutSquareResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        return response()->json($serialized, 409);
     }
 }
 
@@ -226,10 +434,50 @@ interface GetBoardHandlerInterface
      *
      * Retrieves the current state of the board and the winner.
      *
+     * @param string $gameId Unique game identifier
      * @return GetBoardResponseInterface
      */
     public function handle(
+        string $gameId
     ): GetBoardResponseInterface;
+}
+
+/**
+ * Handler interface for getGame operation
+ * Implement this interface in your application to provide business logic
+ */
+interface GetGameHandlerInterface
+{
+    /**
+     * Handle getGame operation
+     *
+     * Retrieves detailed information about a specific game.
+     *
+     * @param string $gameId Unique game identifier
+     * @return GetGameResponseInterface
+     */
+    public function handle(
+        string $gameId
+    ): GetGameResponseInterface;
+}
+
+/**
+ * Handler interface for getMoves operation
+ * Implement this interface in your application to provide business logic
+ */
+interface GetMovesHandlerInterface
+{
+    /**
+     * Handle getMoves operation
+     *
+     * Retrieves the complete move history for a game.
+     *
+     * @param string $gameId Unique game identifier
+     * @return GetMovesResponseInterface
+     */
+    public function handle(
+        string $gameId
+    ): GetMovesResponseInterface;
 }
 
 /**
@@ -243,11 +491,13 @@ interface GetSquareHandlerInterface
      *
      * Retrieves the requested square.
      *
+     * @param string $gameId Unique game identifier
      * @param int $row Board row (vertical coordinate)
      * @param int $column Board column (horizontal coordinate)
      * @return GetSquareResponseInterface
      */
     public function handle(
+        string $gameId,
         int $row,
         int $column
     ): GetSquareResponseInterface;
@@ -264,15 +514,17 @@ interface PutSquareHandlerInterface
      *
      * Places a mark on the board and retrieves the whole board and the winner (if any).
      *
+     * @param string $gameId Unique game identifier
      * @param int $row Board row (vertical coordinate)
      * @param int $column Board column (horizontal coordinate)
-     * @param string $body 
+     * @param \TicTacToeApiV2\Scaffolding\Models\MoveRequest $moveRequest 
      * @return PutSquareResponseInterface
      */
     public function handle(
+        string $gameId,
         int $row,
         int $column,
-        string $body
+        \TicTacToeApiV2\Scaffolding\Models\MoveRequest $moveRequest
     ): PutSquareResponseInterface;
 }
 

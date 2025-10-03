@@ -19,32 +19,35 @@
 
 
 /**
- * Status
+ * ValidationErrorAllOfErrors
  */
 namespace TicTacToeApiV2\Scaffolding\Models;
 
 /**
- * Status
- * @description Current game status including board state and winner
+ * ValidationErrorAllOfErrors
  */
 use Crell\Serde\Renaming\Cases;
 use Crell\Serde\Attributes as Serde;
 
 #[Serde\ClassSettings(renameWith: Cases::snake_case)]
-class Status
+class ValidationErrorAllOfErrors
 {
     /**
     *
-    * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Winner $winner
+    * Field that failed validation
+    * @param string $field
     *
-    * 3x3 game board represented as nested arrays
-    * @param \TicTacToeApiV2\Scaffolding\Models\Mark[][] $board
+    * Validation error message
+    * @param string $message
+    *
+    * 
+    * @param null | mixed $value
     */
 
     public function __construct(
-        public \TicTacToeApiV2\Scaffolding\Models\Winner $winner,
-        public array $board,
+        public string $field,
+        public string $message,
+        public ?mixed $value = null,
     ) {}
 }
 

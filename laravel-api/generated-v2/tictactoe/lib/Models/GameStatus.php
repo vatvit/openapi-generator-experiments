@@ -19,32 +19,18 @@
 
 
 /**
- * Status
+ * GameStatus
  */
 namespace TicTacToeApiV2\Scaffolding\Models;
 
 /**
- * Status
- * @description Current game status including board state and winner
+ * GameStatus
+ * @description Current status of the game
  */
-use Crell\Serde\Renaming\Cases;
-use Crell\Serde\Attributes as Serde;
-
-#[Serde\ClassSettings(renameWith: Cases::snake_case)]
-class Status
+enum GameStatus: string
 {
-    /**
-    *
-    * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Winner $winner
-    *
-    * 3x3 game board represented as nested arrays
-    * @param \TicTacToeApiV2\Scaffolding\Models\Mark[][] $board
-    */
-
-    public function __construct(
-        public \TicTacToeApiV2\Scaffolding\Models\Winner $winner,
-        public array $board,
-    ) {}
+        case PENDING = 'pending';
+        case IN_PROGRESS = 'in_progress';
+        case COMPLETED = 'completed';
+        case ABANDONED = 'abandoned';
 }
-

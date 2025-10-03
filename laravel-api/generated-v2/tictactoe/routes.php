@@ -71,11 +71,63 @@
 // This file expects $router to be available from the including context
 
 /**
- * GET /board
- * Get the whole board
+ * POST /games
+ * Create a new game
+ * Creates a new TicTacToe game with specified configuration.
+ */
+$route = $router->POST('/v1/games', 'Tic Tac Toe@createGame')
+    ->name('api.createGame');
+
+// Only attach middleware if the group is registered in the application
+if ($router->hasMiddlewareGroup('api.middlewareGroup.createGame')) {
+    $route->middleware('api.middlewareGroup.createGame');
+}
+
+/**
+ * DELETE /games/{gameId}
+ * Delete a game
+ * Deletes a game. Only allowed for game creators or admins.
+ */
+$route = $router->DELETE('/v1/games/{gameId}', 'Tic Tac Toe@deleteGame')
+    ->name('api.deleteGame');
+
+// Only attach middleware if the group is registered in the application
+if ($router->hasMiddlewareGroup('api.middlewareGroup.deleteGame')) {
+    $route->middleware('api.middlewareGroup.deleteGame');
+}
+
+/**
+ * GET /games/{gameId}
+ * Get game details
+ * Retrieves detailed information about a specific game.
+ */
+$route = $router->GET('/v1/games/{gameId}', 'Tic Tac Toe@getGame')
+    ->name('api.getGame');
+
+// Only attach middleware if the group is registered in the application
+if ($router->hasMiddlewareGroup('api.middlewareGroup.getGame')) {
+    $route->middleware('api.middlewareGroup.getGame');
+}
+
+/**
+ * GET /games
+ * List all games
+ * Retrieves a paginated list of games with optional filtering.
+ */
+$route = $router->GET('/v1/games', 'Tic Tac Toe@listGames')
+    ->name('api.listGames');
+
+// Only attach middleware if the group is registered in the application
+if ($router->hasMiddlewareGroup('api.middlewareGroup.listGames')) {
+    $route->middleware('api.middlewareGroup.listGames');
+}
+
+/**
+ * GET /games/{gameId}/board
+ * Get the game board
  * Retrieves the current state of the board and the winner.
  */
-$route = $router->GET('/board', 'Tic Tac Toe@getBoard')
+$route = $router->GET('/v1/games/{gameId}/board', 'Tic Tac Toe@getBoard')
     ->name('api.getBoard');
 
 // Only attach middleware if the group is registered in the application
@@ -84,11 +136,37 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getBoard')) {
 }
 
 /**
- * GET /board/{row}/{column}
+ * GET /games/{gameId}
+ * Get game details
+ * Retrieves detailed information about a specific game.
+ */
+$route = $router->GET('/v1/games/{gameId}', 'Tic Tac Toe@getGame')
+    ->name('api.getGame');
+
+// Only attach middleware if the group is registered in the application
+if ($router->hasMiddlewareGroup('api.middlewareGroup.getGame')) {
+    $route->middleware('api.middlewareGroup.getGame');
+}
+
+/**
+ * GET /games/{gameId}/moves
+ * Get move history
+ * Retrieves the complete move history for a game.
+ */
+$route = $router->GET('/v1/games/{gameId}/moves', 'Tic Tac Toe@getMoves')
+    ->name('api.getMoves');
+
+// Only attach middleware if the group is registered in the application
+if ($router->hasMiddlewareGroup('api.middlewareGroup.getMoves')) {
+    $route->middleware('api.middlewareGroup.getMoves');
+}
+
+/**
+ * GET /games/{gameId}/board/{row}/{column}
  * Get a single board square
  * Retrieves the requested square.
  */
-$route = $router->GET('/board/{row}/{column}', 'Tic Tac Toe@getSquare')
+$route = $router->GET('/v1/games/{gameId}/board/{row}/{column}', 'Tic Tac Toe@getSquare')
     ->name('api.getSquare');
 
 // Only attach middleware if the group is registered in the application
@@ -97,11 +175,11 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getSquare')) {
 }
 
 /**
- * PUT /board/{row}/{column}
+ * PUT /games/{gameId}/board/{row}/{column}
  * Set a single board square
  * Places a mark on the board and retrieves the whole board and the winner (if any).
  */
-$route = $router->PUT('/board/{row}/{column}', 'Tic Tac Toe@putSquare')
+$route = $router->PUT('/v1/games/{gameId}/board/{row}/{column}', 'Tic Tac Toe@putSquare')
     ->name('api.putSquare');
 
 // Only attach middleware if the group is registered in the application
@@ -110,11 +188,37 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.putSquare')) {
 }
 
 /**
- * GET /board
- * Get the whole board
+ * GET /leaderboard
+ * Get leaderboard
+ * Retrieves the global leaderboard with top players.
+ */
+$route = $router->GET('/v1/leaderboard', 'Tic Tac Toe@getLeaderboard')
+    ->name('api.getLeaderboard');
+
+// Only attach middleware if the group is registered in the application
+if ($router->hasMiddlewareGroup('api.middlewareGroup.getLeaderboard')) {
+    $route->middleware('api.middlewareGroup.getLeaderboard');
+}
+
+/**
+ * GET /players/{playerId}/stats
+ * Get player statistics
+ * Retrieves comprehensive statistics for a player.
+ */
+$route = $router->GET('/v1/players/{playerId}/stats', 'Tic Tac Toe@getPlayerStats')
+    ->name('api.getPlayerStats');
+
+// Only attach middleware if the group is registered in the application
+if ($router->hasMiddlewareGroup('api.middlewareGroup.getPlayerStats')) {
+    $route->middleware('api.middlewareGroup.getPlayerStats');
+}
+
+/**
+ * GET /games/{gameId}/board
+ * Get the game board
  * Retrieves the current state of the board and the winner.
  */
-$route = $router->GET('/board', 'Tic Tac Toe@getBoard')
+$route = $router->GET('/v1/games/{gameId}/board', 'Tic Tac Toe@getBoard')
     ->name('api.getBoard');
 
 // Only attach middleware if the group is registered in the application

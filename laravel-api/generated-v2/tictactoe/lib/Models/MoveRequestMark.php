@@ -19,32 +19,16 @@
 
 
 /**
- * Status
+ * MoveRequestMark
  */
 namespace TicTacToeApiV2\Scaffolding\Models;
 
 /**
- * Status
- * @description Current game status including board state and winner
+ * MoveRequestMark
+ * @description Mark to place on the board
  */
-use Crell\Serde\Renaming\Cases;
-use Crell\Serde\Attributes as Serde;
-
-#[Serde\ClassSettings(renameWith: Cases::snake_case)]
-class Status
+enum MoveRequestMark: string
 {
-    /**
-    *
-    * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Winner $winner
-    *
-    * 3x3 game board represented as nested arrays
-    * @param \TicTacToeApiV2\Scaffolding\Models\Mark[][] $board
-    */
-
-    public function __construct(
-        public \TicTacToeApiV2\Scaffolding\Models\Winner $winner,
-        public array $board,
-    ) {}
+        case X = 'X';
+        case O = 'O';
 }
-
