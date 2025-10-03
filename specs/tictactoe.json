@@ -5,17 +5,11 @@
     "description": "This API allows writing down marks on a Tic Tac Toe board\nand requesting the state of the board or of individual squares.\n",
     "version": "1.0.0"
   },
-  "tags": [
-    {
-      "name": "Gameplay"
-    }
-  ],
   "paths": {
     "/board": {
       "get": {
         "summary": "Get the whole board",
         "description": "Retrieves the current state of the board and the winner.",
-        "tags": ["Gameplay"],
         "operationId": "get-board",
         "responses": {
           "200": {
@@ -51,7 +45,6 @@
       "get": {
         "summary": "Get a single board square",
         "description": "Retrieves the requested square.",
-        "tags": ["Gameplay"],
         "operationId": "get-square",
         "responses": {
           "200": {
@@ -88,7 +81,6 @@
       "put": {
         "summary": "Set a single board square",
         "description": "Places a mark on the board and retrieves the whole board and the winner (if any).",
-        "tags": ["Gameplay"],
         "operationId": "put-square",
         "requestBody": {
           "required": true,

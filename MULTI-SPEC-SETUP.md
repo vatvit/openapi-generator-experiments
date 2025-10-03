@@ -183,10 +183,11 @@ laravel-api/app/Handlers/
 5. **Route prefixes** - Each API can have its own URL prefix
    - PetStore: `/v2/pets` (prefix in spec paths)
    - TicTacToe: `/tictactoe/*` (prefix in Route::group)
-6. **Tags are optional** - Operations can have tags or not
-   - **Without tags**: Generates single `DefaultController` in `DefaultController.php`
-   - **With tags**: Generates separate controller per tag (e.g., `PetsController`, `UsersController`)
-   - Both approaches work - choose based on your needs
+6. **Avoid using tags** - Keep specs without tags for simpler setup
+   - **Recommended**: No tags - generates single `DefaultController` and `DefaultApiInterface`
+   - **Not recommended**: With tags - generates separate controllers per tag (e.g., `GameplayController`, `PetsController`)
+   - Tags complicate multi-spec setup as each tag creates separate files to manage
+   - Current implementation uses `DefaultController` for all specs
 
 ## Result
 

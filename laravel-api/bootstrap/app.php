@@ -16,7 +16,7 @@ use PetStoreApi\Scaffolding\Http\Controllers\DefaultController as PetStoreContro
 use TicTacToeApi\Scaffolding\Api\GetBoardHandlerInterface;
 use TicTacToeApi\Scaffolding\Api\GetSquareHandlerInterface;
 use TicTacToeApi\Scaffolding\Api\PutSquareHandlerInterface;
-use TicTacToeApi\Scaffolding\Http\Controllers\GameplayController as TicTacToeController;
+use TicTacToeApi\Scaffolding\Http\Controllers\DefaultController as TicTacToeController;
 
 // PetStore Handler implementations
 use App\Handlers\FindPetsHandler;
@@ -66,8 +66,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
             // === TicTacToe API Setup ===
             // Load generated interfaces/classes
-            require_once base_path('generated/tictactoe/lib/Api/GameplayApiInterface.php');
-            require_once base_path('generated/tictactoe/lib/Http/Controllers/GameplayController.php');
+            require_once base_path('generated/tictactoe/lib/Api/DefaultApiInterface.php');
+            require_once base_path('generated/tictactoe/lib/Http/Controllers/DefaultController.php');
 
             // Load generated model classes
             require_once base_path('generated/tictactoe/lib/Models/Mark.php');
