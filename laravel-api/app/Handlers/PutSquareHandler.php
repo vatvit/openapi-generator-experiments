@@ -6,6 +6,7 @@ use TicTacToeApi\Scaffolding\Api\PutSquareHandlerInterface;
 use TicTacToeApi\Scaffolding\Api\PutSquareResponseInterface;
 use TicTacToeApi\Scaffolding\Api\PutSquare200Response;
 use TicTacToeApi\Scaffolding\Models\Status;
+use TicTacToeApi\Scaffolding\Models\Winner;
 
 /**
  * Handler for putSquare operation
@@ -26,7 +27,7 @@ class PutSquareHandler implements PutSquareHandlerInterface
         $board[$row - 1][$column - 1] = $body;
 
         $status = new Status(
-            winner: '.',
+            winner: Winner::PERIOD,
             board: $board
         );
 

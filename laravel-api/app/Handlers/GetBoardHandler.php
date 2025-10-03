@@ -6,6 +6,7 @@ use TicTacToeApi\Scaffolding\Api\GetBoardHandlerInterface;
 use TicTacToeApi\Scaffolding\Api\GetBoardResponseInterface;
 use TicTacToeApi\Scaffolding\Api\GetBoard200Response;
 use TicTacToeApi\Scaffolding\Models\Status;
+use TicTacToeApi\Scaffolding\Models\Winner;
 
 /**
  * Handler for getBoard operation
@@ -23,7 +24,7 @@ class GetBoardHandler implements GetBoardHandlerInterface
         ];
 
         $status = new Status(
-            winner: '.',
+            winner: Winner::PERIOD,
             board: $board
         );
 

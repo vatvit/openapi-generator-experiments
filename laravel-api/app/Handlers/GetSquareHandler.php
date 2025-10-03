@@ -5,6 +5,7 @@ namespace App\Handlers;
 use TicTacToeApi\Scaffolding\Api\GetSquareHandlerInterface;
 use TicTacToeApi\Scaffolding\Api\GetSquareResponseInterface;
 use TicTacToeApi\Scaffolding\Api\GetSquare200Response;
+use TicTacToeApi\Scaffolding\Models\Mark;
 
 /**
  * Handler for getSquare operation
@@ -15,7 +16,7 @@ class GetSquareHandler implements GetSquareHandlerInterface
     public function handle(int $row, int $column): GetSquareResponseInterface
     {
         // Business logic implementation - return empty square
-        $mark = '.';
+        $mark = Mark::PERIOD;
 
         return new GetSquare200Response($mark);
     }

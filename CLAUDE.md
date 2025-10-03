@@ -575,3 +575,31 @@ After modifying templates:
 4. Verify endpoint works: `curl http://localhost:8000/api/v2/pets`
 - ask me before making a decision to create a new script
 - do not modify specs without my approval. it is source of truth
+- we cannot restrict users to use parameters (like `tags`) - keep them in spec, but implementation can ignore them
+- do not commit or push if i didn't asked
+
+## Multiple Tags Behavior
+
+**OpenAPI Generator's tag handling:**
+- The generator groups operations by **each tag** they have
+- Operations with multiple tags (e.g., `tags: ["Tic Tac", "Gameplay"]`) will be **duplicated** in multiple controllers
+- One controller file is created per tag, containing all operations with that tag
+
+**Example with TicTacToe spec:**
+```yaml
+"/board":
+  get:
+    tags: ["Tic Tac", "Gameplay"]  # Operation appears in BOTH controllers
+    operationId: "get-board"
+```
+
+**Generated files:**
+- `TicTacController.php` - contains `getBoard` operation
+- `GameplayController.php` - contains `getBoard` operation (duplicate)
+
+**This is documented OpenAPI Generator behavior:**
+- Issue #2844: https://github.com/OpenAPITools/openapi-generator/issues/2844
+- Issue #11843: https://github.com/OpenAPITools/openapi-generator/issues/11843
+
+**Recommendation:** Use **one tag per operation** for server-side code generation. Multiple tags are useful for documentation grouping but cause duplication in generated code.
+- do not create post/pre-processing scripts. all logic should be created by generator based on templates. tell me if you cannot implement something because of some fundamental restrictions

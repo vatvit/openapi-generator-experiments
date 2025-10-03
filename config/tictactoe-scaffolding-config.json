@@ -24,5 +24,6 @@
   "variableNamingConvention": "camelCase",
   "hideGenerationTimestamp": true,
   "withGeneratorVersionComment": false,
-  "appName": "TicTacToeApiController"
+  "appName": "TicTacToeApiController",
+  "skipOperationExample": true
 }

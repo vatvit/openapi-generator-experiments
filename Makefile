@@ -115,7 +115,7 @@ test-laravel: ## Test Laravel application endpoints
 	@if docker ps | grep -q laravel-api; then \
 		echo "✅ Laravel containers running"; \
 		echo ""; \
-		echo "Testing endpoints:"; \
+		echo "Testing PetStore endpoints:"; \
 		echo "  GET /api/health"; \
 		curl -s http://localhost:8000/api/health | jq . || echo "❌ Health check failed"; \
 		echo ""; \
@@ -124,6 +124,16 @@ test-laravel: ## Test Laravel application endpoints
 		echo ""; \
 		echo "  GET /v2/pets?limit=3"; \
 		curl -s 'http://localhost:8000/v2/pets?limit=3' | jq . || echo "⚠️  Pets endpoint with params (may be empty)"; \
+		echo ""; \
+		echo "Testing TicTacToe endpoints:"; \
+		echo "  GET /tictactoe/board"; \
+		curl -s http://localhost:8000/tictactoe/board | jq . || echo "⚠️  Board endpoint failed"; \
+		echo ""; \
+		echo "  GET /tictactoe/board/1/1"; \
+		curl -s http://localhost:8000/tictactoe/board/1/1 | jq . || echo "⚠️  Square endpoint failed"; \
+		echo ""; \
+		echo "  PUT /tictactoe/board/1/1 (mark: X)"; \
+		curl -s -X PUT http://localhost:8000/tictactoe/board/1/1 -H "Content-Type: application/json" -d '"X"' | jq . || echo "⚠️  Put square endpoint failed"; \
 	else \
 		echo "❌ Laravel containers not running"; \
 		echo "   Start with: cd laravel-api && docker-compose up -d"; \

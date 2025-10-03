@@ -12,11 +12,12 @@ use PetStoreApi\Scaffolding\Api\AddPetHandlerInterface;
 use PetStoreApi\Scaffolding\Api\DeletePetHandlerInterface;
 use PetStoreApi\Scaffolding\Http\Controllers\DefaultController as PetStoreController;
 
-// TicTacToe API imports
+// TicTacToe API imports (multiple tags generate multiple controllers)
 use TicTacToeApi\Scaffolding\Api\GetBoardHandlerInterface;
 use TicTacToeApi\Scaffolding\Api\GetSquareHandlerInterface;
 use TicTacToeApi\Scaffolding\Api\PutSquareHandlerInterface;
-use TicTacToeApi\Scaffolding\Http\Controllers\DefaultController as TicTacToeController;
+use TicTacToeApi\Scaffolding\Http\Controllers\TicTacController as TicTacToeControllerA;
+use TicTacToeApi\Scaffolding\Http\Controllers\GameplayController as TicTacToeControllerB;
 
 // PetStore Handler implementations
 use App\Handlers\FindPetsHandler;
@@ -65,9 +66,12 @@ return Application::configure(basePath: dirname(__DIR__))
             });
 
             // === TicTacToe API Setup ===
-            // Load generated interfaces/classes
-            require_once base_path('generated/tictactoe/lib/Api/DefaultApiInterface.php');
-            require_once base_path('generated/tictactoe/lib/Http/Controllers/DefaultController.php');
+            // Load generated interfaces/classes (one per tag)
+            // Note: Operations with multiple tags will be duplicated across controllers
+            // Load only ONE ApiInterface file to avoid duplicate response interface definitions
+            require_once base_path('generated/tictactoe/lib/Api/GameplayApiInterface.php');
+            require_once base_path('generated/tictactoe/lib/Http/Controllers/TicTacController.php');
+            require_once base_path('generated/tictactoe/lib/Http/Controllers/GameplayController.php');
 
             // Load generated model classes
             require_once base_path('generated/tictactoe/lib/Models/Mark.php');
@@ -81,8 +85,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
             // Bind controller name from OpenAPI spec to generated controller
             // Routes use info.title from spec as controller name
+            // Using GameplayController as it contains all operations (TicTacController only has getBoard)
             if (!class_exists('Tic Tac Toe')) {
-                class_alias(TicTacToeController::class, 'Tic Tac Toe');
+                class_alias(TicTacToeControllerB::class, 'Tic Tac Toe');
             }
 
             // Register generated API routes with prefix
