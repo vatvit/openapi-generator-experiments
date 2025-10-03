@@ -1,4 +1,4 @@
-.PHONY: help generate-scaffolding extract-templates extract-laravel-templates validate-spec clean test-laravel test-complete
+.PHONY: help generate-scaffolding generate-petstore generate-tictactoe extract-templates extract-laravel-templates validate-spec clean test-laravel test-complete start-laravel stop-laravel logs-laravel
 
 help: ## Show this help message
 	@echo "Laravel OpenAPI Generator - Development Commands"
@@ -11,20 +11,36 @@ help: ## Show this help message
 	@echo "   2. cd laravel-api && docker-compose up -d  # Start Laravel application"
 	@echo "   3. make test-laravel          # Test the Laravel API endpoints"
 
-# Main scaffolding generator
-generate-scaffolding: ## Generate Laravel scaffolding (models, controllers) from petshop-extended.yaml
-	@echo "🏗️  Generating Laravel API scaffolding..."
-	@rm -rf laravel-api/generated/scaffolding
+# Main scaffolding generators
+generate-scaffolding: generate-petstore generate-tictactoe ## Generate all API scaffolding libraries
+
+generate-petstore: ## Generate PetStore API scaffolding
+	@echo "🏗️  Generating PetStore API scaffolding..."
+	@rm -rf laravel-api/generated/petstore
 	@mkdir -p laravel-api/generated
-	@echo "📋 Using OpenAPI spec: petshop-extended.yaml"
+	@echo "📋 Using OpenAPI spec: specs/petshop-extended.yaml"
 	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli generate \
-		-i /local/petshop-extended.yaml \
+		-i /local/specs/petshop-extended.yaml \
 		-g php-laravel \
-		-o /local/laravel-api/generated/scaffolding \
-		-c /local/config/php-laravel-scaffolding-config.json \
+		-o /local/laravel-api/generated/petstore \
+		-c /local/config/petstore-scaffolding-config.json \
 		--template-dir /local/templates/php-laravel-scaffolding
-	@echo "✅ Laravel API scaffolding generated!"
-	@echo "📁 Output: laravel-api/generated/scaffolding"
+	@echo "✅ PetStore API scaffolding generated!"
+	@echo "📁 Output: laravel-api/generated/petstore"
+
+generate-tictactoe: ## Generate TicTacToe API scaffolding
+	@echo "🏗️  Generating TicTacToe API scaffolding..."
+	@rm -rf laravel-api/generated/tictactoe
+	@mkdir -p laravel-api/generated
+	@echo "📋 Using OpenAPI spec: specs/tictactoe.json"
+	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli generate \
+		-i /local/specs/tictactoe.json \
+		-g php-laravel \
+		-o /local/laravel-api/generated/tictactoe \
+		-c /local/config/tictactoe-scaffolding-config.json \
+		--template-dir /local/templates/php-laravel-scaffolding
+	@echo "✅ TicTacToe API scaffolding generated!"
+	@echo "📁 Output: laravel-api/generated/tictactoe"
 
 # Utilities
 extract-templates: ## Extract default PHP client templates for customization
@@ -38,14 +54,20 @@ extract-laravel-templates: ## Extract default php-laravel templates for customiz
 	@echo "✅ Laravel templates extracted to: templates/php-laravel-default/"
 
 validate-spec: ## Validate the OpenAPI specification
-	@echo "📋 Validating OpenAPI specification..."
+	@echo "📋 Validating PetStore OpenAPI specification..."
 	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli validate \
-		-i /local/petshop-extended.yaml
-	@echo "✅ Specification is valid!"
+		-i /local/specs/petshop-extended.yaml
+	@echo "✅ PetStore specification is valid!"
+	@echo ""
+	@echo "📋 Validating TicTacToe OpenAPI specification..."
+	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli validate \
+		-i /local/specs/tictactoe.json
+	@echo "✅ TicTacToe specification is valid!"
 
 clean: ## Clean generated files
 	@echo "🧹 Cleaning generated files..."
-	@rm -rf laravel-api/generated/scaffolding
+	@rm -rf laravel-api/generated/petstore
+	@rm -rf laravel-api/generated/tictactoe
 	@echo "✅ Generated files cleaned!"
 
 # Testing targets
@@ -60,9 +82,11 @@ test-complete: ## Complete test: generate scaffolding, start Laravel, and test e
 	@$(MAKE) generate-scaffolding
 	@echo ""
 	@echo "📋 Step 3: Checking generated scaffolding..."
-	@if [ -d "laravel-api/generated/scaffolding" ]; then \
-		echo "✅ Scaffolding generated successfully"; \
-		find laravel-api/generated/scaffolding -name "*.php" -type f | wc -l | xargs echo "   📄 Generated files:"; \
+	@if [ -d "laravel-api/generated/petstore" ] && [ -d "laravel-api/generated/tictactoe" ]; then \
+		echo "✅ PetStore scaffolding generated successfully"; \
+		find laravel-api/generated/petstore -name "*.php" -type f | wc -l | xargs echo "   📄 PetStore files:"; \
+		echo "✅ TicTacToe scaffolding generated successfully"; \
+		find laravel-api/generated/tictactoe -name "*.php" -type f | wc -l | xargs echo "   📄 TicTacToe files:"; \
 	else \
 		echo "❌ Scaffolding generation failed"; \
 		exit 1; \

@@ -573,3 +573,5 @@ After modifying templates:
 2. Regenerate: `make generate-scaffolding`
 3. Run complete test: `make test-complete`
 4. Verify endpoint works: `curl http://localhost:8000/api/v2/pets`
+- ask me before making a decision to create a new script
+- do not modify specs without my approval. it is source of truth

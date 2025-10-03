@@ -1,0 +1,175 @@
+{{>php_file_header}}
+
+namespace {{apiPackage}};
+
+use Illuminate\Http\JsonResponse;
+{{#models}}
+{{#model}}
+use {{modelPackage}}\{{classname}};
+{{/model}}
+{{/models}}
+
+{{#vendorExtensions.x-autowire}}
+use Attributes\Autowire;
+{{/vendorExtensions.x-autowire}}
+
+{{#operations}}
+{{#vendorExtensions.x-autowire}}
+#[Autowire]
+{{/vendorExtensions.x-autowire}}
+interface {{classname}} {
+
+{{#operation}}
+
+    /**
+     * Operation {{{operationId}}}
+    {{#summary}}
+     *
+     * {{{.}}}
+    {{/summary}}
+    {{#description}}
+     *
+     * {{.}}
+    {{/description}}
+    {{#allParams}}
+     * @param {{^required}}null | {{/required}}{{{dataType}}} ${{paramName}}
+    {{/allParams}}
+     * @return {{operationIdCamelCase}}ResponseInterface
+    {{#isDeprecated}}
+     * @deprecated
+    {{/isDeprecated}}
+     */
+    public function {{operationId}}(
+        {{#allParams}}
+            {{#isContainer}}
+            {{^required}}?{{/required}}array ${{paramName}},
+            {{/isContainer}}
+            {{^isContainer}}
+            {{^required}}?{{/required}}{{dataType}} ${{paramName}},
+            {{/isContainer}}
+        {{/allParams}}
+    ): {{operationIdCamelCase}}ResponseInterface;
+
+{{/operation}}
+}
+{{/operations}}
+
+// ============================================================================
+// Response Interfaces - One per operation
+// ============================================================================
+
+{{#operations}}
+{{#operation}}
+/**
+ * Response interface for {{operationId}} operation
+ * All possible responses for this operation must implement this interface
+ */
+interface {{operationIdCamelCase}}ResponseInterface
+{
+    /**
+     * Convert this response to a JSON response
+     * @return JsonResponse
+     */
+    public function toJsonResponse(): JsonResponse;
+}
+
+{{/operation}}
+{{/operations}}
+
+// ============================================================================
+// Concrete Response Classes - One per response code per operation
+// ============================================================================
+
+{{#operations}}
+{{#operation}}
+{{#responses}}
+/**
+ * HTTP {{code}} response for {{operationId}} operation
+{{#message}}
+ * {{.}}
+{{/message}}
+ */
+class {{operationIdCamelCase}}{{code}}Response implements {{operationIdCamelCase}}ResponseInterface
+{
+    public function __construct(
+{{#dataType}}
+{{#isArray}}
+        /** @var {{baseType}}[] */
+        private readonly array $data
+{{/isArray}}
+{{^isArray}}
+        private readonly {{{dataType}}} $data
+{{/isArray}}
+{{/dataType}}
+{{^dataType}}
+        // No content for {{code}} response
+{{/dataType}}
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+{{#dataType}}
+{{#isArray}}
+        // Serialize array of models
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = array_map(
+            fn($item) => $serializer->serialize($item, 'array'),
+            $this->data
+        );
+        return response()->json($serialized, {{code}});
+{{/isArray}}
+{{^isArray}}
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        return response()->json($serialized, {{code}});
+{{/isArray}}
+{{/dataType}}
+{{^dataType}}
+        return response()->json(null, {{code}});
+{{/dataType}}
+    }
+}
+
+{{/responses}}
+{{/operation}}
+{{/operations}}
+
+// ============================================================================
+// Handler Interfaces - One per operation
+// ============================================================================
+
+{{#operations}}
+{{#operation}}
+/**
+ * Handler interface for {{operationId}} operation
+ * Implement this interface in your application to provide business logic
+ */
+interface {{operationIdCamelCase}}HandlerInterface
+{
+    /**
+     * Handle {{operationId}} operation
+     *
+{{#notes}}
+     * {{notes}}
+     *
+{{/notes}}
+{{#allParams}}
+     * @param {{{dataType}}} ${{paramName}} {{description}}
+{{/allParams}}
+     * @return {{operationIdCamelCase}}ResponseInterface
+     */
+    public function handle(
+{{#allParams}}
+        {{#isContainer}}
+        {{^required}}?{{/required}}array ${{paramName}}{{^-last}},{{/-last}}
+        {{/isContainer}}
+        {{^isContainer}}
+        {{^required}}?{{/required}}{{{dataType}}} ${{paramName}}{{^-last}},{{/-last}}
+        {{/isContainer}}
+{{/allParams}}
+    ): {{operationIdCamelCase}}ResponseInterface;
+}
+
+{{/operation}}
+{{/operations}}

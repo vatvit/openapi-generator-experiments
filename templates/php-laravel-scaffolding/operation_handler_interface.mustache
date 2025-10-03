@@ -1,0 +1,48 @@
+{{>php_file_header}}
+
+namespace {{invokerPackage}}\Handlers;
+
+{{#hasFormParams}}
+use {{invokerPackage}}\Http\Requests\{{operationIdCamelCase}}Request;
+{{/hasFormParams}}
+{{^hasFormParams}}
+use Illuminate\Http\Request;
+{{/hasFormParams}}
+use {{invokerPackage}}\Http\Responses\{{operationIdCamelCase}}ResponseInterface;
+
+/**
+ * Handler interface for {{operationId}} operation
+ *
+ * Implement this interface in your application to provide business logic
+ * The handler must return a response that implements {{operationIdCamelCase}}ResponseInterface
+ */
+interface {{operationIdCamelCase}}HandlerInterface
+{
+    /**
+     * Handle {{operationId}} operation
+     *
+{{#notes}}
+     * {{notes}}
+     *
+{{/notes}}
+{{#hasParams}}
+{{#allParams}}
+     * @param {{dataType}} ${{paramName}} {{description}}
+{{/allParams}}
+{{/hasParams}}
+     * @return {{operationIdCamelCase}}ResponseInterface
+     */
+    public function handle(
+{{#hasFormParams}}
+        {{operationIdCamelCase}}Request $request{{#hasPathParams}},{{/hasPathParams}}
+{{/hasFormParams}}
+{{^hasFormParams}}
+        Request $request{{#hasPathParams}},{{/hasPathParams}}
+{{/hasFormParams}}
+{{#hasPathParams}}
+{{#pathParams}}
+        {{dataType}} ${{paramName}}{{^-last}},{{/-last}}
+{{/pathParams}}
+{{/hasPathParams}}
+    ): {{operationIdCamelCase}}ResponseInterface;
+}

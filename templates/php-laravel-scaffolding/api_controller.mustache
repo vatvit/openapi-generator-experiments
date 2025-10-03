@@ -5,22 +5,33 @@ namespace {{invokerPackage}}\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+{{#operations}}
+{{#operation}}
+use {{apiPackage}}\{{operationIdCamelCase}}HandlerInterface;
+use {{apiPackage}}\{{operationIdCamelCase}}ResponseInterface;
+{{/operation}}
+{{/operations}}
+{{#operations}}
+{{#operation}}
+{{#bodyParams}}
+{{^isPrimitiveType}}
+use {{{dataType}}};
+{{/isPrimitiveType}}
+{{/bodyParams}}
+{{/operation}}
+{{/operations}}
+use Crell\Serde\SerdeCommon;
 
+{{#operations}}
 /**
- * Default Controller
+ * {{classname}} Controller
  *
  * Generated scaffolding from OpenAPI specification
- * Extend this class in your Laravel project to implement business logic
+ * Uses dependency injection to call business logic handlers
+ * Handlers return response models that enforce API specification
  */
-abstract class DefaultController extends Controller
+class {{controllerName}} extends Controller
 {
-{{#apiDocumentationUrl}}
-    /**
-     * {{description}}
-     * {{summary}}
-     */
-{{/apiDocumentationUrl}}
-{{#operations}}
 {{#operation}}
     /**
      * {{summary}}
@@ -33,25 +44,26 @@ abstract class DefaultController extends Controller
 {{#hasQueryParams}}
      * Query parameters validation (from OpenAPI spec):
 {{#queryParams}}
-     * - {{paramName}}: {{dataType}}{{#hasMore}},{{/hasMore}}{{#minimum}}, min: {{minimum}}{{/minimum}}{{#maximum}}, max: {{maximum}}{{/maximum}}{{#hasValidation}}{{#pattern}}, pattern: {{pattern}}{{/pattern}}{{/hasValidation}}
+     * - {{paramName}}: {{dataType}}{{#minimum}}, min: {{minimum}}{{/minimum}}{{#maximum}}, max: {{maximum}}{{/maximum}}
 {{/queryParams}}
      *
 {{/hasQueryParams}}
 {{#hasBodyParam}}
      * Request body validation (from OpenAPI spec):
 {{#bodyParams}}
-     * - {{paramName}}: {{#required}}required, {{/required}}{{^required}}optional, {{/required}}{{dataType}}{{#minimum}}, min: {{minimum}}{{/minimum}}{{#maximum}}, max: {{maximum}}{{/maximum}}
+     * - {{paramName}}: {{#required}}required, {{/required}}{{dataType}}
 {{/bodyParams}}
      *
 {{/hasBodyParam}}
 {{#hasPathParams}}
-     * Path parameters validation (from OpenAPI spec):
+     * Path parameters:
 {{#pathParams}}
-     * - {{paramName}}: {{dataType}}{{#hasMore}},{{/hasMore}}
+     * - {{paramName}}: {{dataType}}
 {{/pathParams}}
      *
 {{/hasPathParams}}
 {{/hasParams}}
+     * @param {{operationIdCamelCase}}HandlerInterface $handler Injected business logic handler
      * @param Request $request
 {{#hasPathParams}}
 {{#pathParams}}
@@ -60,11 +72,60 @@ abstract class DefaultController extends Controller
 {{/hasPathParams}}
      * @return JsonResponse
      */
-    abstract public function {{operationId}}(Request $request{{#hasPathParams}}{{#pathParams}}, {{dataType}} ${{paramName}}{{/pathParams}}{{/hasPathParams}}): JsonResponse;
+    public function {{operationId}}(
+        {{operationIdCamelCase}}HandlerInterface $handler,
+        Request $request{{#hasPathParams}}{{#pathParams}},
+        {{dataType}} ${{paramName}}{{/pathParams}}{{/hasPathParams}}
+    ): JsonResponse
+    {
+        // Validate request using generated rules
+{{#hasParams}}
+        $validated = $request->validate($this->{{operationId}}ValidationRules({{#hasPathParams}}{{#pathParams}}{{^-first}}, {{/-first}}${{paramName}}{{/pathParams}}{{/hasPathParams}}));
+{{/hasParams}}
+
+        // Extract validated parameters
+{{#allParams}}
+{{#isQueryParam}}
+        ${{paramName}} = $request->query('{{paramName}}'{{#defaultValue}}, {{{defaultValue}}}{{/defaultValue}}{{^defaultValue}}, null{{/defaultValue}});
+{{#isInteger}}
+        // Cast to int if present
+        if (${{paramName}} !== null) {
+            ${{paramName}} = (int) ${{paramName}};
+        }
+{{/isInteger}}
+{{#isLong}}
+        // Cast to int if present
+        if (${{paramName}} !== null) {
+            ${{paramName}} = (int) ${{paramName}};
+        }
+{{/isLong}}
+{{/isQueryParam}}
+{{#isBodyParam}}
+{{#isPrimitiveType}}
+        // Extract primitive body parameter
+        ${{paramName}} = json_decode($request->getContent(), true);
+{{/isPrimitiveType}}
+{{^isPrimitiveType}}
+        // Deserialize request body to {{dataType}} model
+        $serde = new SerdeCommon();
+        ${{paramName}} = $serde->deserialize($request->getContent(), from: 'json', to: {{{dataType}}}::class);
+{{/isPrimitiveType}}
+{{/isBodyParam}}
+{{/allParams}}
+
+        // Call handler with validated parameters
+        $response = $handler->handle(
+{{#allParams}}
+            ${{paramName}}{{^-last}},{{/-last}}
+{{/allParams}}
+        );
+
+        // Convert response model to JSON (enforced by interface)
+        return $response->toJsonResponse();
+    }
 
 {{/operation}}
-{{/operations}}
-{{#operations}}
+
 {{#operation}}
 {{#hasParams}}
     /**
@@ -78,31 +139,15 @@ abstract class DefaultController extends Controller
         return [
 {{#allParams}}
 {{^isPathParam}}
+{{^isBodyParam}}
             '{{paramName}}' => '{{#required}}required{{/required}}{{^required}}sometimes{{/required}}{{#isInteger}}|integer{{/isInteger}}{{#isLong}}|integer{{/isLong}}{{#isFloat}}|numeric{{/isFloat}}{{#isDouble}}|numeric{{/isDouble}}{{#isString}}|string{{/isString}}{{#isBoolean}}|boolean{{/isBoolean}}{{#isArray}}|array{{/isArray}}{{#minimum}}|min:{{minimum}}{{/minimum}}{{#maximum}}|max:{{maximum}}{{/maximum}}{{#minLength}}|min:{{minLength}}{{/minLength}}{{#maxLength}}|max:{{maxLength}}{{/maxLength}}{{#pattern}}|regex:{{pattern}}{{/pattern}}{{#hasValidation}}{{#_enum}}|in:{{#allowableValues}}{{#values}}{{.}}{{#hasMore}},{{/hasMore}}{{/values}}{{/allowableValues}}{{/_enum}}{{/hasValidation}}',
+{{/isBodyParam}}
 {{/isPathParam}}
 {{/allParams}}
         ];
     }
 
-{{#hasPathParams}}
-    /**
-     * Validate path parameter(s) for {{operationId}}
-     * Generated from OpenAPI specification
-     *
-{{#pathParams}}
-     * @param {{dataType}} ${{paramName}}
-{{/pathParams}}
-     * @return bool
-     */
-    protected function validate{{operationId}}PathParams({{#pathParams}}{{^-first}}, {{/-first}}{{dataType}} ${{paramName}}{{/pathParams}}): bool
-    {
-        // Path parameters are already type-hinted and validated by Laravel routing
-        // Additional custom validation can be added here if needed
-        return true;
-    }
-
-{{/hasPathParams}}
 {{/hasParams}}
 {{/operation}}
-{{/operations}}
 }
+{{/operations}}
