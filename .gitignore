@@ -1,5 +1,5 @@
-# Generated code directories
-generated/
+# Generated code directories (excluded - we want to commit generated sources)
+# generated/
 
 # Extracted default templates (regenerated as needed)
 templates/php-default/
