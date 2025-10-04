@@ -54,16 +54,36 @@ class CreateGameHandler implements CreateGameHandlerInterface
         // );
 
         // Success case - create a game with empty board
+        $playerX = new \TicTacToeApiV2\Scaffolding\Models\Player(
+            id: 'player-x-' . uniqid(),
+            username: 'PlayerX',
+            displayName: 'Player X',
+            avatarUrl: 'https://example.com/avatar-x.png'
+        );
+
+        $playerO = new \TicTacToeApiV2\Scaffolding\Models\Player(
+            id: 'player-o-' . uniqid(),
+            username: 'PlayerO',
+            displayName: 'Player O',
+            avatarUrl: 'https://example.com/avatar-o.png'
+        );
+
         $game = new Game(
-            id: '550e8400-e29b-41d4-a716-446655440000',
+            id: '550e8400-e29b-41d4-a716-' . uniqid(),
             status: GameStatus::PENDING,
             mode: $createGameRequest->mode,
+            playerX: $playerX,
+            playerO: $playerO,
+            currentTurn: \TicTacToeApiV2\Scaffolding\Models\Mark::X,
+            winner: \TicTacToeApiV2\Scaffolding\Models\Winner::PERIOD,
             board: [
                 ['.', '.', '.'],
                 ['.', '.', '.'],
                 ['.', '.', '.']
             ],
-            createdAt: new \DateTime()
+            createdAt: new \DateTime(),
+            updatedAt: new \DateTime(),
+            completedAt: new \DateTime('2099-01-01')  // Far future for pending games
         );
 
         return new CreateGame201Response($game);

@@ -23,7 +23,7 @@ namespace PetStoreApiV2\Scaffolding\Api;
 use Illuminate\Http\JsonResponse;
 
 
-interface DefaultApiInterface {
+interface PetsApiInterface {
 
 
     /**

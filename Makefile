@@ -61,23 +61,21 @@ generate-petshop-v2: ## Generate PetStore API scaffolding (Solution 2 - Post-pro
 	@echo "✅ PetStore scaffolding completed!"
 	@echo "📁 Output: laravel-api/generated-v2/petstore"
 
-generate-tictactoe-v2: ## Generate TicTacToe API scaffolding (Solution 2 - Merged Controller via Post-processing)
-	@echo "🏗️  Generating TicTacToe API scaffolding (Solution 2 - Merged Controller)..."
+generate-tictactoe-v2: ## Generate TicTacToe API scaffolding (Solution 2 - Pre-processing to remove tags)
+	@echo "🏗️  Generating TicTacToe API scaffolding (Solution 2 - No tags)..."
 	@rm -rf laravel-api/generated-v2/tictactoe
 	@mkdir -p laravel-api/generated-v2
-	@echo "📋 Using OpenAPI spec: specs/tictactoe.json"
+	@echo "📋 Pre-processing: Removing tags from OpenAPI spec..."
+	@./scripts/remove-tags.sh specs/tictactoe.json specs/tictactoe-no-tags.json
+	@echo ""
+	@echo "📋 Generating from spec without tags: specs/tictactoe-no-tags.json"
 	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli generate \
-		-i /local/specs/tictactoe.json \
+		-i /local/specs/tictactoe-no-tags.json \
 		-g php-laravel \
 		-o /local/laravel-api/generated-v2/tictactoe \
 		-c /local/config-v2/tictactoe-scaffolding-config.json \
 		--template-dir /local/templates/php-laravel-scaffolding-v2
 	@echo "✅ TicTacToe API scaffolding generated!"
-	@echo "📋 Post-processing: Merging tag-based controllers into single DefaultController..."
-	@docker run --rm -v $$(pwd):/app -w /app php:8.3-cli php scripts/merge-controllers-simple.php \
-		laravel-api/generated-v2/tictactoe/lib/Http/Controllers \
-		laravel-api/generated-v2/tictactoe/lib/Http/Controllers/DefaultController.php
-	@echo "✅ TicTacToe scaffolding completed!"
 	@echo "📁 Output: laravel-api/generated-v2/tictactoe"
 
 generate-scaffolding-v2: generate-petshop-v2 generate-tictactoe-v2 ## Generate all API scaffolding (Solution 2 - with Post-processing)
@@ -231,15 +229,19 @@ test-laravel: ## Test Laravel application endpoints
 		echo "  GET /v2/pets?limit=3"; \
 		curl -s 'http://localhost:8000/v2/pets?limit=3' | jq . || echo "⚠️  Pets endpoint with params (may be empty)"; \
 		echo ""; \
-		echo "Testing TicTacToe endpoints:"; \
-		echo "  GET /tictactoe/board"; \
-		curl -s http://localhost:8000/tictactoe/board | jq . || echo "⚠️  Board endpoint failed"; \
+		echo "Testing TicTacToe V2 endpoints:"; \
+		echo "  POST /api/v2/tictactoe/v1/games (create game)"; \
+		GAME_ID=$$(curl -s -X POST http://localhost:8000/api/v2/tictactoe/v1/games -H "Content-Type: application/json" -d '{"mode":"ai_easy"}' | jq -r '.id // "1"'); \
+		echo "  Created game ID: $$GAME_ID"; \
 		echo ""; \
-		echo "  GET /tictactoe/board/1/1"; \
-		curl -s http://localhost:8000/tictactoe/board/1/1 | jq . || echo "⚠️  Square endpoint failed"; \
+		echo "  GET /api/v2/tictactoe/v1/games/$$GAME_ID/board"; \
+		curl -s http://localhost:8000/api/v2/tictactoe/v1/games/$$GAME_ID/board | jq . || echo "⚠️  Board endpoint failed"; \
 		echo ""; \
-		echo "  PUT /tictactoe/board/1/1 (mark: X)"; \
-		curl -s -X PUT http://localhost:8000/tictactoe/board/1/1 -H "Content-Type: application/json" -d '"X"' | jq . || echo "⚠️  Put square endpoint failed"; \
+		echo "  GET /api/v2/tictactoe/v1/games/$$GAME_ID/board/1/1"; \
+		curl -s http://localhost:8000/api/v2/tictactoe/v1/games/$$GAME_ID/board/1/1 | jq . || echo "⚠️  Square endpoint failed"; \
+		echo ""; \
+		echo "  PUT /api/v2/tictactoe/v1/games/$$GAME_ID/board/1/1 (mark: X)"; \
+		curl -s -X PUT http://localhost:8000/api/v2/tictactoe/v1/games/$$GAME_ID/board/1/1 -H "Content-Type: application/json" -d '{"mark":"X"}' | jq . || echo "⚠️  Put square endpoint failed"; \
 	else \
 		echo "❌ Laravel containers not running"; \
 		echo "   Start with: cd laravel-api && docker-compose up -d"; \

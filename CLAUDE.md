@@ -603,3 +603,4 @@ After modifying templates:
 
 **Recommendation:** Use **one tag per operation** for server-side code generation. Multiple tags are useful for documentation grouping but cause duplication in generated code.
 - do not create post/pre-processing scripts. all logic should be created by generator based on templates. tell me if you cannot implement something because of some fundamental restrictions
+- do not install any extra tools on the local machine. Ask the user to do it manually

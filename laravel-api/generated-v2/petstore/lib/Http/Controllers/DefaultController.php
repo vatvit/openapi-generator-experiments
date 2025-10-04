@@ -27,40 +27,6 @@ class DefaultController extends Controller
     /**
      * 
      *
-     * Creates a new pet in the store. Duplicates are allowed
-     *
-     * Request body validation (from OpenAPI spec):
-     * - newPet: required, \PetStoreApiV2\Scaffolding\Models\NewPet
-     *
-     * @param AddPetHandlerInterface $handler Injected business logic handler
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function addPet(
-        AddPetHandlerInterface $handler,
-        Request $request
-    ): JsonResponse
-    {
-        // Validate request using generated rules
-        $validated = $request->validate($this->addPetValidationRules());
-
-        // Extract validated parameters
-        // Deserialize request body to \PetStoreApiV2\Scaffolding\Models\NewPet model
-        $serde = new SerdeCommon();
-        $newPet = $serde->deserialize($request->getContent(), from: 'json', to: \PetStoreApiV2\Scaffolding\Models\NewPet::class);
-
-        // Call handler with validated parameters
-        $response = $handler->handle(
-            $newPet
-        );
-
-        // Convert response model to JSON (enforced by interface)
-        return $response->toJsonResponse();
-    }
-
-    /**
-     * 
-     *
      * deletes a single pet based on the ID supplied
      *
      * Path parameters:
@@ -92,36 +58,15 @@ class DefaultController extends Controller
     }
 
     /**
-     * 
+     * Get validation rules for deletePet request
+     * Generated from OpenAPI specification
      *
-     * Returns a user based on a single ID, if the user does not have access to the pet
-     *
-     * Path parameters:
-     * - id: int
-     *
-     * @param FindPetByIdHandlerInterface $handler Injected business logic handler
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse
+     * @return array
      */
-    public function findPetById(
-        FindPetByIdHandlerInterface $handler,
-        Request $request,
-        int $id
-    ): JsonResponse
+    protected function deletePetValidationRules(int $id): array
     {
-        // Validate request using generated rules
-        $validated = $request->validate($this->findPetByIdValidationRules($id));
-
-        // Extract validated parameters
-
-        // Call handler with validated parameters
-        $response = $handler->handle(
-            $id
-        );
-
-        // Convert response model to JSON (enforced by interface)
-        return $response->toJsonResponse();
+        return [
+        ];
     }
 
     /**
@@ -164,6 +109,54 @@ class DefaultController extends Controller
     }
 
     /**
+     * Get validation rules for findPets request
+     * Generated from OpenAPI specification
+     *
+     * @return array
+     */
+    protected function findPetsValidationRules(): array
+    {
+        return [
+            'tags' => 'sometimes|array',
+            'limit' => 'sometimes|integer',
+        ];
+    }
+
+    /**
+     * 
+     *
+     * Creates a new pet in the store. Duplicates are allowed
+     *
+     * Request body validation (from OpenAPI spec):
+     * - newPet: required, \PetStoreApiV2\Scaffolding\Models\NewPet
+     *
+     * @param AddPetHandlerInterface $handler Injected business logic handler
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function addPet(
+        AddPetHandlerInterface $handler,
+        Request $request
+    ): JsonResponse
+    {
+        // Validate request using generated rules
+        $validated = $request->validate($this->addPetValidationRules());
+
+        // Extract validated parameters
+        // Deserialize request body to \PetStoreApiV2\Scaffolding\Models\NewPet model
+        $serde = new SerdeCommon();
+        $newPet = $serde->deserialize($request->getContent(), from: 'json', to: \PetStoreApiV2\Scaffolding\Models\NewPet::class);
+
+        // Call handler with validated parameters
+        $response = $handler->handle(
+            $newPet
+        );
+
+        // Convert response model to JSON (enforced by interface)
+        return $response->toJsonResponse();
+    }
+
+    /**
      * Get validation rules for addPet request
      * Generated from OpenAPI specification
      *
@@ -176,15 +169,36 @@ class DefaultController extends Controller
     }
 
     /**
-     * Get validation rules for deletePet request
-     * Generated from OpenAPI specification
+     * 
      *
-     * @return array
+     * Returns a user based on a single ID, if the user does not have access to the pet
+     *
+     * Path parameters:
+     * - id: int
+     *
+     * @param FindPetByIdHandlerInterface $handler Injected business logic handler
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
      */
-    protected function deletePetValidationRules(int $id): array
+    public function findPetById(
+        FindPetByIdHandlerInterface $handler,
+        Request $request,
+        int $id
+    ): JsonResponse
     {
-        return [
-        ];
+        // Validate request using generated rules
+        $validated = $request->validate($this->findPetByIdValidationRules($id));
+
+        // Extract validated parameters
+
+        // Call handler with validated parameters
+        $response = $handler->handle(
+            $id
+        );
+
+        // Convert response model to JSON (enforced by interface)
+        return $response->toJsonResponse();
     }
 
     /**
@@ -196,20 +210,6 @@ class DefaultController extends Controller
     protected function findPetByIdValidationRules(int $id): array
     {
         return [
-        ];
-    }
-
-    /**
-     * Get validation rules for findPets request
-     * Generated from OpenAPI specification
-     *
-     * @return array
-     */
-    protected function findPetsValidationRules(): array
-    {
-        return [
-            'tags' => 'sometimes|array',
-            'limit' => 'sometimes|integer',
         ];
     }
 

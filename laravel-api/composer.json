@@ -25,8 +25,12 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "PetStoreApi\\Scaffolding\\": "generated/scaffolding/lib/"
-        }
+            "PetStoreApi\\Scaffolding\\": "generated/scaffolding/lib/",
+            "TicTacToeApiV2\\Scaffolding\\": "generated-v2/tictactoe/lib/"
+        },
+        "files": [
+            "generated-v2/tictactoe/lib/Api/DefaultApiInterface.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
