@@ -24,7 +24,26 @@ class ListGamesHandler implements ListGamesHandlerInterface
         ?string $playerId
     ): ListGamesResponseInterface
     {
-        // Simple implementation - return empty list with pagination
+        // Example: Return 400 BadRequest if limit exceeds maximum
+        if ($limit !== null && $limit > 100) {
+            return new \TicTacToeApiV2\Scaffolding\Api\ListGames400Response(
+                new \TicTacToeApiV2\Scaffolding\Models\Error(
+                    code: 'INVALID_LIMIT',
+                    message: 'Limit parameter cannot exceed 100'
+                )
+            );
+        }
+
+        // Example: Return 401 Unauthorized (would check auth in real implementation)
+        // Uncomment to demonstrate:
+        // return new \TicTacToeApiV2\Scaffolding\Api\ListGames401Response(
+        //     new \TicTacToeApiV2\Scaffolding\Models\Error(
+        //         code: 'UNAUTHORIZED',
+        //         message: 'Authentication required'
+        //     )
+        // );
+
+        // Success case - return paginated list
         $pagination = new Pagination(
             page: $page ?? 1,
             limit: $limit ?? 20,

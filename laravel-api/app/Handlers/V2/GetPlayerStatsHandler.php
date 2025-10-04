@@ -16,21 +16,33 @@ class GetPlayerStatsHandler implements GetPlayerStatsHandlerInterface
 {
     public function handle(string $playerId): GetPlayerStatsResponseInterface
     {
-        // Simple implementation - return mock stats
+        // Example: Return 404 NotFound if player doesn't exist
+        if ($playerId === '00000000-0000-0000-0000-000000000000') {
+            return new \TicTacToeApiV2\Scaffolding\Api\GetPlayerStats404Response(
+                new \TicTacToeApiV2\Scaffolding\Models\Error(
+                    code: 'PLAYER_NOT_FOUND',
+                    message: 'Player not found with the provided ID'
+                )
+            );
+        }
+
+        // Success case - return comprehensive player stats
         $player = new Player(
             id: $playerId,
-            username: 'player123'
+            username: 'player123',
+            displayName: 'Pro Player',
+            avatarUrl: 'https://example.com/avatars/player123.png'
         );
 
         $stats = new PlayerStats(
             playerId: $playerId,
-            gamesPlayed: 10,
-            wins: 5,
-            losses: 3,
-            draws: 2,
-            winRate: 0.5,
-            currentStreak: 2,
-            longestWinStreak: 5,
+            gamesPlayed: 42,
+            wins: 25,
+            losses: 12,
+            draws: 5,
+            winRate: 0.595,
+            currentStreak: 3,
+            longestWinStreak: 8,
             player: $player
         );
 

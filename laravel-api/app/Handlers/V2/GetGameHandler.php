@@ -17,7 +17,17 @@ class GetGameHandler implements GetGameHandlerInterface
 {
     public function handle(string $gameId): GetGameResponseInterface
     {
-        // Simple implementation - return mock game
+        // Example: Return 404 NotFound if game doesn't exist
+        if ($gameId === '00000000-0000-0000-0000-000000000000') {
+            return new \TicTacToeApiV2\Scaffolding\Api\GetGame404Response(
+                new \TicTacToeApiV2\Scaffolding\Models\Error(
+                    code: 'GAME_NOT_FOUND',
+                    message: 'Game not found with the provided ID'
+                )
+            );
+        }
+
+        // Success case - return mock game
         $game = new Game(
             id: $gameId,
             status: GameStatus::IN_PROGRESS,

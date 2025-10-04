@@ -16,15 +16,25 @@ class GetBoardHandler implements GetBoardHandlerInterface
 {
     public function handle(string $gameId): GetBoardResponseInterface
     {
-        // Simple implementation - return empty board
+        // Example: Return 404 NotFound if game doesn't exist
+        if ($gameId === '00000000-0000-0000-0000-000000000000') {
+            return new \TicTacToeApiV2\Scaffolding\Api\GetBoard404Response(
+                new \TicTacToeApiV2\Scaffolding\Models\Error(
+                    code: 'GAME_NOT_FOUND',
+                    message: 'Game not found with the provided ID'
+                )
+            );
+        }
+
+        // Success case - return board with some moves
         $board = [
-            ['.', '.', '.'],
-            ['.', '.', '.'],
-            ['.', '.', '.']
+            ['X', 'O', '.'],
+            ['.', 'X', 'O'],
+            ['.', '.', 'X']
         ];
 
         $status = new Status(
-            winner: Winner::PERIOD,
+            winner: Winner::X,  // X won with diagonal
             board: $board
         );
 
