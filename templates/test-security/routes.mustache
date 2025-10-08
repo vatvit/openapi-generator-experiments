@@ -1,0 +1,17 @@
+// SECURITY TEST
+{{#apiInfo}}
+API hasAuthMethods: {{hasAuthMethods}}
+
+{{#apis}}
+{{#operations}}
+{{#operation}}
+Operation: {{operationId}}
+  hasAuthMethods: {{hasAuthMethods}}
+  {{#authMethods}}
+  - Auth: {{name}} ({{type}})
+  {{/authMethods}}
+
+{{/operation}}
+{{/operations}}
+{{/apis}}
+{{/apiInfo}}

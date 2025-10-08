@@ -95,6 +95,37 @@ return Application::configure(basePath: dirname(__DIR__))
                 $router = app('router');
                 require base_path('generated/tictactoe/routes.php');
             });
+
+            // === TicTacToe V2 API Setup ===
+            // Load generated V2 interfaces and controller
+            require_once base_path('generated-v2/tictactoe/lib/Api/DefaultApiInterface.php');
+            require_once base_path('generated-v2/tictactoe/lib/Http/Controllers/DefaultController.php');
+
+            // Bind V2 operation handlers
+            app()->bind(\TicTacToeApiV2\Scaffolding\Api\CreateGameHandlerInterface::class, \App\Handlers\V2\CreateGameHandler::class);
+            app()->bind(\TicTacToeApiV2\Scaffolding\Api\DeleteGameHandlerInterface::class, \App\Handlers\V2\DeleteGameHandler::class);
+            app()->bind(\TicTacToeApiV2\Scaffolding\Api\GetBoardHandlerInterface::class, \App\Handlers\V2\GetBoardHandler::class);
+            app()->bind(\TicTacToeApiV2\Scaffolding\Api\GetGameHandlerInterface::class, \App\Handlers\V2\GetGameHandler::class);
+            app()->bind(\TicTacToeApiV2\Scaffolding\Api\GetLeaderboardHandlerInterface::class, \App\Handlers\V2\GetLeaderboardHandler::class);
+            app()->bind(\TicTacToeApiV2\Scaffolding\Api\GetMovesHandlerInterface::class, \App\Handlers\V2\GetMovesHandler::class);
+            app()->bind(\TicTacToeApiV2\Scaffolding\Api\GetPlayerStatsHandlerInterface::class, \App\Handlers\V2\GetPlayerStatsHandler::class);
+            app()->bind(\TicTacToeApiV2\Scaffolding\Api\GetSquareHandlerInterface::class, \App\Handlers\V2\GetSquareHandler::class);
+            app()->bind(\TicTacToeApiV2\Scaffolding\Api\ListGamesHandlerInterface::class, \App\Handlers\V2\ListGamesHandler::class);
+            app()->bind(\TicTacToeApiV2\Scaffolding\Api\PutSquareHandlerInterface::class, \App\Handlers\V2\PutSquareHandler::class);
+
+            // Note: V2 uses same controller name "Tic Tac Toe" as V1 (from OpenAPI spec info.title)
+            // The V2 controller extends the generated DefaultController from V2 scaffolding
+            // We don't need a separate class alias since both V1 and V2 have their own route groups
+
+            // Register V2 routes (will use existing "Tic Tac Toe" binding but with V2 controller)
+            // Temporarily bind to V2 controller for these routes
+            Route::group(['prefix' => 'v2'], function () {
+                // Override binding for V2 routes
+                app()->bind('Tic Tac Toe', fn() => app(\TicTacToeApiV2\Scaffolding\Http\Controllers\DefaultController::class));
+
+                $router = app('router');
+                require base_path('generated-v2/tictactoe/routes.php');
+            });
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -110,6 +141,24 @@ return Application::configure(basePath: dirname(__DIR__))
         // Example: Add logging to findPets operation
         $middleware->group('api.middlewareGroup.findPets', [
             \App\Http\Middleware\LogRequest::class,
+        ]);
+
+        // TicTacToe V2 Security Middleware (from OpenAPI security schemes)
+        // These operations require Bearer token authentication
+        $middleware->group('api.middlewareGroup.createGame', [
+            \App\Http\Middleware\ValidateBearerToken::class,
+        ]);
+
+        $middleware->group('api.middlewareGroup.deleteGame', [
+            \App\Http\Middleware\ValidateBearerToken::class,
+        ]);
+
+        $middleware->group('api.middlewareGroup.getGame', [
+            \App\Http\Middleware\ValidateBearerToken::class,
+        ]);
+
+        $middleware->group('api.middlewareGroup.listGames', [
+            \App\Http\Middleware\ValidateBearerToken::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

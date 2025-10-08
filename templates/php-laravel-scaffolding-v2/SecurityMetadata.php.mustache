@@ -1,0 +1,162 @@
+{{>php_file_header}}
+
+namespace {{invokerPackage}}\Security;
+
+/**
+ * OpenAPI Security Metadata
+ *
+ * Auto-generated from OpenAPI specification
+ * Provides security scheme information and operation requirements
+ */
+class SecurityMetadata
+{
+    /**
+     * Get security requirements for an operation
+     *
+     * Returns array of security scheme names that satisfy the operation's requirements.
+     * Multiple schemes indicate OR logic - ANY ONE of them is sufficient.
+     *
+     * @param string $operationId Operation identifier
+     * @return array<string> Array of security scheme names (OR logic)
+     */
+    public static function getOperationSecurity(string $operationId): array
+    {
+        return match($operationId) {
+{{#apiInfo}}
+{{#apis}}
+{{#operations}}
+{{#operation}}
+            '{{operationId}}' => [{{#authMethods}}'{{name}}'{{^-last}}, {{/-last}}{{/authMethods}}],
+{{/operation}}
+{{/operations}}
+{{/apis}}
+{{/apiInfo}}
+            default => [],
+        };
+    }
+
+    /**
+     * Get detailed information about a security scheme
+     *
+     * @param string $schemeName Security scheme name
+     * @return array<string, mixed> Scheme configuration details
+     */
+    public static function getSchemeDetails(string $schemeName): array
+    {
+        return match($schemeName) {
+{{#hasAuthMethods}}
+{{#authMethods}}
+            '{{name}}' => [
+                'name' => '{{name}}',
+                'type' => '{{type}}',
+{{#description}}
+                'description' => '{{description}}',
+{{/description}}
+{{#isApiKey}}
+                'keyParamName' => '{{keyParamName}}',
+                'in' => '{{#isKeyInHeader}}header{{/isKeyInHeader}}{{#isKeyInQuery}}query{{/isKeyInQuery}}{{#isKeyInCookie}}cookie{{/isKeyInCookie}}',
+{{/isApiKey}}
+{{#isBasic}}
+{{#isBasicBasic}}
+                'scheme' => 'Basic',
+{{/isBasicBasic}}
+{{#isBasicBearer}}
+                'scheme' => 'Bearer',
+{{#bearerFormat}}
+                'bearerFormat' => '{{bearerFormat}}',
+{{/bearerFormat}}
+{{/isBasicBearer}}
+{{/isBasic}}
+{{#isOAuth}}
+                'flow' => '{{flow}}',
+{{#authorizationUrl}}
+                'authorizationUrl' => '{{authorizationUrl}}',
+{{/authorizationUrl}}
+{{#tokenUrl}}
+                'tokenUrl' => '{{tokenUrl}}',
+{{/tokenUrl}}
+{{#refreshUrl}}
+                'refreshUrl' => '{{refreshUrl}}',
+{{/refreshUrl}}
+                'scopes' => [
+{{#scopes}}
+                    '{{scope}}' => '{{description}}',
+{{/scopes}}
+                ],
+{{/isOAuth}}
+            ],
+{{/authMethods}}
+{{/hasAuthMethods}}
+            default => [],
+        };
+    }
+
+    /**
+     * Get all defined security schemes
+     *
+     * @return array<string> Array of security scheme names
+     */
+    public static function getAllSchemes(): array
+    {
+        return [
+{{#hasAuthMethods}}
+{{#authMethods}}
+            '{{name}}',
+{{/authMethods}}
+{{/hasAuthMethods}}
+        ];
+    }
+
+    /**
+     * Check if an operation requires security
+     *
+     * @param string $operationId Operation identifier
+     * @return bool True if operation requires authentication
+     */
+    public static function requiresSecurity(string $operationId): bool
+    {
+        return !empty(self::getOperationSecurity($operationId));
+    }
+
+    /**
+     * Get the interface class name for a security scheme
+     *
+     * @param string $schemeName Security scheme name
+     * @return string Fully qualified interface class name
+     */
+    public static function getSchemeInterface(string $schemeName): string
+    {
+        return {{invokerPackage}}\Security\\' . $schemeName . 'Interface';
+    }
+
+    /**
+     * Get all operations grouped by security requirements
+     *
+     * @return array<string, array<string>> Security scheme => operations array
+     */
+    public static function getOperationsByScheme(): array
+    {
+        $result = [];
+{{#hasAuthMethods}}
+{{#authMethods}}
+        $result['{{name}}'] = [];
+{{/authMethods}}
+{{/hasAuthMethods}}
+
+{{#apiInfo}}
+{{#apis}}
+{{#operations}}
+{{#operation}}
+{{#hasAuthMethods}}
+{{#authMethods}}
+        $result['{{name}}'][] = '{{operationId}}';
+{{/authMethods}}
+{{/hasAuthMethods}}
+{{/operation}}
+{{/operations}}
+{{/apis}}
+{{/apiInfo}}
+
+        return $result;
+    }
+}

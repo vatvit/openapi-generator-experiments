@@ -78,7 +78,8 @@
 $route = $router->DELETE('/v2/pets/{id}', 'PetStoreApiController@deletePet')
     ->name('api.deletePet');
 
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.deletePet')) {
     $route->middleware('api.middlewareGroup.deletePet');
 }
@@ -91,7 +92,8 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.deletePet')) {
 $route = $router->GET('/v2/pets', 'PetStoreApiController@findPets')
     ->name('api.findPets');
 
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
     $route->middleware('api.middlewareGroup.findPets');
 }
@@ -104,7 +106,8 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
 $route = $router->POST('/v2/pets', 'PetStoreApiController@addPet')
     ->name('api.addPet');
 
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.addPet')) {
     $route->middleware('api.middlewareGroup.addPet');
 }
@@ -117,7 +120,8 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.addPet')) {
 $route = $router->GET('/v2/pets/{id}', 'PetStoreApiController@findPetById')
     ->name('api.findPetById');
 
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.findPetById')) {
     $route->middleware('api.middlewareGroup.findPetById');
 }
@@ -130,7 +134,8 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.findPetById')) {
 $route = $router->GET('/v2/pets', 'PetStoreApiController@findPets')
     ->name('api.findPets');
 
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
     $route->middleware('api.middlewareGroup.findPets');
 }
@@ -143,33 +148,8 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
 $route = $router->POST('/v2/pets', 'PetStoreApiController@addPet')
     ->name('api.addPet');
 
-// Only attach middleware if the group is registered in the application
-if ($router->hasMiddlewareGroup('api.middlewareGroup.addPet')) {
-    $route->middleware('api.middlewareGroup.addPet');
-}
-
-/**
- * DELETE /pets/{id}
- * 
- * deletes a single pet based on the ID supplied
- */
-$route = $router->DELETE('/v2/pets/{id}', 'PetStoreApiController@deletePet')
-    ->name('api.deletePet');
-
-// Only attach middleware if the group is registered in the application
-if ($router->hasMiddlewareGroup('api.middlewareGroup.deletePet')) {
-    $route->middleware('api.middlewareGroup.deletePet');
-}
-
-/**
- * POST /pets
- * 
- * Creates a new pet in the store. Duplicates are allowed
- */
-$route = $router->POST('/v2/pets', 'PetStoreApiController@addPet')
-    ->name('api.addPet');
-
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.addPet')) {
     $route->middleware('api.middlewareGroup.addPet');
 }
@@ -182,7 +162,36 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.addPet')) {
 $route = $router->DELETE('/v2/pets/{id}', 'PetStoreApiController@deletePet')
     ->name('api.deletePet');
 
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
+if ($router->hasMiddlewareGroup('api.middlewareGroup.deletePet')) {
+    $route->middleware('api.middlewareGroup.deletePet');
+}
+
+/**
+ * POST /pets
+ * 
+ * Creates a new pet in the store. Duplicates are allowed
+ */
+$route = $router->POST('/v2/pets', 'PetStoreApiController@addPet')
+    ->name('api.addPet');
+
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
+if ($router->hasMiddlewareGroup('api.middlewareGroup.addPet')) {
+    $route->middleware('api.middlewareGroup.addPet');
+}
+
+/**
+ * DELETE /pets/{id}
+ * 
+ * deletes a single pet based on the ID supplied
+ */
+$route = $router->DELETE('/v2/pets/{id}', 'PetStoreApiController@deletePet')
+    ->name('api.deletePet');
+
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.deletePet')) {
     $route->middleware('api.middlewareGroup.deletePet');
 }
@@ -195,7 +204,8 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.deletePet')) {
 $route = $router->GET('/v2/pets/{id}', 'PetStoreApiController@findPetById')
     ->name('api.findPetById');
 
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.findPetById')) {
     $route->middleware('api.middlewareGroup.findPetById');
 }
@@ -208,7 +218,8 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.findPetById')) {
 $route = $router->GET('/v2/pets', 'PetStoreApiController@findPets')
     ->name('api.findPets');
 
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
     $route->middleware('api.middlewareGroup.findPets');
 }
@@ -221,7 +232,8 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
 $route = $router->GET('/v2/pets/{id}', 'PetStoreApiController@findPetById')
     ->name('api.findPetById');
 
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.findPetById')) {
     $route->middleware('api.middlewareGroup.findPetById');
 }
@@ -234,7 +246,8 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.findPetById')) {
 $route = $router->GET('/v2/pets', 'PetStoreApiController@findPets')
     ->name('api.findPets');
 
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
     $route->middleware('api.middlewareGroup.findPets');
 }
@@ -247,7 +260,8 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
 $route = $router->GET('/v2/pets/{id}', 'PetStoreApiController@findPetById')
     ->name('api.findPetById');
 
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.findPetById')) {
     $route->middleware('api.middlewareGroup.findPetById');
 }
@@ -260,7 +274,8 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.findPetById')) {
 $route = $router->GET('/v2/pets', 'PetStoreApiController@findPets')
     ->name('api.findPets');
 
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
     $route->middleware('api.middlewareGroup.findPets');
 }
@@ -273,7 +288,8 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
 $route = $router->POST('/v2/pets', 'PetStoreApiController@addPet')
     ->name('api.addPet');
 
-// Only attach middleware if the group is registered in the application
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.addPet')) {
     $route->middleware('api.middlewareGroup.addPet');
 }

@@ -18,7 +18,8 @@ class CreateGameHandler implements CreateGameHandlerInterface
     public function handle(CreateGameRequest $createGameRequest): CreateGameResponseInterface
     {
         // Example: Return 422 ValidationError if PvP mode without opponentId
-        if ($createGameRequest->mode === \TicTacToeApiV2\Scaffolding\Models\GameMode::PVP
+        if (isset($createGameRequest->mode)
+            && $createGameRequest->mode === \TicTacToeApiV2\Scaffolding\Models\GameMode::PVP
             && empty($createGameRequest->opponentId)) {
             return new \TicTacToeApiV2\Scaffolding\Api\CreateGame422Response(
                 new \TicTacToeApiV2\Scaffolding\Models\ValidationError(
@@ -71,7 +72,7 @@ class CreateGameHandler implements CreateGameHandlerInterface
         $game = new Game(
             id: '550e8400-e29b-41d4-a716-' . uniqid(),
             status: GameStatus::PENDING,
-            mode: $createGameRequest->mode,
+            mode: $createGameRequest->mode ?? \TicTacToeApiV2\Scaffolding\Models\GameMode::PVP,
             playerX: $playerX,
             playerO: $playerO,
             currentTurn: \TicTacToeApiV2\Scaffolding\Models\Mark::X,

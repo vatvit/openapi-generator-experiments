@@ -60,14 +60,93 @@
  * {{httpMethod}} {{{path}}}
  * {{#summary}}{{summary}}{{/summary}}
  * {{#notes}}{{notes}}{{/notes}}
+{{#hasAuthMethods}}
+ *
+ * Security Requirements:
+{{#authMethods}}
+ * - {{name}} ({{type}}){{#description}}: {{description}}{{/description}}
+{{#isApiKey}}
+ *   Location: {{keyParamName}} in {{#isKeyInHeader}}header{{/isKeyInHeader}}{{#isKeyInQuery}}query{{/isKeyInQuery}}
+{{/isApiKey}}
+{{#isBasicBearer}}
+ *   Format: Bearer token (JWT)
+{{/isBasicBearer}}
+{{#isOAuth}}
+ *   Required scopes: {{#scopes}}{{scope}}{{^-last}}, {{/-last}}{{/scopes}}
+{{/isOAuth}}
+{{/authMethods}}
+ *
+ * Suggested middleware group (in bootstrap/app.php):
+ * $middleware->group('api.middlewareGroup.{{operationId}}', [
+{{#authMethods}}
+{{#isApiKey}}
+ *     \App\Http\Middleware\ValidateApiKey::class,  // Validate {{keyParamName}} header/query
+{{/isApiKey}}
+{{#isBasicBasic}}
+ *     \App\Http\Middleware\ValidateBasicAuth::class,
+{{/isBasicBasic}}
+{{#isBasicBearer}}
+ *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
+{{/isBasicBearer}}
+{{#isOAuth}}
+ *     \App\Http\Middleware\ValidateOAuthScopes::class,  // Validate scopes: {{#scopes}}{{scope}}{{^-last}}, {{/-last}}{{/scopes}}
+{{/isOAuth}}
+{{/authMethods}}
+ * ]);
+{{/hasAuthMethods}}
  */
 $route = $router->{{httpMethod}}('{{{basePathWithoutHost}}}{{{path}}}', '{{appName}}@{{operationId}}')
     ->name('api.{{operationId}}');
 
-// Only attach middleware if the group is registered in the application
+{{#hasAuthMethods}}
+// SECURITY VALIDATION: This operation requires authentication
+// Middleware MUST implement one of the required security interfaces
+if (!$router->hasMiddlewareGroup('api.middlewareGroup.{{operationId}}')) {
+    throw new \RuntimeException(
+        "Security violation: Operation '{{operationId}}' requires authentication but " .
+        "middleware group 'api.middlewareGroup.{{operationId}}' is not defined. " .
+        "Required security: {{#authMethods}}{{name}}{{^-last}} OR {{/-last}}{{/authMethods}}"
+    );
+}
+
+$middlewares = app('router')->getMiddlewareGroups()['api.middlewareGroup.{{operationId}}'] ?? [];
+$requiredInterfaces = [
+{{#authMethods}}
+    {{invokerPackage}}\Security\{{name}}Interface::class,
+{{/authMethods}}
+];
+
+// Validate that at least ONE middleware implements a required security interface (OR logic)
+$hasValidSecurity = false;
+foreach ($middlewares as $middleware) {
+    $middlewareClass = is_string($middleware) ? $middleware : get_class($middleware);
+    foreach ($requiredInterfaces as $interface) {
+        if (is_subclass_of($middlewareClass, $interface)) {
+            $hasValidSecurity = true;
+            break 2;
+        }
+    }
+}
+
+if (!$hasValidSecurity) {
+    $interfaceNames = array_map(fn($i) => class_basename($i), $requiredInterfaces);
+    throw new \RuntimeException(
+        "Security violation: Operation '{{operationId}}' requires middleware implementing one of: " .
+        implode(' OR ', $interfaceNames) . ". " .
+        "Middleware group 'api.middlewareGroup.{{operationId}}' contains: " .
+        implode(', ', array_map(fn($m) => is_string($m) ? class_basename($m) : get_class($m), $middlewares))
+    );
+}
+
+$route->middleware('api.middlewareGroup.{{operationId}}');
+{{/hasAuthMethods}}
+{{^hasAuthMethods}}
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.{{operationId}}')) {
     $route->middleware('api.middlewareGroup.{{operationId}}');
 }
+{{/hasAuthMethods}}
 
 {{/operation}}
 {{/operations}}

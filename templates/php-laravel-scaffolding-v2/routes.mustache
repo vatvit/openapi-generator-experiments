@@ -60,14 +60,65 @@
  * {{httpMethod}} {{{path}}}
  * {{#summary}}{{summary}}{{/summary}}
  * {{#notes}}{{notes}}{{/notes}}
+{{#hasAuthMethods}}
+ *
+ * Security Requirements:
+{{#authMethods}}
+ * - {{name}} ({{type}}){{#description}}: {{description}}{{/description}}
+{{#isApiKey}}
+ *   Location: {{keyParamName}} in {{#isKeyInHeader}}header{{/isKeyInHeader}}{{#isKeyInQuery}}query{{/isKeyInQuery}}
+{{/isApiKey}}
+{{#isBasicBearer}}
+ *   Format: Bearer token (JWT)
+{{/isBasicBearer}}
+{{#isOAuth}}
+ *   Required scopes: {{#scopes}}{{scope}}{{^-last}}, {{/-last}}{{/scopes}}
+{{/isOAuth}}
+{{/authMethods}}
+ *
+ * Suggested middleware group (in bootstrap/app.php):
+ * $middleware->group('api.middlewareGroup.{{operationId}}', [
+{{#authMethods}}
+{{#isApiKey}}
+ *     \App\Http\Middleware\ValidateApiKey::class,  // Validate {{keyParamName}} header/query
+{{/isApiKey}}
+{{#isBasicBasic}}
+ *     \App\Http\Middleware\ValidateBasicAuth::class,
+{{/isBasicBasic}}
+{{#isBasicBearer}}
+ *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
+{{/isBasicBearer}}
+{{#isOAuth}}
+ *     \App\Http\Middleware\ValidateOAuthScopes::class,  // Validate scopes: {{#scopes}}{{scope}}{{^-last}}, {{/-last}}{{/scopes}}
+{{/isOAuth}}
+{{/authMethods}}
+ * ]);
+{{/hasAuthMethods}}
  */
 $route = $router->{{httpMethod}}('{{{basePathWithoutHost}}}{{{path}}}', '{{appName}}@{{operationId}}')
     ->name('api.{{operationId}}');
 
-// Only attach middleware if the group is registered in the application
+{{#hasAuthMethods}}
+// SECURITY REQUIREMENT: This operation requires authentication
+// Required security: {{#authMethods}}{{name}}{{^-last}} OR {{/-last}}{{/authMethods}}
+// Middleware group 'api.middlewareGroup.{{operationId}}' MUST be defined and contain middleware implementing:
+{{#authMethods}}
+// - {{invokerPackage}}\Security\{{name}}Interface
+{{/authMethods}}
+
+// Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.{{operationId}}')) {
     $route->middleware('api.middlewareGroup.{{operationId}}');
 }
+
+{{/hasAuthMethods}}
+{{^hasAuthMethods}}
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
+if ($router->hasMiddlewareGroup('api.middlewareGroup.{{operationId}}')) {
+    $route->middleware('api.middlewareGroup.{{operationId}}');
+}
+{{/hasAuthMethods}}
 
 {{/operation}}
 {{/operations}}

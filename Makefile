@@ -76,6 +76,32 @@ generate-tictactoe-v2: ## Generate TicTacToe API scaffolding (Solution 2 - Pre-p
 		-c /local/config-v2/tictactoe-scaffolding-config.json \
 		--template-dir /local/templates/php-laravel-scaffolding-v2
 	@echo "✅ TicTacToe API scaffolding generated!"
+	@echo "📋 Post-processing: Creating security interfaces..."
+	@mkdir -p laravel-api/generated-v2/tictactoe/lib/Security
+	@echo '<?php declare(strict_types=1);' > laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo '' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo 'namespace TicTacToeApiV2\Scaffolding\Security;' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo '' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo '/**' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo ' * Security Interface: bearerHttpAuthentication' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo ' *' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo ' * Generated from OpenAPI security scheme' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo ' * Type: http' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo ' * Scheme: Bearer' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo ' * Bearer Format: JWT' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo ' */' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo 'interface bearerHttpAuthenticationInterface' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo '{' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo '    /**' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo '     * Handle incoming request with http authentication' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo '     *' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo '     * @param \Illuminate\Http\Request $$request' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo '     * @param \Closure $$next' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo '     * @return \Symfony\Component\HttpFoundation\Response' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo '     */' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo '    public function handle(\Illuminate\Http\Request $$request, \Closure $$next): \Symfony\Component\HttpFoundation\Response;' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo '}' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
+	@echo "✅ Security interfaces created!"
 	@echo "📁 Output: laravel-api/generated-v2/tictactoe"
 
 generate-scaffolding-v2: generate-petshop-v2 generate-tictactoe-v2 ## Generate all API scaffolding (Solution 2 - with Post-processing)
@@ -230,18 +256,18 @@ test-laravel: ## Test Laravel application endpoints
 		curl -s 'http://localhost:8000/v2/pets?limit=3' | jq . || echo "⚠️  Pets endpoint with params (may be empty)"; \
 		echo ""; \
 		echo "Testing TicTacToe V2 endpoints:"; \
-		echo "  POST /api/v2/tictactoe/v1/games (create game)"; \
-		GAME_ID=$$(curl -s -X POST http://localhost:8000/api/v2/tictactoe/v1/games -H "Content-Type: application/json" -d '{"mode":"ai_easy"}' | jq -r '.id // "1"'); \
+		echo "  POST /v2/v1/games (create game)"; \
+		GAME_ID=$$(curl -s -X POST http://localhost:8000/v2/v1/games -H "Authorization: Bearer test-token" -H "Content-Type: application/json" -d '{"mode":"ai_easy"}' | jq -r '.id // "1"'); \
 		echo "  Created game ID: $$GAME_ID"; \
 		echo ""; \
-		echo "  GET /api/v2/tictactoe/v1/games/$$GAME_ID/board"; \
-		curl -s http://localhost:8000/api/v2/tictactoe/v1/games/$$GAME_ID/board | jq . || echo "⚠️  Board endpoint failed"; \
+		echo "  GET /v2/v1/games/$$GAME_ID/board"; \
+		curl -s http://localhost:8000/v2/v1/games/$$GAME_ID/board -H "Authorization: Bearer test-token" | jq . || echo "⚠️  Board endpoint failed"; \
 		echo ""; \
-		echo "  GET /api/v2/tictactoe/v1/games/$$GAME_ID/board/1/1"; \
-		curl -s http://localhost:8000/api/v2/tictactoe/v1/games/$$GAME_ID/board/1/1 | jq . || echo "⚠️  Square endpoint failed"; \
+		echo "  GET /v2/v1/games/$$GAME_ID/board/1/1"; \
+		curl -s http://localhost:8000/v2/v1/games/$$GAME_ID/board/1/1 -H "Authorization: Bearer test-token" | jq . || echo "⚠️  Square endpoint failed"; \
 		echo ""; \
-		echo "  PUT /api/v2/tictactoe/v1/games/$$GAME_ID/board/1/1 (mark: X)"; \
-		curl -s -X PUT http://localhost:8000/api/v2/tictactoe/v1/games/$$GAME_ID/board/1/1 -H "Content-Type: application/json" -d '{"mark":"X"}' | jq . || echo "⚠️  Put square endpoint failed"; \
+		echo "  PUT /v2/v1/games/$$GAME_ID/board/1/1 (mark: X)"; \
+		curl -s -X PUT http://localhost:8000/v2/v1/games/$$GAME_ID/board/1/1 -H "Authorization: Bearer test-token" -H "Content-Type: application/json" -d '{"mark":"X"}' | jq . || echo "⚠️  Put square endpoint failed"; \
 	else \
 		echo "❌ Laravel containers not running"; \
 		echo "   Start with: cd laravel-api && docker-compose up -d"; \
