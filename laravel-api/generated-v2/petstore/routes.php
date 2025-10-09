@@ -36,7 +36,7 @@
  *
  * // Wrap generated routes in a group
  * Route::group(['prefix' => 'v2', 'middleware' => ['api']], function ($router) {
- *     require base_path('generated/scaffolding/routes.php');
+ *     require base_path('generated/server/routes.php');
  * });
  * ```
  *

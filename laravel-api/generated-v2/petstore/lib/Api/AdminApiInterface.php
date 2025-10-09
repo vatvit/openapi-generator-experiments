@@ -18,7 +18,7 @@
  */
 
 
-namespace PetStoreApiV2\Scaffolding\Api;
+namespace PetStoreApiV2\Server\Api;
 
 use Illuminate\Http\JsonResponse;
 
@@ -66,7 +66,7 @@ interface DeletePetResponseInterface
 class DeletePet204Response implements DeletePetResponseInterface
 {
     public function __construct(
-        private readonly \PetStoreApiV2\Scaffolding\Models\NoContent204 $data
+        private readonly \PetStoreApiV2\Server\Models\NoContent204 $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -85,7 +85,7 @@ class DeletePet204Response implements DeletePetResponseInterface
 class DeletePet0Response implements DeletePetResponseInterface
 {
     public function __construct(
-        private readonly \PetStoreApiV2\Scaffolding\Models\Error $data
+        private readonly \PetStoreApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse

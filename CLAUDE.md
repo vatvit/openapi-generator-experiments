@@ -4,15 +4,15 @@ Instructions for Claude Code when working with this repository.
 
 ## Project Overview
 
-OpenAPI Generator experiments repository for generating Laravel server-side scaffolding from OpenAPI specifications.
+OpenAPI Generator experiments repository for generating Laravel server-side server from OpenAPI specifications.
 
-**Current Solution (V2)**: Uses OpenAPI Generator + post-processing to create clean, deduplicated scaffolding.
+**Current Solution (V2)**: Uses OpenAPI Generator + post-processing to create clean, deduplicated server.
 
 ## Quick Reference
 
 ```bash
 make help                       # Show all commands
-make generate-scaffolding-v2    # Generate both PetStore and TicTacToe APIs
+make generate-server-v2    # Generate both PetStore and TicTacToe APIs
 make test-complete-v2           # Run complete test suite
 ```
 
@@ -24,19 +24,19 @@ specs/                          # OpenAPI specifications (source of truth)
 └── tictactoe.json
 
 config-v2/                      # Generator configs (one per spec)
-├── petshop-scaffolding-config.json
-└── tictactoe-scaffolding-config.json
+├── petshop-server-config.json
+└── tictactoe-server-config.json
 
-templates/php-laravel-scaffolding-v2/  # Mustache templates
+templates/php-laravel-server-v2/  # Mustache templates
 
 scripts/
 ├── merge-controllers-simple.php       # Post-processor: merges tag-based controllers
 └── remove-tags.sh                     # Pre-processor: removes tags from spec
 
 laravel-api/
-├── generated-v2/                      # Generated scaffolding (external libraries)
-│   ├── petstore/lib/                 # PetStoreApiV2\Scaffolding namespace
-│   └── tictactoe/lib/                # TicTacToeApiV2\Scaffolding namespace
+├── generated-v2/                      # Generated server (external libraries)
+│   ├── petstore/lib/                 # PetStoreApiV2\Server namespace
+│   └── tictactoe/lib/                # TicTacToeApiV2\Server namespace
 ├── app/Handlers/V2/                   # Business logic implementations
 ├── app/Http/Middleware/               # Security middleware
 └── bootstrap/app.php                  # DI bindings and route registration
@@ -44,7 +44,7 @@ laravel-api/
 
 ## Architecture: External Library Pattern
 
-Generated scaffolding = **external library** included via PSR-4 autoloading.
+Generated server = **external library** included via PSR-4 autoloading.
 
 ### Key Components
 
@@ -79,7 +79,7 @@ Laravel App ← PSR-4 Autoload ← Composer ← Generated Files
 
 ### Standard Flow (Both APIs)
 ```bash
-make generate-scaffolding-v2
+make generate-server-v2
 ```
 
 This runs for each spec:
@@ -98,7 +98,7 @@ make generate-tictactoe-v2   # TicTacToe only
 ## Multiple Specs Setup
 
 Each spec has:
-- **Unique namespace**: `PetStoreApiV2\Scaffolding` vs `TicTacToeApiV2\Scaffolding`
+- **Unique namespace**: `PetStoreApiV2\Server` vs `TicTacToeApiV2\Server`
 - **Separate directory**: `generated-v2/petstore/` vs `generated-v2/tictactoe/`
 - **Own config file**: Different `invokerPackage` per spec
 
@@ -156,7 +156,7 @@ return new GetBoard200Response($board);
 ## Template Variables Reference
 
 Common Mustache variables:
-- `{{invokerPackage}}` - Base namespace (e.g., `TicTacToeApiV2\Scaffolding`)
+- `{{invokerPackage}}` - Base namespace (e.g., `TicTacToeApiV2\Server`)
 - `{{appName}}` - Controller name from `info.title`
 - `{{operationId}}` - Operation identifier
 - `{{httpMethod}}` - GET, POST, DELETE, etc.

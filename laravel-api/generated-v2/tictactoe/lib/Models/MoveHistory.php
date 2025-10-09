@@ -21,7 +21,7 @@
 /**
  * MoveHistory
  */
-namespace TicTacToeApiV2\Scaffolding\Models;
+namespace TicTacToeApiV2\Server\Models;
 
 /**
  * MoveHistory
@@ -38,7 +38,7 @@ class MoveHistory
     * @param string $gameId
     *
     * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Move[] $moves
+    * @param \TicTacToeApiV2\Server\Models\Move[] $moves
     */
 
     public function __construct(

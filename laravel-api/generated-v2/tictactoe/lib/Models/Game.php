@@ -21,7 +21,7 @@
 /**
  * Game
  */
-namespace TicTacToeApiV2\Scaffolding\Models;
+namespace TicTacToeApiV2\Server\Models;
 
 /**
  * Game
@@ -38,25 +38,25 @@ class Game
     * @param string $id
     *
     * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\GameStatus $status
+    * @param \TicTacToeApiV2\Server\Models\GameStatus $status
     *
     * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\GameMode $mode
+    * @param \TicTacToeApiV2\Server\Models\GameMode $mode
     *
     * Player assigned to X marks
-    * @param \TicTacToeApiV2\Scaffolding\Models\Player $playerX
+    * @param \TicTacToeApiV2\Server\Models\Player $playerX
     *
     * Player assigned to O marks
-    * @param \TicTacToeApiV2\Scaffolding\Models\Player $playerO
+    * @param \TicTacToeApiV2\Server\Models\Player $playerO
     *
     * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Mark $currentTurn
+    * @param \TicTacToeApiV2\Server\Models\Mark $currentTurn
     *
     * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Winner $winner
+    * @param \TicTacToeApiV2\Server\Models\Winner $winner
     *
     * 3x3 game board represented as nested arrays
-    * @param \TicTacToeApiV2\Scaffolding\Models\Mark[][] $board
+    * @param \TicTacToeApiV2\Server\Models\Mark[][] $board
     *
     * Game creation timestamp
     * @param \DateTime $createdAt
@@ -70,12 +70,12 @@ class Game
 
     public function __construct(
         public string $id,
-        public \TicTacToeApiV2\Scaffolding\Models\GameStatus $status,
-        public \TicTacToeApiV2\Scaffolding\Models\GameMode $mode,
-        public \TicTacToeApiV2\Scaffolding\Models\Player $playerX,
-        public \TicTacToeApiV2\Scaffolding\Models\Player $playerO,
-        public \TicTacToeApiV2\Scaffolding\Models\Mark $currentTurn,
-        public \TicTacToeApiV2\Scaffolding\Models\Winner $winner,
+        public \TicTacToeApiV2\Server\Models\GameStatus $status,
+        public \TicTacToeApiV2\Server\Models\GameMode $mode,
+        public \TicTacToeApiV2\Server\Models\Player $playerX,
+        public \TicTacToeApiV2\Server\Models\Player $playerO,
+        public \TicTacToeApiV2\Server\Models\Mark $currentTurn,
+        public \TicTacToeApiV2\Server\Models\Winner $winner,
         public array $board,
         public \DateTime $createdAt,
         public \DateTime $updatedAt,

@@ -4,7 +4,7 @@ Simple handler implementations for the extended TicTacToe API (10 operations).
 
 ## Overview
 
-These handlers implement the business logic for the TicTacToe API v2. They are intentionally simple, returning mock data to demonstrate the handler pattern and integration with the generated scaffolding.
+These handlers implement the business logic for the TicTacToe API v2. They are intentionally simple, returning mock data to demonstrate the handler pattern and integration with the generated server.
 
 ## Handlers
 
@@ -77,7 +77,7 @@ These handlers implement the business logic for the TicTacToe API v2. They are i
 - **Parameters**: `timeframe` (daily/weekly/monthly/all-time), `limit`
 - **Response**: HTTP 200 with Leaderboard object
 
-## Integration with Generated Scaffolding
+## Integration with Generated Server
 
 Each handler:
 1. **Implements the generated interface** from `lib/Api/*ApiInterface.php`

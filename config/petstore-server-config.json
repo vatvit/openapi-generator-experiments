@@ -1,0 +1,28 @@
+{
+  "invokerPackage": "PetStoreApi\\Server",
+  "modelPackage": "Models",
+  "apiPackage": "Api",
+  "packageName": "petstore-api-server",
+  "packageVersion": "1.0.0",
+  "packageUrl": "",
+  "packageDescription": "Generated PetStore API server",
+  "packageKeywords": ["petstore", "api", "server", "openapi"],
+  "packageCompany": "",
+  "packageCompanyUrl": "",
+  "packageAuthors": [
+    {
+      "name": "OpenAPI Generator",
+      "homepage": "https://openapi-generator.tech"
+    }
+  ],
+  "composerVendorName": "petstore-api",
+  "composerPackageName": "server",
+  "gitUserId": "",
+  "gitRepoId": "",
+  "artifactVersion": "1.0.0",
+  "srcBasePath": "lib",
+  "variableNamingConvention": "camelCase",
+  "hideGenerationTimestamp": true,
+  "withGeneratorVersionComment": false,
+  "appName": "PetStoreApiController"
+}

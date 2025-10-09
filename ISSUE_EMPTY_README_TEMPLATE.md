@@ -14,7 +14,7 @@ Exception in thread "main" org.openapitools.codegen.TemplateProcessingException:
 
 - After deleting the `generated-v2/` directory
 - On first run with custom templates
-- When `templates/php-laravel-scaffolding-v2/README.mustache` is empty or missing content
+- When `templates/php-laravel-server-v2/README.mustache` is empty or missing content
 
 ## Root Cause
 
@@ -24,7 +24,7 @@ This is a validation check in the OpenAPI Generator core to catch template error
 
 ## Solution
 
-Ensure `templates/php-laravel-scaffolding-v2/README.mustache` has content.
+Ensure `templates/php-laravel-server-v2/README.mustache` has content.
 
 ### Minimal Valid Template
 
@@ -33,9 +33,9 @@ Ensure `templates/php-laravel-scaffolding-v2/README.mustache` has content.
 
 {{packageDescription}}
 
-## Generated API Scaffolding
+## Generated API Server
 
-This scaffolding was generated from an OpenAPI specification.
+This server was generated from an OpenAPI specification.
 ```
 
 ### Complete Template Example
@@ -45,9 +45,9 @@ This scaffolding was generated from an OpenAPI specification.
 
 {{packageDescription}}
 
-## Generated API Scaffolding
+## Generated API Server
 
-This package contains Laravel server-side scaffolding generated from an OpenAPI specification.
+This package contains Laravel server-side server generated from an OpenAPI specification.
 
 ### Components
 
@@ -80,10 +80,10 @@ If you encounter this error:
 
 ```bash
 # Add minimal content to README template
-echo "# {{packageName}}\n\n{{packageDescription}}" > templates/php-laravel-scaffolding-v2/README.mustache
+echo "# {{packageName}}\n\n{{packageDescription}}" > templates/php-laravel-server-v2/README.mustache
 
 # Regenerate
-make generate-scaffolding-v2
+make generate-server-v2
 ```
 
 ## Related Template Files

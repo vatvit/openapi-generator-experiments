@@ -1,6 +1,6 @@
-# Laravel Server Scaffolding from OpenAPI: V2 Solution
+# Laravel Server Server from OpenAPI: V2 Solution
 
-> **Automated generation of type-safe Laravel server scaffolding from OpenAPI specifications**
+> **Automated generation of type-safe Laravel server server from OpenAPI specifications**
 
 **Target Audience:** Developers and Architects
 **Presentation Date:** 2025-10-09
@@ -51,7 +51,7 @@
 ### V2: OpenAPI Generator + Custom Templates + Post-Processing
 
 ```
-OpenAPI Spec → Pre-Process → Generate → Post-Process → Laravel Scaffolding
+OpenAPI Spec → Pre-Process → Generate → Post-Process → Laravel Server
      ↓              ↓            ↓           ↓              ↓
 Source of     Remove tags   Custom      Create        Type-safe,
   Truth       (optional)   templates   security      deduplicated,
@@ -72,13 +72,13 @@ Source of     Remove tags   Custom      Create        Type-safe,
 
 ### External Library Pattern
 
-Generated scaffolding = **external PHP library** that Laravel includes via PSR-4 autoloading.
+Generated server = **external PHP library** that Laravel includes via PSR-4 autoloading.
 
 ```
 laravel-api/
 ├── generated-v2/                    # External libraries (generated)
-│   ├── petstore/lib/                # PetStoreApiV2\Scaffolding
-│   └── tictactoe/lib/               # TicTacToeApiV2\Scaffolding
+│   ├── petstore/lib/                # PetStoreApiV2\Server
+│   └── tictactoe/lib/               # TicTacToeApiV2\Server
 │
 ├── app/                             # Laravel application (manual)
 │   ├── Handlers/V2/                 # Business logic
@@ -181,11 +181,11 @@ openapi-generator-experiments/
 │   └── tictactoe.json               # TicTacToe API (game logic)
 │
 ├── config-v2/                       # Generator configurations
-│   ├── petshop-scaffolding-config.json
-│   └── tictactoe-scaffolding-config.json
+│   ├── petshop-server-config.json
+│   └── tictactoe-server-config.json
 │
 ├── templates/                       # Custom Mustache templates
-│   └── php-laravel-scaffolding-v2/
+│   └── php-laravel-server-v2/
 │       ├── api.mustache             # API interfaces & responses
 │       ├── api_controller.mustache  # Abstract controllers
 │       ├── routes.mustache          # Laravel routes
@@ -205,7 +205,7 @@ openapi-generator-experiments/
 
 ```
 laravel-api/
-├── generated-v2/                    # Generated scaffolding
+├── generated-v2/                    # Generated server
 │   ├── petstore/
 │   │   ├── lib/
 │   │   │   ├── Api/DefaultApiInterface.php
@@ -251,11 +251,11 @@ Key elements:
 
 ### Step 2: Create Generator Configuration
 
-**Example:** `config-v2/tictactoe-scaffolding-config.json`
+**Example:** `config-v2/tictactoe-server-config.json`
 
 ```json
 {
-  "invokerPackage": "TicTacToeApiV2\\Scaffolding",
+  "invokerPackage": "TicTacToeApiV2\\Server",
   "modelPackage": "Models",
   "apiPackage": "Api"
 }
@@ -279,7 +279,7 @@ make generate-tictactoe-v2
    - Avoids tag-based controller duplication
 
 2. **Generate**: OpenAPI Generator runs with custom templates
-   - Uses `templates/php-laravel-scaffolding-v2/`
+   - Uses `templates/php-laravel-server-v2/`
    - Outputs to `laravel-api/generated-v2/tictactoe/`
 
 3. **Post-process**: Creates security interfaces
@@ -295,7 +295,7 @@ make generate-tictactoe-v2
 {
   "autoload": {
     "psr-4": {
-      "TicTacToeApiV2\\Scaffolding\\": "generated-v2/tictactoe/lib/"
+      "TicTacToeApiV2\\Server\\": "generated-v2/tictactoe/lib/"
     }
   }
 }
@@ -359,21 +359,21 @@ curl http://localhost:8000/api/v1/games/123/board \
 
 **PetStore:**
 - Spec: `specs/petshop-extended.yaml`
-- Config: `config-v2/petshop-scaffolding-config.json`
-- Namespace: `PetStoreApiV2\Scaffolding`
+- Config: `config-v2/petshop-server-config.json`
+- Namespace: `PetStoreApiV2\Server`
 - Output: `laravel-api/generated-v2/petstore/`
 
 **TicTacToe:**
 - Spec: `specs/tictactoe.json`
-- Config: `config-v2/tictactoe-scaffolding-config.json`
-- Namespace: `TicTacToeApiV2\Scaffolding`
+- Config: `config-v2/tictactoe-server-config.json`
+- Namespace: `TicTacToeApiV2\Server`
 - Output: `laravel-api/generated-v2/tictactoe/`
 
 ### No Collisions
 
 Different namespaces = different classes:
-- `PetStoreApiV2\Scaffolding\Http\Controllers\DefaultController`
-- `TicTacToeApiV2\Scaffolding\Http\Controllers\DefaultController`
+- `PetStoreApiV2\Server\Http\Controllers\DefaultController`
+- `TicTacToeApiV2\Server\Http\Controllers\DefaultController`
 
 Same class name, different namespace = ✅ Works perfectly
 
@@ -620,8 +620,8 @@ Runs entire pipeline:
 ### Quick Start
 
 ```bash
-# 1. Generate scaffolding for both APIs
-make generate-scaffolding-v2
+# 1. Generate server for both APIs
+make generate-server-v2
 
 # 2. Start Laravel containers
 cd laravel-api && docker-compose up -d
@@ -645,10 +645,10 @@ make generate-tictactoe-v2   # TicTacToe only
 
 1. **Create OpenAPI spec:** `specs/myapi.yaml`
 
-2. **Create config:** `config-v2/myapi-scaffolding-config.json`
+2. **Create config:** `config-v2/myapi-server-config.json`
    ```json
    {
-     "invokerPackage": "MyApiV2\\Scaffolding",
+     "invokerPackage": "MyApiV2\\Server",
      "modelPackage": "Models",
      "apiPackage": "Api"
    }
@@ -658,7 +658,7 @@ make generate-tictactoe-v2   # TicTacToe only
 
 4. **Add PSR-4 autoload:** `laravel-api/composer.json`
    ```json
-   "MyApiV2\\Scaffolding\\": "generated-v2/myapi/lib/"
+   "MyApiV2\\Server\\": "generated-v2/myapi/lib/"
    ```
 
 5. **Implement handlers:** `laravel-api/app/Handlers/V2/`
@@ -691,7 +691,7 @@ make validate-spec
 
 ### 1. External Library Pattern
 
-**Decision:** Generate scaffolding as external library, not in `app/`
+**Decision:** Generate server as external library, not in `app/`
 
 **Reasoning:**
 - ✅ Clean separation (generated vs manual code)
@@ -812,15 +812,15 @@ make validate-spec
 
 ### Configuration
 
-- **PetStore config:** `config-v2/petshop-scaffolding-config.json`
-- **TicTacToe config:** `config-v2/tictactoe-scaffolding-config.json`
+- **PetStore config:** `config-v2/petshop-server-config.json`
+- **TicTacToe config:** `config-v2/tictactoe-server-config.json`
 
 ### Templates
 
-- **Template directory:** `templates/php-laravel-scaffolding-v2/`
-- **API interfaces:** `templates/php-laravel-scaffolding-v2/api.mustache`
-- **Controllers:** `templates/php-laravel-scaffolding-v2/api_controller.mustache`
-- **Routes:** `templates/php-laravel-scaffolding-v2/routes.mustache`
+- **Template directory:** `templates/php-laravel-server-v2/`
+- **API interfaces:** `templates/php-laravel-server-v2/api.mustache`
+- **Controllers:** `templates/php-laravel-server-v2/api_controller.mustache`
+- **Routes:** `templates/php-laravel-server-v2/routes.mustache`
 
 ### Generated Code (TicTacToe Example)
 
@@ -888,7 +888,7 @@ make validate-spec
 
 ### Key Takeaways
 
-1. **Automated scaffolding generation** from OpenAPI specs
+1. **Automated server generation** from OpenAPI specs
 2. **Type-safe** handlers and responses
 3. **Multi-spec support** with namespace isolation
 4. **Security** via generated interfaces + middleware
@@ -901,7 +901,7 @@ make validate-spec
 # Clone and run
 git clone <repo>
 cd openapi-generator-experiments
-make generate-scaffolding-v2
+make generate-server-v2
 cd laravel-api && docker-compose up -d
 curl http://localhost:8000/api/v1/games
 ```

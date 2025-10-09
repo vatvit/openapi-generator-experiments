@@ -2,12 +2,12 @@
 
 namespace App\Handlers\V2;
 
-use TicTacToeApiV2\Scaffolding\Api\GetLeaderboardHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetLeaderboardResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetLeaderboard200Response;
-use TicTacToeApiV2\Scaffolding\Models\Leaderboard;
-use TicTacToeApiV2\Scaffolding\Models\LeaderboardEntry;
-use TicTacToeApiV2\Scaffolding\Models\Player;
+use TicTacToeApiV2\Server\Api\GetLeaderboardHandlerInterface;
+use TicTacToeApiV2\Server\Api\GetLeaderboardResponseInterface;
+use TicTacToeApiV2\Server\Api\GetLeaderboard200Response;
+use TicTacToeApiV2\Server\Models\Leaderboard;
+use TicTacToeApiV2\Server\Models\LeaderboardEntry;
+use TicTacToeApiV2\Server\Models\Player;
 
 /**
  * Handler for getLeaderboard operation
@@ -16,7 +16,7 @@ use TicTacToeApiV2\Scaffolding\Models\Player;
 class GetLeaderboardHandler implements GetLeaderboardHandlerInterface
 {
     public function handle(
-        ?\TicTacToeApiV2\Scaffolding\Models\GetLeaderboardTimeframeParameter $timeframe,
+        ?\TicTacToeApiV2\Server\Models\GetLeaderboardTimeframeParameter $timeframe,
         ?int $limit
     ): GetLeaderboardResponseInterface
     {

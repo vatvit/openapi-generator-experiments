@@ -24,8 +24,8 @@ OpenAPI Generator's `php-laravel` generator creates **one controller per tag**, 
 
 **Files**:
 - Spec: `specs/tictactoe.json` (would need modification to remove multi-tags)
-- Config: `config/tictactoe-scaffolding-config.json`
-- Templates: `templates/php-laravel-scaffolding/`
+- Config: `config/tictactoe-server-config.json`
+- Templates: `templates/php-laravel-server/`
 - Output: `laravel-api/generated/tictactoe/`
 
 **Command**:
@@ -52,9 +52,9 @@ make test-complete
   - `specs/petshop-extended.yaml` (UNCHANGED)
   - `specs/tictactoe.json` (UNCHANGED - keeps original multi-tags)
 - Config:
-  - `config-v2/petshop-scaffolding-config.json`
-  - `config-v2/tictactoe-scaffolding-config.json`
-- Templates: `templates/php-laravel-scaffolding-v2/` (same as v1)
+  - `config-v2/petshop-server-config.json`
+  - `config-v2/tictactoe-server-config.json`
+- Templates: `templates/php-laravel-server-v2/` (same as v1)
 - Post-processor: `scripts/merge-controllers-simple.php`
 - Output:
   - `laravel-api/generated-v2/petstore/`
@@ -63,7 +63,7 @@ make test-complete
 **Commands**:
 ```bash
 # Generate both specs
-make generate-scaffolding-v2
+make generate-server-v2
 
 # Or generate individually
 make generate-petshop-v2
@@ -74,7 +74,7 @@ make test-complete-v2
 ```
 
 **Process**:
-1. Generate scaffolding from OpenAPI spec (creates tag-based controllers)
+1. Generate server from OpenAPI spec (creates tag-based controllers)
 2. Run merge script to combine into single DefaultController
 3. Delete original tag-based controllers
 
@@ -129,4 +129,4 @@ make clean && make test-complete
 make clean-v2 && make test-complete-v2
 ```
 
-Both generate valid scaffolding, but Solution 2 is the production-ready approach that preserves the OpenAPI specification integrity.
+Both generate valid server, but Solution 2 is the production-ready approach that preserves the OpenAPI specification integrity.

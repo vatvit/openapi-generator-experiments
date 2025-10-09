@@ -1,24 +1,24 @@
-# petstore-api-scaffolding-v2
+# petstore-api-server-v2
 
-Generated PetStore API scaffolding (Solution 2 - Single Controller)
+Generated PetStore API server (Solution 2 - Single Controller)
 
-## Generated API Scaffolding
+## Generated API Server
 
-This is auto-generated Laravel API scaffolding from OpenAPI specification.
+This is auto-generated Laravel API server from OpenAPI specification.
 
 ### Version
 1.0.0
 
 ### Installation
 
-This scaffolding is designed to be included in a Laravel application via PSR-4 autoloading.
+This server is designed to be included in a Laravel application via PSR-4 autoloading.
 
 Add to your `composer.json`:
 ```json
 {
   "autoload": {
     "psr-4": {
-      "PetStoreApiV2\Scaffolding\\": "path/to/generated/scaffolding/lib/"
+      "PetStoreApiV2\Server\\": "path/to/generated/server/lib/"
     }
   }
 }
@@ -33,7 +33,7 @@ composer dumpautoload
 
 1. **Include generated routes** in your `routes/api.php`:
 ```php
-$generatedRoutesPath = base_path('generated/scaffolding/routes.php');
+$generatedRoutesPath = base_path('generated/server/routes.php');
 if (file_exists($generatedRoutesPath)) {
     app()->bind('PetStoreApiController', \App\Http\Controllers\Api\YourController::class);
 
@@ -45,7 +45,7 @@ if (file_exists($generatedRoutesPath)) {
 
 2. **Extend the generated controller** in your application:
 ```php
-use PetStoreApiV2\Scaffolding\Http\Controllers\DefaultController;
+use PetStoreApiV2\Server\Http\Controllers\DefaultController;
 
 class YourController extends DefaultController
 {

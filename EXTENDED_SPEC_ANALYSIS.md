@@ -277,7 +277,7 @@ $serde = new SerdeCommon();
 $createGameRequest = $serde->deserialize(
     $request->getContent(),
     from: 'json',
-    to: \TicTacToeApiV2\Scaffolding\Models\CreateGameRequest::class
+    to: \TicTacToeApiV2\Server\Models\CreateGameRequest::class
 );
 ```
 
@@ -362,7 +362,7 @@ protected function getGameValidationRules(string $gameId): array
 ```php
 // In routes/api.php
 Route::prefix('v1')->group(function () {
-    require base_path('generated/scaffolding/routes.php');
+    require base_path('generated/server/routes.php');
 });
 ```
 
@@ -410,6 +410,6 @@ The extended TicTacToe spec demonstrates that OpenAPI Generator handles real-wor
 - ⚠️ Response headers documented but not implemented
 - ⚠️ Server URL prefix requires routing configuration
 
-**Overall Assessment**: The generator produces production-ready scaffolding that requires minimal customization in the application layer to add missing validations and response header handling.
+**Overall Assessment**: The generator produces production-ready server that requires minimal customization in the application layer to add missing validations and response header handling.
 
 The post-processing merge solution proves robust across different spec complexities, successfully handling the jump from 3 to 10 operations and 2 to 4 tags without any code changes.

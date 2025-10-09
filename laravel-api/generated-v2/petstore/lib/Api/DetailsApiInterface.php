@@ -18,7 +18,7 @@
  */
 
 
-namespace PetStoreApiV2\Scaffolding\Api;
+namespace PetStoreApiV2\Server\Api;
 
 use Illuminate\Http\JsonResponse;
 
@@ -66,7 +66,7 @@ interface FindPetByIdResponseInterface
 class FindPetById200Response implements FindPetByIdResponseInterface
 {
     public function __construct(
-        private readonly \PetStoreApiV2\Scaffolding\Models\Pet $data
+        private readonly \PetStoreApiV2\Server\Models\Pet $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -85,7 +85,7 @@ class FindPetById200Response implements FindPetByIdResponseInterface
 class FindPetById0Response implements FindPetByIdResponseInterface
 {
     public function __construct(
-        private readonly \PetStoreApiV2\Scaffolding\Models\Error $data
+        private readonly \PetStoreApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse

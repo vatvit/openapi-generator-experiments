@@ -7,7 +7,7 @@ Generated model classes show PSR-4 compliance warnings with duplicate namespace 
 ## Error Message
 
 ```
-Class PetStoreApi\Scaffolding\PetStoreApi\Scaffolding\Models\Pet does not comply with psr-4 autoloading standard
+Class PetStoreApi\Server\PetStoreApi\Server\Models\Pet does not comply with psr-4 autoloading standard
 ```
 
 ## Root Cause
@@ -17,7 +17,7 @@ OpenAPI Generator's php-laravel template has a bug where the model namespace is 
 **Generated code:**
 ```php
 <?php
-namespace PetStoreApi\Scaffolding\PetStoreApi\Scaffolding\Models;  // Duplicate!
+namespace PetStoreApi\Server\PetStoreApi\Server\Models;  // Duplicate!
 
 class Pet {
     // ...
@@ -27,7 +27,7 @@ class Pet {
 **Expected code:**
 ```php
 <?php
-namespace PetStoreApi\Scaffolding\Models;  // Correct
+namespace PetStoreApi\Server\Models;  // Correct
 
 class Pet {
     // ...
@@ -63,7 +63,7 @@ This is a template bug, not specific to this project. It affects all users of th
 
 **If you need to use models:**
 - Create custom model templates with corrected namespace
-- Copy from `templates/php-laravel-scaffolding-v2/model.mustache`
+- Copy from `templates/php-laravel-server-v2/model.mustache`
 - Fix the namespace concatenation logic
 
 ## Solution Options

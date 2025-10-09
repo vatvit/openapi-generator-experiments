@@ -357,13 +357,13 @@ class SecurityMetadata
 
 ### Step 1: Create Security Interface Template
 
-File: `templates/php-laravel-scaffolding/security_interface.mustache`
+File: `templates/php-laravel-server/security_interface.mustache`
 
 Generate one interface file per security scheme.
 
 ### Step 2: Update Routes Template
 
-File: `templates/php-laravel-scaffolding/routes.mustache`
+File: `templates/php-laravel-server/routes.mustache`
 
 Add:
 - Security documentation in comments
@@ -377,7 +377,7 @@ Update generator config to include security interfaces as supporting files.
 ### Step 4: Generate
 
 ```bash
-make generate-scaffolding-v2
+make generate-server-v2
 ```
 
 **No Java coding, no generator extension, no external parsers needed!**

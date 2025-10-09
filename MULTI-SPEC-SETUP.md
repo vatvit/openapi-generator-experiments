@@ -35,20 +35,20 @@ laravel-api/generated/
 
 ### Config Files
 
-**config/petstore-scaffolding-config.json:**
+**config/petstore-server-config.json:**
 ```json
 {
-  "invokerPackage": "PetStoreApi\\Scaffolding",
+  "invokerPackage": "PetStoreApi\\Server",
   "modelPackage": "Models",
   "apiPackage": "Api",
   "appName": "PetStoreApiController"
 }
 ```
 
-**config/tictactoe-scaffolding-config.json:**
+**config/tictactoe-server-config.json:**
 ```json
 {
-  "invokerPackage": "TicTacToeApi\\Scaffolding",
+  "invokerPackage": "TicTacToeApi\\Server",
   "modelPackage": "Models",
   "apiPackage": "Api",
   "appName": "TicTacToeApiController"
@@ -59,7 +59,7 @@ laravel-api/generated/
 
 ```bash
 # Generate both APIs
-make generate-scaffolding
+make generate-server
 
 # Or generate individually:
 make generate-petstore
@@ -70,15 +70,15 @@ docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate \
   -i /local/specs/petshop-extended.yaml \
   -g php-laravel \
   -o /local/laravel-api/generated/petstore \
-  -c /local/config/petstore-scaffolding-config.json \
-  --template-dir /local/templates/php-laravel-scaffolding
+  -c /local/config/petstore-server-config.json \
+  --template-dir /local/templates/php-laravel-server
 
 docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate \
   -i /local/specs/tictactoe.json \
   -g php-laravel \
   -o /local/laravel-api/generated/tictactoe \
-  -c /local/config/tictactoe-scaffolding-config.json \
-  --template-dir /local/templates/php-laravel-scaffolding
+  -c /local/config/tictactoe-server-config.json \
+  --template-dir /local/templates/php-laravel-server
 ```
 
 ### Bootstrap Configuration
@@ -92,17 +92,17 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 
 // PetStore API imports
-use PetStoreApi\Scaffolding\Api\FindPetsHandlerInterface;
-use PetStoreApi\Scaffolding\Api\FindPetByIdHandlerInterface;
-use PetStoreApi\Scaffolding\Api\AddPetHandlerInterface;
-use PetStoreApi\Scaffolding\Api\DeletePetHandlerInterface;
-use PetStoreApi\Scaffolding\Http\Controllers\DefaultController as PetStoreController;
+use PetStoreApi\Server\Api\FindPetsHandlerInterface;
+use PetStoreApi\Server\Api\FindPetByIdHandlerInterface;
+use PetStoreApi\Server\Api\AddPetHandlerInterface;
+use PetStoreApi\Server\Api\DeletePetHandlerInterface;
+use PetStoreApi\Server\Http\Controllers\DefaultController as PetStoreController;
 
 // TicTacToe API imports
-use TicTacToeApi\Scaffolding\Api\GetBoardHandlerInterface;
-use TicTacToeApi\Scaffolding\Api\GetSquareHandlerInterface;
-use TicTacToeApi\Scaffolding\Api\PutSquareHandlerInterface;
-use TicTacToeApi\Scaffolding\Http\Controllers\DefaultController as TicTacToeController;
+use TicTacToeApi\Server\Api\GetBoardHandlerInterface;
+use TicTacToeApi\Server\Api\GetSquareHandlerInterface;
+use TicTacToeApi\Server\Api\PutSquareHandlerInterface;
+use TicTacToeApi\Server\Http\Controllers\DefaultController as TicTacToeController;
 
 // Handler implementations
 use App\Handlers\FindPetsHandler;
@@ -173,8 +173,8 @@ laravel-api/app/Handlers/
 
 1. **Different output directories** (`-o` flag) - Prevents file collisions
 2. **Different namespaces** (`invokerPackage`) - Prevents class collisions
-   - PetStore: `PetStoreApi\Scaffolding`
-   - TicTacToe: `TicTacToeApi\Scaffolding`
+   - PetStore: `PetStoreApi\Server`
+   - TicTacToe: `TicTacToeApi\Server`
 3. **Import aliases** - Use `as` keyword when importing same class names
    - Both generate `DefaultController` but in different namespaces
 4. **Class aliases** - Map controller names from specs to actual classes

@@ -2,11 +2,11 @@
 
 namespace App\Handlers\V2;
 
-use TicTacToeApiV2\Scaffolding\Api\GetSquareHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetSquareResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetSquare200Response;
-use TicTacToeApiV2\Scaffolding\Models\SquareResponse;
-use TicTacToeApiV2\Scaffolding\Models\Mark;
+use TicTacToeApiV2\Server\Api\GetSquareHandlerInterface;
+use TicTacToeApiV2\Server\Api\GetSquareResponseInterface;
+use TicTacToeApiV2\Server\Api\GetSquare200Response;
+use TicTacToeApiV2\Server\Models\SquareResponse;
+use TicTacToeApiV2\Server\Models\Mark;
 
 /**
  * Handler for getSquare operation
@@ -18,8 +18,8 @@ class GetSquareHandler implements GetSquareHandlerInterface
     {
         // Example: Return 404 NotFound if game doesn't exist
         if ($gameId === '00000000-0000-0000-0000-000000000000') {
-            return new \TicTacToeApiV2\Scaffolding\Api\GetSquare404Response(
-                new \TicTacToeApiV2\Scaffolding\Models\Error(
+            return new \TicTacToeApiV2\Server\Api\GetSquare404Response(
+                new \TicTacToeApiV2\Server\Models\Error(
                     code: 'GAME_NOT_FOUND',
                     message: 'Game not found with the provided ID'
                 )
@@ -30,8 +30,8 @@ class GetSquareHandler implements GetSquareHandlerInterface
         // This would be caught by path parameter validation, but showing as example
         // Uncomment to demonstrate:
         // if ($row < 1 || $row > 3 || $column < 1 || $column > 3) {
-        //     return new \TicTacToeApiV2\Scaffolding\Api\GetSquare400Response(
-        //         new \TicTacToeApiV2\Scaffolding\Models\Error(
+        //     return new \TicTacToeApiV2\Server\Api\GetSquare400Response(
+        //         new \TicTacToeApiV2\Server\Models\Error(
         //             code: 'INVALID_COORDINATES',
         //             message: 'Row and column must be between 1 and 3'
         //         )

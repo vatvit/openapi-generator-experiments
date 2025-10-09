@@ -27,12 +27,12 @@ Route::get('/health', function () {
     ]);
 });
 
-// TicTacToe V1 API Routes
-// Use GameplayController which has all operations (getBoard, getSquare, putSquare)
-Route::prefix('tictactoe')->group(function ($router) {
-    app()->bind('Tic Tac Toe', \TicTacToeApi\Scaffolding\Http\Controllers\GameplayController::class);
-    require base_path('generated/tictactoe/routes.php');
-});
+// TicTacToe V1 API Routes - DISABLED (V1 not regenerated yet)
+// // Use GameplayController which has all operations (getBoard, getSquare, putSquare)
+// Route::prefix('tictactoe')->group(function ($router) {
+//     app()->bind('Tic Tac Toe', \TicTacToeApi\Server\Http\Controllers\GameplayController::class);
+//     require base_path('generated/tictactoe/routes.php');
+// });
 
 // TicTacToe V2 API Routes
 Route::get('/v2/test', function () {
@@ -41,7 +41,7 @@ Route::get('/v2/test', function () {
 
 // Bind the controller name from OpenAPI spec to the concrete controller
 Route::prefix('v2/tictactoe')->group(function ($router) {
-    app()->bind('Tic Tac Toe', \TicTacToeApiV2\Scaffolding\Http\Controllers\DefaultController::class);
+    app()->bind('Tic Tac Toe', \TicTacToeApiV2\Server\Http\Controllers\DefaultController::class);
     require base_path('generated-v2/tictactoe/routes.php');
 });
 

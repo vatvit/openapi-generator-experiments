@@ -2,11 +2,11 @@
 
 namespace App\Handlers\V2;
 
-use TicTacToeApiV2\Scaffolding\Api\GetPlayerStatsHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetPlayerStatsResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetPlayerStats200Response;
-use TicTacToeApiV2\Scaffolding\Models\PlayerStats;
-use TicTacToeApiV2\Scaffolding\Models\Player;
+use TicTacToeApiV2\Server\Api\GetPlayerStatsHandlerInterface;
+use TicTacToeApiV2\Server\Api\GetPlayerStatsResponseInterface;
+use TicTacToeApiV2\Server\Api\GetPlayerStats200Response;
+use TicTacToeApiV2\Server\Models\PlayerStats;
+use TicTacToeApiV2\Server\Models\Player;
 
 /**
  * Handler for getPlayerStats operation
@@ -18,8 +18,8 @@ class GetPlayerStatsHandler implements GetPlayerStatsHandlerInterface
     {
         // Example: Return 404 NotFound if player doesn't exist
         if ($playerId === '00000000-0000-0000-0000-000000000000') {
-            return new \TicTacToeApiV2\Scaffolding\Api\GetPlayerStats404Response(
-                new \TicTacToeApiV2\Scaffolding\Models\Error(
+            return new \TicTacToeApiV2\Server\Api\GetPlayerStats404Response(
+                new \TicTacToeApiV2\Server\Models\Error(
                     code: 'PLAYER_NOT_FOUND',
                     message: 'Player not found with the provided ID'
                 )

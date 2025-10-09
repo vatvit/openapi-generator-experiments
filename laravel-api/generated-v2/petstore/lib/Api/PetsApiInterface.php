@@ -18,7 +18,7 @@
  */
 
 
-namespace PetStoreApiV2\Scaffolding\Api;
+namespace PetStoreApiV2\Server\Api;
 
 use Illuminate\Http\JsonResponse;
 
@@ -28,11 +28,11 @@ interface PetsApiInterface {
 
     /**
      * Operation addPet
-     * @param \PetStoreApiV2\Scaffolding\Models\NewPet $newPet
+     * @param \PetStoreApiV2\Server\Models\NewPet $newPet
      * @return AddPetResponseInterface
      */
     public function addPet(
-            \PetStoreApiV2\Scaffolding\Models\NewPet $newPet,
+            \PetStoreApiV2\Server\Models\NewPet $newPet,
     ): AddPetResponseInterface;
 
 
@@ -137,7 +137,7 @@ interface FindPetsResponseInterface
 class AddPet200Response implements AddPetResponseInterface
 {
     public function __construct(
-        private readonly \PetStoreApiV2\Scaffolding\Models\Pet $data
+        private readonly \PetStoreApiV2\Server\Models\Pet $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -156,7 +156,7 @@ class AddPet200Response implements AddPetResponseInterface
 class AddPet0Response implements AddPetResponseInterface
 {
     public function __construct(
-        private readonly \PetStoreApiV2\Scaffolding\Models\Error $data
+        private readonly \PetStoreApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -175,7 +175,7 @@ class AddPet0Response implements AddPetResponseInterface
 class DeletePet204Response implements DeletePetResponseInterface
 {
     public function __construct(
-        private readonly \PetStoreApiV2\Scaffolding\Models\NoContent204 $data
+        private readonly \PetStoreApiV2\Server\Models\NoContent204 $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -194,7 +194,7 @@ class DeletePet204Response implements DeletePetResponseInterface
 class DeletePet0Response implements DeletePetResponseInterface
 {
     public function __construct(
-        private readonly \PetStoreApiV2\Scaffolding\Models\Error $data
+        private readonly \PetStoreApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -213,7 +213,7 @@ class DeletePet0Response implements DeletePetResponseInterface
 class FindPetById200Response implements FindPetByIdResponseInterface
 {
     public function __construct(
-        private readonly \PetStoreApiV2\Scaffolding\Models\Pet $data
+        private readonly \PetStoreApiV2\Server\Models\Pet $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -232,7 +232,7 @@ class FindPetById200Response implements FindPetByIdResponseInterface
 class FindPetById0Response implements FindPetByIdResponseInterface
 {
     public function __construct(
-        private readonly \PetStoreApiV2\Scaffolding\Models\Error $data
+        private readonly \PetStoreApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -274,7 +274,7 @@ class FindPets200Response implements FindPetsResponseInterface
 class FindPets0Response implements FindPetsResponseInterface
 {
     public function __construct(
-        private readonly \PetStoreApiV2\Scaffolding\Models\Error $data
+        private readonly \PetStoreApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -302,11 +302,11 @@ interface AddPetHandlerInterface
      *
      * Creates a new pet in the store. Duplicates are allowed
      *
-     * @param \PetStoreApiV2\Scaffolding\Models\NewPet $newPet Pet to add to the store
+     * @param \PetStoreApiV2\Server\Models\NewPet $newPet Pet to add to the store
      * @return AddPetResponseInterface
      */
     public function handle(
-        \PetStoreApiV2\Scaffolding\Models\NewPet $newPet
+        \PetStoreApiV2\Server\Models\NewPet $newPet
     ): AddPetResponseInterface;
 }
 

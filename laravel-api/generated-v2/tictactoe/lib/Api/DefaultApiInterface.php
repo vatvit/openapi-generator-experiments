@@ -18,7 +18,7 @@
  */
 
 
-namespace TicTacToeApiV2\Scaffolding\Api;
+namespace TicTacToeApiV2\Server\Api;
 
 use Illuminate\Http\JsonResponse;
 
@@ -30,11 +30,11 @@ interface DefaultApiInterface {
      * Operation createGame
      *
      * Create a new game
-     * @param \TicTacToeApiV2\Scaffolding\Models\CreateGameRequest $createGameRequest
+     * @param \TicTacToeApiV2\Server\Models\CreateGameRequest $createGameRequest
      * @return CreateGameResponseInterface
      */
     public function createGame(
-            \TicTacToeApiV2\Scaffolding\Models\CreateGameRequest $createGameRequest,
+            \TicTacToeApiV2\Server\Models\CreateGameRequest $createGameRequest,
     ): CreateGameResponseInterface;
 
 
@@ -78,12 +78,12 @@ interface DefaultApiInterface {
      * Operation getLeaderboard
      *
      * Get leaderboard
-     * @param null | \TicTacToeApiV2\Scaffolding\Models\GetLeaderboardTimeframeParameter $timeframe
+     * @param null | \TicTacToeApiV2\Server\Models\GetLeaderboardTimeframeParameter $timeframe
      * @param null | int $limit
      * @return GetLeaderboardResponseInterface
      */
     public function getLeaderboard(
-            ?\TicTacToeApiV2\Scaffolding\Models\GetLeaderboardTimeframeParameter $timeframe,
+            ?\TicTacToeApiV2\Server\Models\GetLeaderboardTimeframeParameter $timeframe,
             ?int $limit,
     ): GetLeaderboardResponseInterface;
 
@@ -134,14 +134,14 @@ interface DefaultApiInterface {
      * List all games
      * @param null | int $page
      * @param null | int $limit
-     * @param null | \TicTacToeApiV2\Scaffolding\Models\GameStatus $status
+     * @param null | \TicTacToeApiV2\Server\Models\GameStatus $status
      * @param null | string $playerId
      * @return ListGamesResponseInterface
      */
     public function listGames(
             ?int $page,
             ?int $limit,
-            ?\TicTacToeApiV2\Scaffolding\Models\GameStatus $status,
+            ?\TicTacToeApiV2\Server\Models\GameStatus $status,
             ?string $playerId,
     ): ListGamesResponseInterface;
 
@@ -153,14 +153,14 @@ interface DefaultApiInterface {
      * @param string $gameId
      * @param int $row
      * @param int $column
-     * @param \TicTacToeApiV2\Scaffolding\Models\MoveRequest $moveRequest
+     * @param \TicTacToeApiV2\Server\Models\MoveRequest $moveRequest
      * @return PutSquareResponseInterface
      */
     public function putSquare(
             string $gameId,
             int $row,
             int $column,
-            \TicTacToeApiV2\Scaffolding\Models\MoveRequest $moveRequest,
+            \TicTacToeApiV2\Server\Models\MoveRequest $moveRequest,
     ): PutSquareResponseInterface;
 
 }
@@ -311,7 +311,7 @@ interface PutSquareResponseInterface
 class CreateGame201Response implements CreateGameResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Game $data
+        private readonly \TicTacToeApiV2\Server\Models\Game $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -330,7 +330,7 @@ class CreateGame201Response implements CreateGameResponseInterface
 class CreateGame400Response implements CreateGameResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -349,7 +349,7 @@ class CreateGame400Response implements CreateGameResponseInterface
 class CreateGame401Response implements CreateGameResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -368,7 +368,7 @@ class CreateGame401Response implements CreateGameResponseInterface
 class CreateGame422Response implements CreateGameResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\ValidationError $data
+        private readonly \TicTacToeApiV2\Server\Models\ValidationError $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -387,7 +387,7 @@ class CreateGame422Response implements CreateGameResponseInterface
 class DeleteGame204Response implements DeleteGameResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\NoContent204 $data
+        private readonly \TicTacToeApiV2\Server\Models\NoContent204 $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -406,7 +406,7 @@ class DeleteGame204Response implements DeleteGameResponseInterface
 class DeleteGame403Response implements DeleteGameResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -425,7 +425,7 @@ class DeleteGame403Response implements DeleteGameResponseInterface
 class DeleteGame404Response implements DeleteGameResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -444,7 +444,7 @@ class DeleteGame404Response implements DeleteGameResponseInterface
 class GetBoard200Response implements GetBoardResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Status $data
+        private readonly \TicTacToeApiV2\Server\Models\Status $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -463,7 +463,7 @@ class GetBoard200Response implements GetBoardResponseInterface
 class GetBoard404Response implements GetBoardResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -482,7 +482,7 @@ class GetBoard404Response implements GetBoardResponseInterface
 class GetGame200Response implements GetGameResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Game $data
+        private readonly \TicTacToeApiV2\Server\Models\Game $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -501,7 +501,7 @@ class GetGame200Response implements GetGameResponseInterface
 class GetGame404Response implements GetGameResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -520,7 +520,7 @@ class GetGame404Response implements GetGameResponseInterface
 class GetLeaderboard200Response implements GetLeaderboardResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Leaderboard $data
+        private readonly \TicTacToeApiV2\Server\Models\Leaderboard $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -539,7 +539,7 @@ class GetLeaderboard200Response implements GetLeaderboardResponseInterface
 class GetMoves200Response implements GetMovesResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\MoveHistory $data
+        private readonly \TicTacToeApiV2\Server\Models\MoveHistory $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -558,7 +558,7 @@ class GetMoves200Response implements GetMovesResponseInterface
 class GetMoves404Response implements GetMovesResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -577,7 +577,7 @@ class GetMoves404Response implements GetMovesResponseInterface
 class GetPlayerStats200Response implements GetPlayerStatsResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\PlayerStats $data
+        private readonly \TicTacToeApiV2\Server\Models\PlayerStats $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -596,7 +596,7 @@ class GetPlayerStats200Response implements GetPlayerStatsResponseInterface
 class GetPlayerStats404Response implements GetPlayerStatsResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -615,7 +615,7 @@ class GetPlayerStats404Response implements GetPlayerStatsResponseInterface
 class GetSquare200Response implements GetSquareResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\SquareResponse $data
+        private readonly \TicTacToeApiV2\Server\Models\SquareResponse $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -634,7 +634,7 @@ class GetSquare200Response implements GetSquareResponseInterface
 class GetSquare400Response implements GetSquareResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -653,7 +653,7 @@ class GetSquare400Response implements GetSquareResponseInterface
 class GetSquare404Response implements GetSquareResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -672,7 +672,7 @@ class GetSquare404Response implements GetSquareResponseInterface
 class ListGames200Response implements ListGamesResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\GameListResponse $data
+        private readonly \TicTacToeApiV2\Server\Models\GameListResponse $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -691,7 +691,7 @@ class ListGames200Response implements ListGamesResponseInterface
 class ListGames400Response implements ListGamesResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -710,7 +710,7 @@ class ListGames400Response implements ListGamesResponseInterface
 class ListGames401Response implements ListGamesResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -729,7 +729,7 @@ class ListGames401Response implements ListGamesResponseInterface
 class PutSquare200Response implements PutSquareResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Status $data
+        private readonly \TicTacToeApiV2\Server\Models\Status $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -748,7 +748,7 @@ class PutSquare200Response implements PutSquareResponseInterface
 class PutSquare400Response implements PutSquareResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -767,7 +767,7 @@ class PutSquare400Response implements PutSquareResponseInterface
 class PutSquare404Response implements PutSquareResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -786,7 +786,7 @@ class PutSquare404Response implements PutSquareResponseInterface
 class PutSquare409Response implements PutSquareResponseInterface
 {
     public function __construct(
-        private readonly \TicTacToeApiV2\Scaffolding\Models\Error $data
+        private readonly \TicTacToeApiV2\Server\Models\Error $data
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -814,11 +814,11 @@ interface CreateGameHandlerInterface
      *
      * Creates a new TicTacToe game with specified configuration.
      *
-     * @param \TicTacToeApiV2\Scaffolding\Models\CreateGameRequest $createGameRequest 
+     * @param \TicTacToeApiV2\Server\Models\CreateGameRequest $createGameRequest 
      * @return CreateGameResponseInterface
      */
     public function handle(
-        \TicTacToeApiV2\Scaffolding\Models\CreateGameRequest $createGameRequest
+        \TicTacToeApiV2\Server\Models\CreateGameRequest $createGameRequest
     ): CreateGameResponseInterface;
 }
 
@@ -890,12 +890,12 @@ interface GetLeaderboardHandlerInterface
      *
      * Retrieves the global leaderboard with top players.
      *
-     * @param \TicTacToeApiV2\Scaffolding\Models\GetLeaderboardTimeframeParameter $timeframe Timeframe for leaderboard statistics
+     * @param \TicTacToeApiV2\Server\Models\GetLeaderboardTimeframeParameter $timeframe Timeframe for leaderboard statistics
      * @param int $limit Number of top players to return
      * @return GetLeaderboardResponseInterface
      */
     public function handle(
-        ?\TicTacToeApiV2\Scaffolding\Models\GetLeaderboardTimeframeParameter $timeframe,
+        ?\TicTacToeApiV2\Server\Models\GetLeaderboardTimeframeParameter $timeframe,
         ?int $limit
     ): GetLeaderboardResponseInterface;
 }
@@ -974,14 +974,14 @@ interface ListGamesHandlerInterface
      *
      * @param int $page Page number for pagination
      * @param int $limit Number of items per page
-     * @param \TicTacToeApiV2\Scaffolding\Models\GameStatus $status Filter by game status
+     * @param \TicTacToeApiV2\Server\Models\GameStatus $status Filter by game status
      * @param string $playerId Filter games by player ID
      * @return ListGamesResponseInterface
      */
     public function handle(
         ?int $page,
         ?int $limit,
-        ?\TicTacToeApiV2\Scaffolding\Models\GameStatus $status,
+        ?\TicTacToeApiV2\Server\Models\GameStatus $status,
         ?string $playerId
     ): ListGamesResponseInterface;
 }
@@ -1000,14 +1000,14 @@ interface PutSquareHandlerInterface
      * @param string $gameId Unique game identifier
      * @param int $row Board row (vertical coordinate)
      * @param int $column Board column (horizontal coordinate)
-     * @param \TicTacToeApiV2\Scaffolding\Models\MoveRequest $moveRequest 
+     * @param \TicTacToeApiV2\Server\Models\MoveRequest $moveRequest 
      * @return PutSquareResponseInterface
      */
     public function handle(
         string $gameId,
         int $row,
         int $column,
-        \TicTacToeApiV2\Scaffolding\Models\MoveRequest $moveRequest
+        \TicTacToeApiV2\Server\Models\MoveRequest $moveRequest
     ): PutSquareResponseInterface;
 }
 

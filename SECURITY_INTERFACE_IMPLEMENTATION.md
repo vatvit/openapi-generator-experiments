@@ -84,7 +84,7 @@ if (!$router->hasMiddlewareGroup('api.middlewareGroup.createGame')) {
 
 $middlewares = app('router')->getMiddlewareGroups()['api.middlewareGroup.createGame'] ?? [];
 $requiredInterfaces = [
-    TicTacToeApi\Scaffolding\Security\bearerHttpAuthenticationInterface::class,
+    TicTacToeApi\Server\Security\bearerHttpAuthenticationInterface::class,
 ];
 
 // Validate that at least ONE middleware implements a required security interface (OR logic)
@@ -157,8 +157,8 @@ if (!$router->hasMiddlewareGroup('api.middlewareGroup.getBoard')) {
 
 $middlewares = app('router')->getMiddlewareGroups()['api.middlewareGroup.getBoard'] ?? [];
 $requiredInterfaces = [
-    TicTacToeApi\Scaffolding\Security\defaultApiKeyInterface::class,
-    TicTacToeApi\Scaffolding\Security\app2AppOauthInterface::class,
+    TicTacToeApi\Server\Security\defaultApiKeyInterface::class,
+    TicTacToeApi\Server\Security\app2AppOauthInterface::class,
 ];
 
 // Validates that at least ONE interface is implemented (OR logic)
@@ -242,7 +242,7 @@ Middleware group 'api.middlewareGroup.createGame' contains: ValidateBearerToken
 **Developer implements interface correctly**:
 
 ```php
-use TicTacToeApi\Scaffolding\Security\bearerHttpAuthenticationInterface;
+use TicTacToeApi\Server\Security\bearerHttpAuthenticationInterface;
 
 class ValidateBearerToken implements bearerHttpAuthenticationInterface
 {
@@ -346,7 +346,7 @@ class OAuthMiddleware implements app2AppOauthInterface
    - Update generator config or use file processor
 
 2. **Test End-to-End**:
-   - Generate scaffolding
+   - Generate server
    - Implement middleware with interfaces
    - Verify validation catches violations
    - Test that compliant code works
@@ -358,7 +358,7 @@ class OAuthMiddleware implements app2AppOauthInterface
 
 ### Recommended Usage Pattern
 
-1. **Generate scaffolding** from OpenAPI spec
+1. **Generate server** from OpenAPI spec
 2. **Check generated interfaces** in `lib/Security/`
 3. **Implement middleware** for each security scheme:
    ```php

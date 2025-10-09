@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use TicTacToeApiV2\Scaffolding\Security\bearerHttpAuthenticationInterface;
+use TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface;
 
 /**
  * Bearer Token Authentication Middleware

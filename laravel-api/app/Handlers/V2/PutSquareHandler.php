@@ -2,12 +2,12 @@
 
 namespace App\Handlers\V2;
 
-use TicTacToeApiV2\Scaffolding\Api\PutSquareHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\PutSquareResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\PutSquare200Response;
-use TicTacToeApiV2\Scaffolding\Models\MoveRequest;
-use TicTacToeApiV2\Scaffolding\Models\Status;
-use TicTacToeApiV2\Scaffolding\Models\Winner;
+use TicTacToeApiV2\Server\Api\PutSquareHandlerInterface;
+use TicTacToeApiV2\Server\Api\PutSquareResponseInterface;
+use TicTacToeApiV2\Server\Api\PutSquare200Response;
+use TicTacToeApiV2\Server\Models\MoveRequest;
+use TicTacToeApiV2\Server\Models\Status;
+use TicTacToeApiV2\Server\Models\Winner;
 
 /**
  * Handler for putSquare operation
@@ -24,8 +24,8 @@ class PutSquareHandler implements PutSquareHandlerInterface
     {
         // Example: Return 404 NotFound if game doesn't exist
         if ($gameId === '00000000-0000-0000-0000-000000000000') {
-            return new \TicTacToeApiV2\Scaffolding\Api\PutSquare404Response(
-                new \TicTacToeApiV2\Scaffolding\Models\Error(
+            return new \TicTacToeApiV2\Server\Api\PutSquare404Response(
+                new \TicTacToeApiV2\Server\Models\Error(
                     code: 'GAME_NOT_FOUND',
                     message: 'Game not found with the provided ID'
                 )
@@ -34,8 +34,8 @@ class PutSquareHandler implements PutSquareHandlerInterface
 
         // Example: Return 409 Conflict if square already occupied
         if ($row === 2 && $column === 2) {
-            return new \TicTacToeApiV2\Scaffolding\Api\PutSquare409Response(
-                new \TicTacToeApiV2\Scaffolding\Models\Error(
+            return new \TicTacToeApiV2\Server\Api\PutSquare409Response(
+                new \TicTacToeApiV2\Server\Models\Error(
                     code: 'SQUARE_OCCUPIED',
                     message: 'Square is already occupied. Please choose another square.'
                 )
@@ -44,8 +44,8 @@ class PutSquareHandler implements PutSquareHandlerInterface
 
         // Example: Return 409 Conflict if game is already finished
         if ($gameId === 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa') {
-            return new \TicTacToeApiV2\Scaffolding\Api\PutSquare409Response(
-                new \TicTacToeApiV2\Scaffolding\Models\Error(
+            return new \TicTacToeApiV2\Server\Api\PutSquare409Response(
+                new \TicTacToeApiV2\Server\Models\Error(
                     code: 'GAME_FINISHED',
                     message: 'Game is already finished. Cannot make more moves.'
                 )
@@ -54,8 +54,8 @@ class PutSquareHandler implements PutSquareHandlerInterface
 
         // Example: Return 400 BadRequest for invalid input
         // Uncomment to demonstrate:
-        // return new \TicTacToeApiV2\Scaffolding\Api\PutSquare400Response(
-        //     new \TicTacToeApiV2\Scaffolding\Models\Error(
+        // return new \TicTacToeApiV2\Server\Api\PutSquare400Response(
+        //     new \TicTacToeApiV2\Server\Models\Error(
         //         code: 'INVALID_MOVE',
         //         message: 'Invalid move request'
         //     )

@@ -116,8 +116,8 @@ docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate \
   -i /local/specs/tictactoe.json \
   -g php-laravel \
   -o /local/laravel-api/generated-v2/tictactoe \
-  -c /local/config-v2/tictactoe-scaffolding-config.json \
-  --template-dir /local/templates/php-laravel-scaffolding-v2
+  -c /local/config-v2/tictactoe-server-config.json \
+  --template-dir /local/templates/php-laravel-server-v2
 
 # Step 2: Merge duplicate controllers into single DefaultController
 php scripts/merge-controllers-simple.php \
@@ -235,8 +235,8 @@ generate-tictactoe-v2:
 		-i /local/specs/tictactoe.json \
 		-g php-laravel \
 		-o /local/laravel-api/generated-v2/tictactoe \
-		-c /local/config-v2/tictactoe-scaffolding-config.json \
-		--template-dir /local/templates/php-laravel-scaffolding-v2
+		-c /local/config-v2/tictactoe-server-config.json \
+		--template-dir /local/templates/php-laravel-server-v2
 	@docker run --rm -v $$(pwd):/app -w /app php:8.3-cli php scripts/merge-controllers-simple.php \
 		laravel-api/generated-v2/tictactoe/lib/Http/Controllers \
 		laravel-api/generated-v2/tictactoe/lib/Http/Controllers/DefaultController.php
@@ -247,9 +247,9 @@ Running `make generate-tictactoe-v2` executes both generation and merging automa
 ### Output Example
 
 ```
-🏗️  Generating TicTacToe API scaffolding (Solution 2 - Merged Controller)...
+🏗️  Generating TicTacToe API server (Solution 2 - Merged Controller)...
 [OpenAPI Generator output...]
-✅ TicTacToe API scaffolding generated!
+✅ TicTacToe API server generated!
 📋 Post-processing: Merging tag-based controllers into single DefaultController...
 ✓ getBoard
 ✓ getSquare

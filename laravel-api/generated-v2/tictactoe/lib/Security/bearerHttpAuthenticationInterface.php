@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace TicTacToeApiV2\Scaffolding\Security;
+namespace TicTacToeApiV2\Server\Security;
 
 /**
  * Security Interface: bearerHttpAuthentication

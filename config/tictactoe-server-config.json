@@ -1,0 +1,29 @@
+{
+  "invokerPackage": "TicTacToeApi\\Server",
+  "modelPackage": "Models",
+  "apiPackage": "Api",
+  "packageName": "tictactoe-api-server",
+  "packageVersion": "1.0.0",
+  "packageUrl": "",
+  "packageDescription": "Generated TicTacToe API server",
+  "packageKeywords": ["tictactoe", "api", "server", "openapi"],
+  "packageCompany": "",
+  "packageCompanyUrl": "",
+  "packageAuthors": [
+    {
+      "name": "OpenAPI Generator",
+      "homepage": "https://openapi-generator.tech"
+    }
+  ],
+  "composerVendorName": "tictactoe-api",
+  "composerPackageName": "server",
+  "gitUserId": "",
+  "gitRepoId": "",
+  "artifactVersion": "1.0.0",
+  "srcBasePath": "lib",
+  "variableNamingConvention": "camelCase",
+  "hideGenerationTimestamp": true,
+  "withGeneratorVersionComment": false,
+  "appName": "TicTacToeApiController",
+  "skipOperationExample": true
+}

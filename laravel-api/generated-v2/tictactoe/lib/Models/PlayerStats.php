@@ -21,7 +21,7 @@
 /**
  * PlayerStats
  */
-namespace TicTacToeApiV2\Scaffolding\Models;
+namespace TicTacToeApiV2\Server\Models;
 
 /**
  * PlayerStats
@@ -38,7 +38,7 @@ class PlayerStats
     * @param string $playerId
     *
     * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Player $player
+    * @param \TicTacToeApiV2\Server\Models\Player $player
     *
     * Total games played
     * @param int $gamesPlayed
@@ -64,7 +64,7 @@ class PlayerStats
 
     public function __construct(
         public string $playerId,
-        public \TicTacToeApiV2\Scaffolding\Models\Player $player,
+        public \TicTacToeApiV2\Server\Models\Player $player,
         public int $gamesPlayed,
         public int $wins,
         public int $losses,

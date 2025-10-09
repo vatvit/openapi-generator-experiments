@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document lists OpenAPI specification features from `specs/tictactoe.json` that are **defined in the spec** and **generated in scaffolding** but **not implemented in the V2 handler examples**.
+This document lists OpenAPI specification features from `specs/tictactoe.json` that are **defined in the spec** and **generated in server** but **not implemented in the V2 handler examples**.
 
 The handlers are intentionally simple demonstrations. This document identifies gaps that would need to be addressed for production use.
 
@@ -23,7 +23,7 @@ Example from `PUT /games/{gameId}/board/{row}/{column}`:
 }
 ```
 
-### Generated Scaffolding
+### Generated Server
 ✅ Generator created error response classes:
 - `PutSquare200Response`
 - `PutSquare400Response`
@@ -120,7 +120,7 @@ public function handle(...): PutSquareResponseInterface
 }
 ```
 
-### Generated Scaffolding
+### Generated Server
 ✅ Headers documented in PHPDoc comments
 ❌ No automatic header setting in response classes
 
@@ -196,7 +196,7 @@ public function handle(...): CreateGameResponseInterface
 }
 ```
 
-### Generated Scaffolding
+### Generated Server
 ✅ Basic type validation (integer, string)
 ✅ Min/max constraints for numbers
 ❌ No UUID validation rules
@@ -274,7 +274,7 @@ Applied to operations:
 ]
 ```
 
-### Generated Scaffolding
+### Generated Server
 ✅ Security documented in spec
 ❌ No automatic authentication/authorization in controllers
 ❌ No middleware for security schemes
@@ -485,7 +485,7 @@ class CreateGameHandler implements CreateGameHandlerInterface
 
 ## Conclusion
 
-The V2 handlers demonstrate the **structure and integration pattern** with generated scaffolding but are **not production-ready**. They serve as starting points that need:
+The V2 handlers demonstrate the **structure and integration pattern** with generated server but are **not production-ready**. They serve as starting points that need:
 
 1. Database layer integration
 2. Error handling implementation
@@ -493,4 +493,4 @@ The V2 handlers demonstrate the **structure and integration pattern** with gener
 4. Business rule validation
 5. Enhanced request validation
 
-The generated scaffolding provides **all necessary interfaces and response classes** to implement these features - the handlers just need to use them properly.
+The generated server provides **all necessary interfaces and response classes** to implement these features - the handlers just need to use them properly.

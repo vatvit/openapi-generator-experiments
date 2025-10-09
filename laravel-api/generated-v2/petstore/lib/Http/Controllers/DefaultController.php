@@ -1,20 +1,20 @@
 <?php declare(strict_types=1);
 
-namespace PetStoreApiV2\Scaffolding\Http\Controllers;
+namespace PetStoreApiV2\Server\Http\Controllers;
 
 use Crell\Serde\SerdeCommon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use PetStoreApiV2\Scaffolding\Api\AddPetHandlerInterface;
-use PetStoreApiV2\Scaffolding\Api\AddPetResponseInterface;
-use PetStoreApiV2\Scaffolding\Api\DeletePetHandlerInterface;
-use PetStoreApiV2\Scaffolding\Api\DeletePetResponseInterface;
-use PetStoreApiV2\Scaffolding\Api\FindPetByIdHandlerInterface;
-use PetStoreApiV2\Scaffolding\Api\FindPetByIdResponseInterface;
-use PetStoreApiV2\Scaffolding\Api\FindPetsHandlerInterface;
-use PetStoreApiV2\Scaffolding\Api\FindPetsResponseInterface;
-use \PetStoreApiV2\Scaffolding\Models\NewPet;
+use PetStoreApiV2\Server\Api\AddPetHandlerInterface;
+use PetStoreApiV2\Server\Api\AddPetResponseInterface;
+use PetStoreApiV2\Server\Api\DeletePetHandlerInterface;
+use PetStoreApiV2\Server\Api\DeletePetResponseInterface;
+use PetStoreApiV2\Server\Api\FindPetByIdHandlerInterface;
+use PetStoreApiV2\Server\Api\FindPetByIdResponseInterface;
+use PetStoreApiV2\Server\Api\FindPetsHandlerInterface;
+use PetStoreApiV2\Server\Api\FindPetsResponseInterface;
+use \PetStoreApiV2\Server\Models\NewPet;
 
 /**
  * DefaultController - Merged Controller
@@ -128,7 +128,7 @@ class DefaultController extends Controller
      * Creates a new pet in the store. Duplicates are allowed
      *
      * Request body validation (from OpenAPI spec):
-     * - newPet: required, \PetStoreApiV2\Scaffolding\Models\NewPet
+     * - newPet: required, \PetStoreApiV2\Server\Models\NewPet
      *
      * @param AddPetHandlerInterface $handler Injected business logic handler
      * @param Request $request
@@ -143,9 +143,9 @@ class DefaultController extends Controller
         $validated = $request->validate($this->addPetValidationRules());
 
         // Extract validated parameters
-        // Deserialize request body to \PetStoreApiV2\Scaffolding\Models\NewPet model
+        // Deserialize request body to \PetStoreApiV2\Server\Models\NewPet model
         $serde = new SerdeCommon();
-        $newPet = $serde->deserialize($request->getContent(), from: 'json', to: \PetStoreApiV2\Scaffolding\Models\NewPet::class);
+        $newPet = $serde->deserialize($request->getContent(), from: 'json', to: \PetStoreApiV2\Server\Models\NewPet::class);
 
         // Call handler with validated parameters
         $response = $handler->handle(

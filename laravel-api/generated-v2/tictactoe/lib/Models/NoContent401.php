@@ -21,7 +21,7 @@
 /**
  * NoContent401
  */
-namespace TicTacToeApiV2\Scaffolding\Models;
+namespace TicTacToeApiV2\Server\Models;
 
 /**
  * NoContent401

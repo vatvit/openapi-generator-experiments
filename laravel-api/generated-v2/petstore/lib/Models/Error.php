@@ -21,7 +21,7 @@
 /**
  * Error
  */
-namespace PetStoreApiV2\Scaffolding\Models;
+namespace PetStoreApiV2\Server\Models;
 
 /**
  * Error

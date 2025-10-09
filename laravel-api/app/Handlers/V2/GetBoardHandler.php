@@ -2,11 +2,11 @@
 
 namespace App\Handlers\V2;
 
-use TicTacToeApiV2\Scaffolding\Api\GetBoardHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetBoardResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetBoard200Response;
-use TicTacToeApiV2\Scaffolding\Models\Status;
-use TicTacToeApiV2\Scaffolding\Models\Winner;
+use TicTacToeApiV2\Server\Api\GetBoardHandlerInterface;
+use TicTacToeApiV2\Server\Api\GetBoardResponseInterface;
+use TicTacToeApiV2\Server\Api\GetBoard200Response;
+use TicTacToeApiV2\Server\Models\Status;
+use TicTacToeApiV2\Server\Models\Winner;
 
 /**
  * Handler for getBoard operation
@@ -18,8 +18,8 @@ class GetBoardHandler implements GetBoardHandlerInterface
     {
         // Example: Return 404 NotFound if game doesn't exist
         if ($gameId === '00000000-0000-0000-0000-000000000000') {
-            return new \TicTacToeApiV2\Scaffolding\Api\GetBoard404Response(
-                new \TicTacToeApiV2\Scaffolding\Models\Error(
+            return new \TicTacToeApiV2\Server\Api\GetBoard404Response(
+                new \TicTacToeApiV2\Server\Models\Error(
                     code: 'GAME_NOT_FOUND',
                     message: 'Game not found with the provided ID'
                 )

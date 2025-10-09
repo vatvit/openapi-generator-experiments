@@ -21,7 +21,7 @@
 /**
  * CreateGameRequest
  */
-namespace TicTacToeApiV2\Scaffolding\Models;
+namespace TicTacToeApiV2\Server\Models;
 
 /**
  * CreateGameRequest
@@ -35,7 +35,7 @@ class CreateGameRequest
     /**
     *
     * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\GameMode $mode
+    * @param \TicTacToeApiV2\Server\Models\GameMode $mode
     *
     * Opponent player ID (required for PvP mode)
     * @param string $opponentId
@@ -48,7 +48,7 @@ class CreateGameRequest
     */
 
     public function __construct(
-        public \TicTacToeApiV2\Scaffolding\Models\GameMode $mode,
+        public \TicTacToeApiV2\Server\Models\GameMode $mode,
         public string $opponentId,
         public bool $isPrivate = false,
         public array $metadata,

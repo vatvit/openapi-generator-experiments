@@ -61,7 +61,7 @@ From `specs/tictactoe.json`, we have:
 For each `securityScheme`, generate a middleware interface:
 
 ```php
-namespace TicTacToeApiV2\Scaffolding\Security;
+namespace TicTacToeApiV2\Server\Security;
 
 /**
  * Security interface for: bearerHttpAuthentication
@@ -131,7 +131,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.createGame')) {
     $hasRequiredSecurity = false;
     foreach ($middlewares as $middleware) {
         $class = is_string($middleware) ? $middleware : get_class($middleware);
-        if (is_subclass_of($class, \TicTacToeApiV2\Scaffolding\Security\BearerHttpAuthenticationInterface::class)) {
+        if (is_subclass_of($class, \TicTacToeApiV2\Server\Security\BearerHttpAuthenticationInterface::class)) {
             $hasRequiredSecurity = true;
             break;
         }
@@ -141,7 +141,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.createGame')) {
         throw new \RuntimeException(
             "Operation 'createGame' requires bearerHttpAuthentication security. " .
             "Middleware group 'api.middlewareGroup.createGame' must contain a class implementing " .
-            "\\TicTacToeApiV2\\Scaffolding\\Security\\BearerHttpAuthenticationInterface"
+            "\\TicTacToeApiV2\\Server\\Security\\BearerHttpAuthenticationInterface"
         );
     }
 
@@ -162,7 +162,7 @@ Developer must implement interfaces:
 ```php
 namespace App\Http\Middleware;
 
-use TicTacToeApiV2\Scaffolding\Security\BearerHttpAuthenticationInterface;
+use TicTacToeApiV2\Server\Security\BearerHttpAuthenticationInterface;
 
 class ValidateBearerToken implements BearerHttpAuthenticationInterface
 {
@@ -270,7 +270,7 @@ class ValidateOpenapiSecurity extends Command
 Generate a service provider that validates during app boot:
 
 ```php
-// Generated: TicTacToeApiV2/Scaffolding/SecurityServiceProvider.php
+// Generated: TicTacToeApiV2/Server/SecurityServiceProvider.php
 class SecurityServiceProvider extends ServiceProvider
 {
     public function boot()
@@ -299,7 +299,7 @@ class SecurityServiceProvider extends ServiceProvider
 Generate a factory that creates validated middleware groups:
 
 ```php
-// Generated: TicTacToeApiV2/Scaffolding/Security/SecurityMiddlewareFactory.php
+// Generated: TicTacToeApiV2/Server/Security/SecurityMiddlewareFactory.php
 class SecurityMiddlewareFactory
 {
     public static function createGame(): array
@@ -329,7 +329,7 @@ class SecurityMiddlewareFactory
 
 **Usage in bootstrap/app.php**:
 ```php
-use TicTacToeApiV2\Scaffolding\Security\SecurityMiddlewareFactory;
+use TicTacToeApiV2\Server\Security\SecurityMiddlewareFactory;
 
 $middleware->group('api.middlewareGroup.createGame',
     SecurityMiddlewareFactory::createGame()
@@ -385,7 +385,7 @@ foreach ($securityConfig['required'] as $scheme) {
 
 // Add alternatives (OR logic) - handled by custom middleware
 if (!empty($securityConfig['alternatives'])) {
-    $middlewares[] = new \TicTacToeApiV2\Scaffolding\Security\AlternativeSecurityMiddleware(
+    $middlewares[] = new \TicTacToeApiV2\Server\Security\AlternativeSecurityMiddleware(
         $securityConfig['alternatives']
     );
 }
@@ -462,7 +462,7 @@ $middlewares = app('router')->getMiddlewareGroups()['api.middlewareGroup.createG
 $hasValidSecurity = false;
 
 foreach ($middlewares as $mw) {
-    if (is_subclass_of($mw, \TicTacToeApiV2\Scaffolding\Security\BearerHttpAuthenticationInterface::class)) {
+    if (is_subclass_of($mw, \TicTacToeApiV2\Server\Security\BearerHttpAuthenticationInterface::class)) {
         $hasValidSecurity = true;
         break;
     }
@@ -495,8 +495,8 @@ $hasValidSecurity = false;
 
 // Check if ANY alternative is satisfied
 $requiredInterfaces = [
-    \TicTacToeApiV2\Scaffolding\Security\DefaultApiKeyInterface::class,
-    \TicTacToeApiV2\Scaffolding\Security\App2AppOauthInterface::class,
+    \TicTacToeApiV2\Server\Security\DefaultApiKeyInterface::class,
+    \TicTacToeApiV2\Server\Security\App2AppOauthInterface::class,
 ];
 
 foreach ($middlewares as $mw) {

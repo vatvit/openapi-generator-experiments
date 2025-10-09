@@ -1,38 +1,38 @@
 <?php declare(strict_types=1);
 
-namespace TicTacToeApiV2\Scaffolding\Http\Controllers;
+namespace TicTacToeApiV2\Server\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use TicTacToeApiV2\Scaffolding\Api\CreateGameHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\CreateGameResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\DeleteGameHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\DeleteGameResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetBoardHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetBoardResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetGameHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetGameResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetLeaderboardHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetLeaderboardResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetMovesHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetMovesResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetPlayerStatsHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetPlayerStatsResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetSquareHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\GetSquareResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\ListGamesHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\ListGamesResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\PutSquareHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\PutSquareResponseInterface;
-use \TicTacToeApiV2\Scaffolding\Models\CreateGameRequest;
-use \TicTacToeApiV2\Scaffolding\Models\MoveRequest;
+use TicTacToeApiV2\Server\Api\CreateGameHandlerInterface;
+use TicTacToeApiV2\Server\Api\CreateGameResponseInterface;
+use TicTacToeApiV2\Server\Api\DeleteGameHandlerInterface;
+use TicTacToeApiV2\Server\Api\DeleteGameResponseInterface;
+use TicTacToeApiV2\Server\Api\GetBoardHandlerInterface;
+use TicTacToeApiV2\Server\Api\GetBoardResponseInterface;
+use TicTacToeApiV2\Server\Api\GetGameHandlerInterface;
+use TicTacToeApiV2\Server\Api\GetGameResponseInterface;
+use TicTacToeApiV2\Server\Api\GetLeaderboardHandlerInterface;
+use TicTacToeApiV2\Server\Api\GetLeaderboardResponseInterface;
+use TicTacToeApiV2\Server\Api\GetMovesHandlerInterface;
+use TicTacToeApiV2\Server\Api\GetMovesResponseInterface;
+use TicTacToeApiV2\Server\Api\GetPlayerStatsHandlerInterface;
+use TicTacToeApiV2\Server\Api\GetPlayerStatsResponseInterface;
+use TicTacToeApiV2\Server\Api\GetSquareHandlerInterface;
+use TicTacToeApiV2\Server\Api\GetSquareResponseInterface;
+use TicTacToeApiV2\Server\Api\ListGamesHandlerInterface;
+use TicTacToeApiV2\Server\Api\ListGamesResponseInterface;
+use TicTacToeApiV2\Server\Api\PutSquareHandlerInterface;
+use TicTacToeApiV2\Server\Api\PutSquareResponseInterface;
+use \TicTacToeApiV2\Server\Models\CreateGameRequest;
+use \TicTacToeApiV2\Server\Models\MoveRequest;
 use Crell\Serde\SerdeCommon;
 
 /**
  * DefaultApiInterface Controller
  *
- * Generated scaffolding from OpenAPI specification
+ * Generated server from OpenAPI specification
  * Uses dependency injection to call business logic handlers
  * Handlers return response models that enforce API specification
  */
@@ -44,7 +44,7 @@ class DefaultController extends Controller
      * Creates a new TicTacToe game with specified configuration.
      *
      * Request body validation (from OpenAPI spec):
-     * - createGameRequest: required, \TicTacToeApiV2\Scaffolding\Models\CreateGameRequest
+     * - createGameRequest: required, \TicTacToeApiV2\Server\Models\CreateGameRequest
      *
      * @param CreateGameHandlerInterface $handler Injected business logic handler
      * @param Request $request
@@ -59,9 +59,9 @@ class DefaultController extends Controller
         $validated = $request->validate($this->createGameValidationRules());
 
         // Extract validated parameters
-        // Deserialize request body to \TicTacToeApiV2\Scaffolding\Models\CreateGameRequest model
+        // Deserialize request body to \TicTacToeApiV2\Server\Models\CreateGameRequest model
         $serde = new SerdeCommon();
-        $createGameRequest = $serde->deserialize($request->getContent(), from: 'json', to: \TicTacToeApiV2\Scaffolding\Models\CreateGameRequest::class);
+        $createGameRequest = $serde->deserialize($request->getContent(), from: 'json', to: \TicTacToeApiV2\Server\Models\CreateGameRequest::class);
 
         // Call handler with validated parameters
         $response = $handler->handle(
@@ -177,7 +177,7 @@ class DefaultController extends Controller
      * Retrieves the global leaderboard with top players.
      *
      * Query parameters validation (from OpenAPI spec):
-     * - timeframe: \TicTacToeApiV2\Scaffolding\Models\GetLeaderboardTimeframeParameter
+     * - timeframe: \TicTacToeApiV2\Server\Models\GetLeaderboardTimeframeParameter
      * - limit: int, min: 1, max: 100
      *
      * @param GetLeaderboardHandlerInterface $handler Injected business logic handler
@@ -325,7 +325,7 @@ class DefaultController extends Controller
      * Query parameters validation (from OpenAPI spec):
      * - page: int, min: 1
      * - limit: int, min: 1, max: 100
-     * - status: \TicTacToeApiV2\Scaffolding\Models\GameStatus
+     * - status: \TicTacToeApiV2\Server\Models\GameStatus
      * - playerId: string
      *
      * @param ListGamesHandlerInterface $handler Injected business logic handler
@@ -372,7 +372,7 @@ class DefaultController extends Controller
      * Places a mark on the board and retrieves the whole board and the winner (if any).
      *
      * Request body validation (from OpenAPI spec):
-     * - moveRequest: required, \TicTacToeApiV2\Scaffolding\Models\MoveRequest
+     * - moveRequest: required, \TicTacToeApiV2\Server\Models\MoveRequest
      *
      * Path parameters:
      * - gameId: string
@@ -398,9 +398,9 @@ class DefaultController extends Controller
         $validated = $request->validate($this->putSquareValidationRules($gameId, $row, $column));
 
         // Extract validated parameters
-        // Deserialize request body to \TicTacToeApiV2\Scaffolding\Models\MoveRequest model
+        // Deserialize request body to \TicTacToeApiV2\Server\Models\MoveRequest model
         $serde = new SerdeCommon();
-        $moveRequest = $serde->deserialize($request->getContent(), from: 'json', to: \TicTacToeApiV2\Scaffolding\Models\MoveRequest::class);
+        $moveRequest = $serde->deserialize($request->getContent(), from: 'json', to: \TicTacToeApiV2\Server\Models\MoveRequest::class);
 
         // Call handler with validated parameters
         $response = $handler->handle(

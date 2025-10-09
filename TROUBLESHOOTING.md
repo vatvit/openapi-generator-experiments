@@ -30,11 +30,11 @@ docker-compose exec app grep "Generated routes file not found" storage/logs/lara
 **Diagnosis**:
 ```bash
 # Check if autoloader knows about the class
-docker-compose exec app php -r "var_dump(class_exists('PetStoreApi\Scaffolding\Http\Controllers\DefaultController'));"
+docker-compose exec app php -r "var_dump(class_exists('PetStoreApi\Server\Http\Controllers\DefaultController'));"
 ```
 
 **Solutions**:
-1. **Run composer dumpautoload** after generating scaffolding:
+1. **Run composer dumpautoload** after generating server:
    ```bash
    cd laravel-api && docker-compose exec app composer dumpautoload
    ```
@@ -43,8 +43,8 @@ docker-compose exec app php -r "var_dump(class_exists('PetStoreApi\Scaffolding\H
    ```json
    "autoload": {
        "psr-4": {
-           "PetStoreApiV2\\Scaffolding\\": "generated-v2/petstore/lib/",
-           "TicTacToeApiV2\\Scaffolding\\": "generated-v2/tictactoe/lib/"
+           "PetStoreApiV2\\Server\\": "generated-v2/petstore/lib/",
+           "TicTacToeApiV2\\Server\\": "generated-v2/tictactoe/lib/"
        }
    }
    ```
@@ -53,7 +53,7 @@ docker-compose exec app php -r "var_dump(class_exists('PetStoreApi\Scaffolding\H
 
 ### Security Interface Not Found
 
-**Symptom**: `Interface "TicTacToeApiV2\Scaffolding\Security\bearerHttpAuthenticationInterface" not found`
+**Symptom**: `Interface "TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface" not found`
 
 **Cause**: OpenAPI Generator doesn't generate security interface files by default
 
@@ -79,7 +79,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getBoard')) {
 
 If you see this error, verify you're using the V2 templates:
 ```bash
-make generate-tictactoe-v2  # Uses templates/php-laravel-scaffolding-v2/
+make generate-tictactoe-v2  # Uses templates/php-laravel-server-v2/
 ```
 
 ### Middleware Not Working
@@ -163,7 +163,7 @@ Common causes:
    ```bash
    cd laravel-api
    docker-compose exec app composer dumpautoload
-   docker-compose exec app php -r "var_dump(class_exists('TicTacToeApiV2\\\Scaffolding\\\Http\\\Controllers\\\DefaultController'));"
+   docker-compose exec app php -r "var_dump(class_exists('TicTacToeApiV2\\\Server\\\Http\\\Controllers\\\DefaultController'));"
    ```
 
 4. **Test Service Container binding**:

@@ -21,7 +21,7 @@
 /**
  * GameMode
  */
-namespace TicTacToeApiV2\Scaffolding\Models;
+namespace TicTacToeApiV2\Server\Models;
 
 /**
  * GameMode

@@ -36,7 +36,7 @@
  *
  * // Wrap generated routes in a group
  * Route::group(['prefix' => 'v2', 'middleware' => ['api']], function ($router) {
- *     require base_path('generated/scaffolding/routes.php');
+ *     require base_path('generated/server/routes.php');
  * });
  * ```
  *
@@ -90,7 +90,7 @@ $route = $router->POST('/v1/games', 'Tic Tac Toe@createGame')
 // SECURITY REQUIREMENT: This operation requires authentication
 // Required security: bearerHttpAuthentication
 // Middleware group 'api.middlewareGroup.createGame' MUST be defined and contain middleware implementing:
-// - TicTacToeApiV2\Scaffolding\Security\bearerHttpAuthenticationInterface
+// - TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface
 
 // Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.createGame')) {
@@ -118,7 +118,7 @@ $route = $router->DELETE('/v1/games/{gameId}', 'Tic Tac Toe@deleteGame')
 // SECURITY REQUIREMENT: This operation requires authentication
 // Required security: bearerHttpAuthentication
 // Middleware group 'api.middlewareGroup.deleteGame' MUST be defined and contain middleware implementing:
-// - TicTacToeApiV2\Scaffolding\Security\bearerHttpAuthenticationInterface
+// - TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface
 
 // Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.deleteGame')) {
@@ -149,8 +149,8 @@ $route = $router->GET('/v1/games/{gameId}/board', 'Tic Tac Toe@getBoard')
 // SECURITY REQUIREMENT: This operation requires authentication
 // Required security: defaultApiKey OR app2AppOauth
 // Middleware group 'api.middlewareGroup.getBoard' MUST be defined and contain middleware implementing:
-// - TicTacToeApiV2\Scaffolding\Security\defaultApiKeyInterface
-// - TicTacToeApiV2\Scaffolding\Security\app2AppOauthInterface
+// - TicTacToeApiV2\Server\Security\defaultApiKeyInterface
+// - TicTacToeApiV2\Server\Security\app2AppOauthInterface
 
 // Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.getBoard')) {
@@ -178,7 +178,7 @@ $route = $router->GET('/v1/games/{gameId}', 'Tic Tac Toe@getGame')
 // SECURITY REQUIREMENT: This operation requires authentication
 // Required security: bearerHttpAuthentication
 // Middleware group 'api.middlewareGroup.getGame' MUST be defined and contain middleware implementing:
-// - TicTacToeApiV2\Scaffolding\Security\bearerHttpAuthenticationInterface
+// - TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface
 
 // Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.getGame')) {
@@ -220,7 +220,7 @@ $route = $router->GET('/v1/games/{gameId}/moves', 'Tic Tac Toe@getMoves')
 // SECURITY REQUIREMENT: This operation requires authentication
 // Required security: bearerHttpAuthentication
 // Middleware group 'api.middlewareGroup.getMoves' MUST be defined and contain middleware implementing:
-// - TicTacToeApiV2\Scaffolding\Security\bearerHttpAuthenticationInterface
+// - TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface
 
 // Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.getMoves')) {
@@ -248,7 +248,7 @@ $route = $router->GET('/v1/players/{playerId}/stats', 'Tic Tac Toe@getPlayerStat
 // SECURITY REQUIREMENT: This operation requires authentication
 // Required security: bearerHttpAuthentication
 // Middleware group 'api.middlewareGroup.getPlayerStats' MUST be defined and contain middleware implementing:
-// - TicTacToeApiV2\Scaffolding\Security\bearerHttpAuthenticationInterface
+// - TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface
 
 // Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.getPlayerStats')) {
@@ -279,8 +279,8 @@ $route = $router->GET('/v1/games/{gameId}/board/{row}/{column}', 'Tic Tac Toe@ge
 // SECURITY REQUIREMENT: This operation requires authentication
 // Required security: bearerHttpAuthentication OR user2AppOauth
 // Middleware group 'api.middlewareGroup.getSquare' MUST be defined and contain middleware implementing:
-// - TicTacToeApiV2\Scaffolding\Security\bearerHttpAuthenticationInterface
-// - TicTacToeApiV2\Scaffolding\Security\user2AppOauthInterface
+// - TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface
+// - TicTacToeApiV2\Server\Security\user2AppOauthInterface
 
 // Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.getSquare')) {
@@ -308,7 +308,7 @@ $route = $router->GET('/v1/games', 'Tic Tac Toe@listGames')
 // SECURITY REQUIREMENT: This operation requires authentication
 // Required security: bearerHttpAuthentication
 // Middleware group 'api.middlewareGroup.listGames' MUST be defined and contain middleware implementing:
-// - TicTacToeApiV2\Scaffolding\Security\bearerHttpAuthenticationInterface
+// - TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface
 
 // Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.listGames')) {
@@ -339,8 +339,8 @@ $route = $router->PUT('/v1/games/{gameId}/board/{row}/{column}', 'Tic Tac Toe@pu
 // SECURITY REQUIREMENT: This operation requires authentication
 // Required security: bearerHttpAuthentication OR user2AppOauth
 // Middleware group 'api.middlewareGroup.putSquare' MUST be defined and contain middleware implementing:
-// - TicTacToeApiV2\Scaffolding\Security\bearerHttpAuthenticationInterface
-// - TicTacToeApiV2\Scaffolding\Security\user2AppOauthInterface
+// - TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface
+// - TicTacToeApiV2\Server\Security\user2AppOauthInterface
 
 // Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.putSquare')) {

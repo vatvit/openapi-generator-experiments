@@ -21,7 +21,7 @@
 /**
  * GameListResponse
  */
-namespace TicTacToeApiV2\Scaffolding\Models;
+namespace TicTacToeApiV2\Server\Models;
 
 /**
  * GameListResponse
@@ -35,15 +35,15 @@ class GameListResponse
     /**
     *
     * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Game[] $games
+    * @param \TicTacToeApiV2\Server\Models\Game[] $games
     *
     * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\Pagination $pagination
+    * @param \TicTacToeApiV2\Server\Models\Pagination $pagination
     */
 
     public function __construct(
         public array $games,
-        public \TicTacToeApiV2\Scaffolding\Models\Pagination $pagination,
+        public \TicTacToeApiV2\Server\Models\Pagination $pagination,
     ) {}
 }
 

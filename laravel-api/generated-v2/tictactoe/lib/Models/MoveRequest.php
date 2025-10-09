@@ -21,7 +21,7 @@
 /**
  * MoveRequest
  */
-namespace TicTacToeApiV2\Scaffolding\Models;
+namespace TicTacToeApiV2\Server\Models;
 
 /**
  * MoveRequest
@@ -35,11 +35,11 @@ class MoveRequest
     /**
     *
     * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\MoveRequestMark $mark
+    * @param \TicTacToeApiV2\Server\Models\MoveRequestMark $mark
     */
 
     public function __construct(
-        public \TicTacToeApiV2\Scaffolding\Models\MoveRequestMark $mark,
+        public \TicTacToeApiV2\Server\Models\MoveRequestMark $mark,
     ) {}
 }
 

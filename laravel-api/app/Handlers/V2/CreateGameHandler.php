@@ -2,12 +2,12 @@
 
 namespace App\Handlers\V2;
 
-use TicTacToeApiV2\Scaffolding\Api\CreateGameHandlerInterface;
-use TicTacToeApiV2\Scaffolding\Api\CreateGameResponseInterface;
-use TicTacToeApiV2\Scaffolding\Api\CreateGame201Response;
-use TicTacToeApiV2\Scaffolding\Models\CreateGameRequest;
-use TicTacToeApiV2\Scaffolding\Models\Game;
-use TicTacToeApiV2\Scaffolding\Models\GameStatus;
+use TicTacToeApiV2\Server\Api\CreateGameHandlerInterface;
+use TicTacToeApiV2\Server\Api\CreateGameResponseInterface;
+use TicTacToeApiV2\Server\Api\CreateGame201Response;
+use TicTacToeApiV2\Server\Models\CreateGameRequest;
+use TicTacToeApiV2\Server\Models\Game;
+use TicTacToeApiV2\Server\Models\GameStatus;
 
 /**
  * Handler for createGame operation
@@ -19,10 +19,10 @@ class CreateGameHandler implements CreateGameHandlerInterface
     {
         // Example: Return 422 ValidationError if PvP mode without opponentId
         if (isset($createGameRequest->mode)
-            && $createGameRequest->mode === \TicTacToeApiV2\Scaffolding\Models\GameMode::PVP
+            && $createGameRequest->mode === \TicTacToeApiV2\Server\Models\GameMode::PVP
             && empty($createGameRequest->opponentId)) {
-            return new \TicTacToeApiV2\Scaffolding\Api\CreateGame422Response(
-                new \TicTacToeApiV2\Scaffolding\Models\ValidationError(
+            return new \TicTacToeApiV2\Server\Api\CreateGame422Response(
+                new \TicTacToeApiV2\Server\Models\ValidationError(
                     code: 'VALIDATION_ERROR',
                     message: 'Validation failed for one or more fields',
                     errors: [
@@ -38,8 +38,8 @@ class CreateGameHandler implements CreateGameHandlerInterface
 
         // Example: Return 400 BadRequest for invalid data
         // Uncomment to demonstrate:
-        // return new \TicTacToeApiV2\Scaffolding\Api\CreateGame400Response(
-        //     new \TicTacToeApiV2\Scaffolding\Models\Error(
+        // return new \TicTacToeApiV2\Server\Api\CreateGame400Response(
+        //     new \TicTacToeApiV2\Server\Models\Error(
         //         code: 'INVALID_REQUEST',
         //         message: 'Invalid game creation request'
         //     )
@@ -47,22 +47,22 @@ class CreateGameHandler implements CreateGameHandlerInterface
 
         // Example: Return 401 Unauthorized
         // Uncomment to demonstrate:
-        // return new \TicTacToeApiV2\Scaffolding\Api\CreateGame401Response(
-        //     new \TicTacToeApiV2\Scaffolding\Models\Error(
+        // return new \TicTacToeApiV2\Server\Api\CreateGame401Response(
+        //     new \TicTacToeApiV2\Server\Models\Error(
         //         code: 'UNAUTHORIZED',
         //         message: 'Authentication required to create games'
         //     )
         // );
 
         // Success case - create a game with empty board
-        $playerX = new \TicTacToeApiV2\Scaffolding\Models\Player(
+        $playerX = new \TicTacToeApiV2\Server\Models\Player(
             id: 'player-x-' . uniqid(),
             username: 'PlayerX',
             displayName: 'Player X',
             avatarUrl: 'https://example.com/avatar-x.png'
         );
 
-        $playerO = new \TicTacToeApiV2\Scaffolding\Models\Player(
+        $playerO = new \TicTacToeApiV2\Server\Models\Player(
             id: 'player-o-' . uniqid(),
             username: 'PlayerO',
             displayName: 'Player O',
@@ -72,11 +72,11 @@ class CreateGameHandler implements CreateGameHandlerInterface
         $game = new Game(
             id: '550e8400-e29b-41d4-a716-' . uniqid(),
             status: GameStatus::PENDING,
-            mode: $createGameRequest->mode ?? \TicTacToeApiV2\Scaffolding\Models\GameMode::PVP,
+            mode: $createGameRequest->mode ?? \TicTacToeApiV2\Server\Models\GameMode::PVP,
             playerX: $playerX,
             playerO: $playerO,
-            currentTurn: \TicTacToeApiV2\Scaffolding\Models\Mark::X,
-            winner: \TicTacToeApiV2\Scaffolding\Models\Winner::PERIOD,
+            currentTurn: \TicTacToeApiV2\Server\Models\Mark::X,
+            winner: \TicTacToeApiV2\Server\Models\Winner::PERIOD,
             board: [
                 ['.', '.', '.'],
                 ['.', '.', '.'],

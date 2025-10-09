@@ -21,7 +21,7 @@
 /**
  * Move
  */
-namespace TicTacToeApiV2\Scaffolding\Models;
+namespace TicTacToeApiV2\Server\Models;
 
 /**
  * Move
@@ -41,7 +41,7 @@ class Move
     * @param string $playerId
     *
     * 
-    * @param \TicTacToeApiV2\Scaffolding\Models\MoveMark $mark
+    * @param \TicTacToeApiV2\Server\Models\MoveMark $mark
     *
     * Board coordinate (1-3)
     * @param int $row
@@ -56,7 +56,7 @@ class Move
     public function __construct(
         public int $moveNumber,
         public string $playerId,
-        public \TicTacToeApiV2\Scaffolding\Models\MoveMark $mark,
+        public \TicTacToeApiV2\Server\Models\MoveMark $mark,
         public int $row,
         public int $column,
         public \DateTime $timestamp,

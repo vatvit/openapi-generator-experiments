@@ -4,7 +4,7 @@ This document explains how OpenAPI security schemes are enforced in the generate
 
 ## Overview
 
-The generated scaffolding **forces developers to implement security** as defined in the OpenAPI specification through:
+The generated server **forces developers to implement security** as defined in the OpenAPI specification through:
 
 1. **Middleware-based enforcement** - Routes automatically use security middleware when configured
 2. **Example implementations** - Pre-built middleware for common auth types
