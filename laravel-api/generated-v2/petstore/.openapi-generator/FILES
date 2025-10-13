@@ -30,5 +30,7 @@ lib/Models/Error.php
 lib/Models/NewPet.php
 lib/Models/NoContent204.php
 lib/Models/Pet.php
+lib/Security/SecurityInterfaces.php
+lib/Security/SecurityValidator.php
 phpunit.xml.dist
 routes.php

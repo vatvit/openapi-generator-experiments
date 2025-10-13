@@ -48,32 +48,7 @@ generate-tictactoe: ## Generate TicTacToe API server
 		-c /local/config-v2/tictactoe-server-config.json \
 		--template-dir /local/templates/php-laravel-server-v2
 	@echo "✅ TicTacToe API server generated!"
-	@echo "📋 Post-processing: Creating security interfaces..."
-	@mkdir -p laravel-api/generated-v2/tictactoe/lib/Security
-	@echo '<?php declare(strict_types=1);' > laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo '' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo 'namespace TicTacToeApiV2\Server\Security;' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo '' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo '/**' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo ' * Security Interface: bearerHttpAuthentication' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo ' *' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo ' * Generated from OpenAPI security scheme' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo ' * Type: http' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo ' * Scheme: Bearer' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo ' * Bearer Format: JWT' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo ' */' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo 'interface bearerHttpAuthenticationInterface' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo '{' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo '    /**' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo '     * Handle incoming request with http authentication' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo '     *' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo '     * @param \Illuminate\Http\Request $$request' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo '     * @param \Closure $$next' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo '     * @return \Symfony\Component\HttpFoundation\Response' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo '     */' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo '    public function handle(\Illuminate\Http\Request $$request, \Closure $$next): \Symfony\Component\HttpFoundation\Response;' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo '}' >> laravel-api/generated-v2/tictactoe/lib/Security/bearerHttpAuthenticationInterface.php
-	@echo "✅ Security interfaces created!"
+	@echo "ℹ️  Security interfaces generated via templates (SecurityInterfaces.php, SecurityValidator.php)"
 	@echo "📁 Output: laravel-api/generated-v2/tictactoe"
 
 # Utilities

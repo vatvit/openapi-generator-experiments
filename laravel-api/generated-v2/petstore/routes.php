@@ -294,3 +294,27 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.addPet')) {
     $route->middleware('api.middlewareGroup.addPet');
 }
 
+
+// ============================================================================
+// Security Middleware Validation (Auto-generated)
+// ============================================================================
+// Validates that all required security middleware is properly configured
+// Only runs when APP_DEBUG=true (development mode)
+// ============================================================================
+
+if (config('app.debug', false)) {
+    // Validate security middleware configuration
+    if (class_exists('PetStoreApiV2\Server\Security\SecurityValidator')) {
+        try {
+            PetStoreApiV2\Server\Security\SecurityValidator::validateMiddleware($router);
+        } catch (\RuntimeException $e) {
+            // Log validation errors but don't break the application
+            error_log("Security middleware validation failed for PetStoreApiV2\Server:");
+            error_log($e->getMessage());
+
+            // In debug mode, you might want to throw the exception to catch issues early
+            // Uncomment the line below to make validation failures fatal:
+            // throw $e;
+        }
+    }
+}

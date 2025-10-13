@@ -34,5 +34,7 @@ lib/Models/Status.php
 lib/Models/ValidationError.php
 lib/Models/ValidationErrorAllOfErrors.php
 lib/Models/Winner.php
+lib/Security/SecurityInterfaces.php
+lib/Security/SecurityValidator.php
 phpunit.xml.dist
 routes.php
