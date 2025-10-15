@@ -31,9 +31,6 @@
  *
  * Usage in routes/api.php:
  * ```php
- * // Bind controller name to concrete implementation in Service Container
- * app()->bind('Tic Tac Toe', \App\Http\Controllers\Api\YourController::class);
- *
  * // Wrap generated routes in a group
  * Route::group(['prefix' => 'v2', 'middleware' => ['api']], function ($router) {
  *     require base_path('generated/server/routes.php');
@@ -84,7 +81,7 @@
  *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
  * ]);
  */
-$route = $router->POST('/v1/games', 'Tic Tac Toe@createGame')
+$route = $router->POST('/v1/games', [TicTacToeApiV2\Server\Http\Controllers\DefaultController::class, 'createGame'])
     ->name('api.createGame');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -112,7 +109,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.createGame')) {
  *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
  * ]);
  */
-$route = $router->DELETE('/v1/games/{gameId}', 'Tic Tac Toe@deleteGame')
+$route = $router->DELETE('/v1/games/{gameId}', [TicTacToeApiV2\Server\Http\Controllers\DefaultController::class, 'deleteGame'])
     ->name('api.deleteGame');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -143,7 +140,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.deleteGame')) {
  *     \App\Http\Middleware\ValidateOAuthScopes::class,  // Validate scopes: board:read
  * ]);
  */
-$route = $router->GET('/v1/games/{gameId}/board', 'Tic Tac Toe@getBoard')
+$route = $router->GET('/v1/games/{gameId}/board', [TicTacToeApiV2\Server\Http\Controllers\DefaultController::class, 'getBoard'])
     ->name('api.getBoard');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -172,7 +169,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getBoard')) {
  *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
  * ]);
  */
-$route = $router->GET('/v1/games/{gameId}', 'Tic Tac Toe@getGame')
+$route = $router->GET('/v1/games/{gameId}', [TicTacToeApiV2\Server\Http\Controllers\DefaultController::class, 'getGame'])
     ->name('api.getGame');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -191,7 +188,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getGame')) {
  * Get leaderboard
  * Retrieves the global leaderboard with top players.
  */
-$route = $router->GET('/v1/leaderboard', 'Tic Tac Toe@getLeaderboard')
+$route = $router->GET('/v1/leaderboard', [TicTacToeApiV2\Server\Http\Controllers\DefaultController::class, 'getLeaderboard'])
     ->name('api.getLeaderboard');
 
 // No security required - public endpoint
@@ -214,7 +211,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getLeaderboard')) {
  *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
  * ]);
  */
-$route = $router->GET('/v1/games/{gameId}/moves', 'Tic Tac Toe@getMoves')
+$route = $router->GET('/v1/games/{gameId}/moves', [TicTacToeApiV2\Server\Http\Controllers\DefaultController::class, 'getMoves'])
     ->name('api.getMoves');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -242,7 +239,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getMoves')) {
  *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
  * ]);
  */
-$route = $router->GET('/v1/players/{playerId}/stats', 'Tic Tac Toe@getPlayerStats')
+$route = $router->GET('/v1/players/{playerId}/stats', [TicTacToeApiV2\Server\Http\Controllers\DefaultController::class, 'getPlayerStats'])
     ->name('api.getPlayerStats');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -273,7 +270,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getPlayerStats')) {
  *     \App\Http\Middleware\ValidateOAuthScopes::class,  // Validate scopes: board:read
  * ]);
  */
-$route = $router->GET('/v1/games/{gameId}/board/{row}/{column}', 'Tic Tac Toe@getSquare')
+$route = $router->GET('/v1/games/{gameId}/board/{row}/{column}', [TicTacToeApiV2\Server\Http\Controllers\DefaultController::class, 'getSquare'])
     ->name('api.getSquare');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -302,7 +299,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getSquare')) {
  *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
  * ]);
  */
-$route = $router->GET('/v1/games', 'Tic Tac Toe@listGames')
+$route = $router->GET('/v1/games', [TicTacToeApiV2\Server\Http\Controllers\DefaultController::class, 'listGames'])
     ->name('api.listGames');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -333,7 +330,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.listGames')) {
  *     \App\Http\Middleware\ValidateOAuthScopes::class,  // Validate scopes: board:write
  * ]);
  */
-$route = $router->PUT('/v1/games/{gameId}/board/{row}/{column}', 'Tic Tac Toe@putSquare')
+$route = $router->PUT('/v1/games/{gameId}/board/{row}/{column}', [TicTacToeApiV2\Server\Http\Controllers\DefaultController::class, 'putSquare'])
     ->name('api.putSquare');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -358,7 +355,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.putSquare')) {
 
 if (config('app.debug', false)) {
     // Validate security middleware configuration
-    if (class_exists('TicTacToeApiV2\Server\Security\SecurityValidator')) {
+    if (class_exists(TicTacToeApiV2\Server\Security\SecurityValidator::class)) {
         try {
             TicTacToeApiV2\Server\Security\SecurityValidator::validateMiddleware($router);
         } catch (\RuntimeException $e) {

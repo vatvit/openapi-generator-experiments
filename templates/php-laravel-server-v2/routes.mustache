@@ -13,9 +13,6 @@
  *
  * Usage in routes/api.php:
  * ```php
- * // Bind controller name to concrete implementation in Service Container
- * app()->bind('{{appName}}', \App\Http\Controllers\Api\YourController::class);
- *
  * // Wrap generated routes in a group
  * Route::group(['prefix' => 'v2', 'middleware' => ['api']], function ($router) {
  *     require base_path('generated/server/routes.php');
@@ -95,7 +92,7 @@
  * ]);
 {{/hasAuthMethods}}
  */
-$route = $router->{{httpMethod}}('{{{basePathWithoutHost}}}{{{path}}}', '{{appName}}@{{operationId}}')
+$route = $router->{{httpMethod}}('{{{basePathWithoutHost}}}{{{path}}}', [{{invokerPackage}}\Http\Controllers\DefaultController::class, '{{operationId}}'])
     ->name('api.{{operationId}}');
 
 {{#hasAuthMethods}}
@@ -134,7 +131,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.{{operationId}}')) {
 
 if (config('app.debug', false)) {
     // Validate security middleware configuration
-    if (class_exists('{{invokerPackage}}\Security\SecurityValidator')) {
+    if (class_exists({{invokerPackage}}\Security\SecurityValidator::class)) {
         try {
             {{invokerPackage}}\Security\SecurityValidator::validateMiddleware($router);
         } catch (\RuntimeException $e) {

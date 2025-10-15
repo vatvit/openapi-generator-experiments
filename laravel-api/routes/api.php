@@ -39,10 +39,14 @@ Route::get('/v2/test', function () {
     return response()->json(['message' => 'Test route works!']);
 });
 
-// Bind the controller name from OpenAPI spec to the concrete controller
+// TicTacToe V2 API Routes
 Route::prefix('v2/tictactoe')->group(function ($router) {
-    app()->bind('Tic Tac Toe', \TicTacToeApiV2\Server\Http\Controllers\DefaultController::class);
     require base_path('generated-v2/tictactoe/routes.php');
+});
+
+// PetStore V2 API Routes
+Route::group([], function ($router) {
+    require base_path('generated-v2/petstore/routes.php');
 });
 
 // API documentation endpoint
