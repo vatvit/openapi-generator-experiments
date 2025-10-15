@@ -35,10 +35,29 @@ generated-v2/
 
 ### 1. **Input Validation** (from spec → Laravel validation rules)
 
-**Generated in Controllers:** `laravel-api/generated-v2/tictactoe/lib/Http/Controllers/DefaultController.php:59`
+**Generated in Controllers:** `laravel-api/generated-v2/tictactoe/lib/Http/Controllers/DefaultController.php:53-73`
 
 ```php
-$validated = $request->validate($this->createGameValidationRules());
+public function createGame(
+    CreateGameHandlerInterface $handler,
+    Request $request
+): JsonResponse
+{
+    // Validate request using generated rules
+    $validated = $request->validate($this->createGameValidationRules());
+
+    // Extract validated parameters and deserialize to model
+    $createGameRequest = $serde->deserialize($request->getContent(),
+        from: 'json',
+        to: \TicTacToeApiV2\Server\Models\CreateGameRequest::class
+    );
+
+    // Call handler with validated parameters
+    $response = $handler->handle($createGameRequest);
+
+    // Convert response model to JSON (enforced by interface)
+    return $response->toJsonResponse();
+}
 ```
 
 The validation rules are **automatically generated from OpenAPI schemas** (required fields, types, constraints).
@@ -198,6 +217,20 @@ One interface per security scheme in spec:
 
 **Integration:** Validation code embedded in `routes.php` (runs automatically when routes load).
 
+### 5. **Centralized Bootstrap Architecture**
+
+**Design:** All generated API setup happens in `bootstrap/app.php` within the `then()` callback:
+- DI bindings for handler interfaces
+- Route registration for all APIs
+
+**Benefits:**
+- ✅ Single source of truth for API setup
+- ✅ Clean separation: web routes vs API bootstrap
+- ✅ Follows Laravel convention for custom routes
+- ✅ Easier to understand application structure
+
+**Implementation:** `laravel-api/bootstrap/app.php:14-54`
+
 ---
 
 ## Multi-Spec Support (Critical for Real-World Use)
@@ -219,13 +252,21 @@ The solution supports **multiple OpenAPI specs** simultaneously:
 }
 ```
 
-**Laravel integration:** `laravel-api/bootstrap/app.php:30-52`
+**Laravel integration:** `laravel-api/bootstrap/app.php:36-45`
 ```php
-// Each spec gets own route group
-Route::group(['prefix' => 'v2'], function () {
+// === Generated API Routes ===
+// PetStore V2 API Routes (paths already include /v2 prefix)
+Route::group([], function ($router) {
+    require base_path('generated-v2/petstore/routes.php');
+});
+
+// TicTacToe V2 API Routes (paths already include /v1 prefix from spec)
+Route::group([], function ($router) {
     require base_path('generated-v2/tictactoe/routes.php');
 });
 ```
+
+**Note:** Routes are registered in `bootstrap/app.php` (not in `routes/web.php` or `routes/api.php`) alongside DI bindings for cleaner architecture.
 
 ---
 
@@ -321,11 +362,13 @@ Spec changes → Regenerate → New package version → Consumer composer update
 
 ### ⚠️ **Post-Processing Required**
 
-**Issue:** Extra step after generation (security interfaces, controller merging)
+**Issue:** Extra steps after generation:
+- Controller merging for APIs with multiple tags (PetStore)
+- Tag removal pre-processing (TicTacToe)
 
 **Mitigation:** Fully automated via Makefile, transparent process
 
-**Benefit:** Gets features OpenAPI Generator doesn't provide natively
+**Benefit:** Gets features OpenAPI Generator doesn't provide natively (security interfaces, deduplicated controllers)
 
 ### ⚠️ **Template Maintenance**
 
@@ -343,7 +386,7 @@ Spec changes → Regenerate → New package version → Consumer composer update
 - Code generation workflow
 - Handler/interface patterns
 
-**Mitigation:** Comprehensive documentation (CLAUDE.md, PRESENTATION_V2.md)
+**Mitigation:** Comprehensive documentation (CLAUDE.md, ARCHITECTURE_ANALYSIS.md)
 
 ---
 
@@ -447,11 +490,12 @@ composer update your-org/myapi-server
 4. **Handler Implementation:** `laravel-api/app/Handlers/V2/GetBoardHandler.php`
    - Developer-written business logic
 
-5. **Security Interface:** `laravel-api/generated-v2/tictactoe/lib/Security/SecurityInterfaces.php:123-171`
+5. **Security Interface:** `laravel-api/generated-v2/tictactoe/lib/Security/SecurityInterfaces.php`
    - Generated from OpenAPI security schemes
 
-6. **Integration:** `laravel-api/bootstrap/app.php:34-44`
+6. **Integration:** `laravel-api/bootstrap/app.php:14-45`
    - DI bindings connecting interfaces to implementations
+   - Route registration for both APIs
 
 ### Live Demo Flow
 
@@ -468,11 +512,15 @@ ls -R laravel-api/generated-v2/tictactoe/
 # 4. Start Laravel
 cd laravel-api && docker-compose up -d
 
-# 5. Test endpoint
-curl -X POST http://localhost:8000/v2/v1/games \
+# 5. Test endpoints
+# TicTacToe API (uses /v1 prefix from spec)
+curl -X POST http://localhost:8000/v1/games \
   -H "Authorization: Bearer token" \
   -H "Content-Type: application/json" \
   -d '{"mode":"ai_easy"}'
+
+# PetStore API (uses /v2 prefix from spec)
+curl http://localhost:8000/v2/pets
 ```
 
 ---
