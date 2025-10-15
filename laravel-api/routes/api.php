@@ -27,28 +27,6 @@ Route::get('/health', function () {
     ]);
 });
 
-// TicTacToe V1 API Routes - DISABLED (V1 not regenerated yet)
-// // Use GameplayController which has all operations (getBoard, getSquare, putSquare)
-// Route::prefix('tictactoe')->group(function ($router) {
-//     app()->bind('Tic Tac Toe', \TicTacToeApi\Server\Http\Controllers\GameplayController::class);
-//     require base_path('generated/tictactoe/routes.php');
-// });
-
-// TicTacToe V2 API Routes
-Route::get('/v2/test', function () {
-    return response()->json(['message' => 'Test route works!']);
-});
-
-// TicTacToe V2 API Routes
-Route::prefix('v2/tictactoe')->group(function ($router) {
-    require base_path('generated-v2/tictactoe/routes.php');
-});
-
-// PetStore V2 API Routes
-Route::group([], function ($router) {
-    require base_path('generated-v2/petstore/routes.php');
-});
-
 // API documentation endpoint
 Route::get('/docs', function () {
     return response()->json([

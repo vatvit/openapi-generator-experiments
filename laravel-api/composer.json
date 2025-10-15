@@ -29,6 +29,7 @@
             "TicTacToeApiV2\\Server\\": "generated-v2/tictactoe/lib/"
         },
         "files": [
+            "generated-v2/petstore/lib/Api/PetsApiInterface.php",
             "generated-v2/tictactoe/lib/Api/DefaultApiInterface.php"
         ]
     },

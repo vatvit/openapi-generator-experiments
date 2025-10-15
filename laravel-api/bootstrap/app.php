@@ -12,26 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
-            // === PetStore V2 API Setup ===
-            require_once base_path('generated-v2/petstore/lib/Api/PetsApiInterface.php');
-            require_once base_path('generated-v2/petstore/lib/Http/Controllers/DefaultController.php');
+            // === Dependency Injection Bindings ===
+            // These bindings must happen early in the bootstrap process
 
-            // Bind PetStore V2 handlers
+            // PetStore V2 handler bindings
             app()->bind(\PetStoreApiV2\Server\Api\FindPetsHandlerInterface::class, \App\Handlers\PetStore\FindPetsHandler::class);
             app()->bind(\PetStoreApiV2\Server\Api\FindPetByIdHandlerInterface::class, \App\Handlers\PetStore\FindPetByIdHandler::class);
             app()->bind(\PetStoreApiV2\Server\Api\AddPetHandlerInterface::class, \App\Handlers\PetStore\AddPetHandler::class);
             app()->bind(\PetStoreApiV2\Server\Api\DeletePetHandlerInterface::class, \App\Handlers\PetStore\DeletePetHandler::class);
 
-            // Register PetStore V2 routes
-            app()->bind('PetStoreApiController', fn() => app(\PetStoreApiV2\Server\Http\Controllers\DefaultController::class));
-            $router = app('router');
-            require base_path('generated-v2/petstore/routes.php');
-
-            // === TicTacToe V2 API Setup ===
-            require_once base_path('generated-v2/tictactoe/lib/Api/DefaultApiInterface.php');
-            require_once base_path('generated-v2/tictactoe/lib/Http/Controllers/DefaultController.php');
-
-            // Bind V2 handlers
+            // TicTacToe V2 handler bindings
             app()->bind(\TicTacToeApiV2\Server\Api\CreateGameHandlerInterface::class, \App\Handlers\V2\CreateGameHandler::class);
             app()->bind(\TicTacToeApiV2\Server\Api\DeleteGameHandlerInterface::class, \App\Handlers\V2\DeleteGameHandler::class);
             app()->bind(\TicTacToeApiV2\Server\Api\GetBoardHandlerInterface::class, \App\Handlers\V2\GetBoardHandler::class);
@@ -43,11 +33,14 @@ return Application::configure(basePath: dirname(__DIR__))
             app()->bind(\TicTacToeApiV2\Server\Api\ListGamesHandlerInterface::class, \App\Handlers\V2\ListGamesHandler::class);
             app()->bind(\TicTacToeApiV2\Server\Api\PutSquareHandlerInterface::class, \App\Handlers\V2\PutSquareHandler::class);
 
-            // Register V2 routes
-            Route::group(['prefix' => 'v2'], function () {
-                app()->bind('Tic Tac Toe', fn() => app(\TicTacToeApiV2\Server\Http\Controllers\DefaultController::class));
+            // === Generated API Routes ===
+            // PetStore V2 API Routes (paths already include /v2 prefix)
+            Route::group([], function ($router) {
+                require base_path('generated-v2/petstore/routes.php');
+            });
 
-                $router = app('router');
+            // TicTacToe V2 API Routes (paths already include /v1 prefix from spec)
+            Route::group([], function ($router) {
                 require base_path('generated-v2/tictactoe/routes.php');
             });
         },
@@ -56,6 +49,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // Exclude CSRF for API routes
         $middleware->validateCsrfTokens(except: [
             '/api/*',
+            '/v2/*',  // PetStore and TicTacToe routes
+            '/v1/*',  // TicTacToe routes (if accessed without /v2 prefix)
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
