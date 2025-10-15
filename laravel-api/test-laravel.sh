@@ -45,12 +45,13 @@ docker run --rm -v $(pwd):/app -w /app php:8.3-cli php artisan test --env=testin
 echo "✅ Laravel tests passed"
 
 # Test 5: Check API routes
-echo "📋 Test 5: Verifying API routes are defined..."
-ROUTES_OUTPUT=$(docker run --rm -v $(pwd):/app -w /app php:8.3-cli php artisan route:list --path=api)
-if echo "$ROUTES_OUTPUT" | grep -q "api/v1/users"; then
-    echo "✅ API routes are properly defined"
+echo "📋 Test 5: Verifying generated API routes are defined..."
+ROUTES_OUTPUT=$(docker run --rm -v $(pwd):/app -w /app php:8.3-cli php artisan route:list)
+if echo "$ROUTES_OUTPUT" | grep -q "v2/pets" && echo "$ROUTES_OUTPUT" | grep -q "v1/games"; then
+    echo "✅ Generated API routes are properly registered (PetStore: /v2/pets, TicTacToe: /v1/games)"
 else
-    echo "❌ API routes missing"
+    echo "❌ Generated API routes missing"
+    echo "   Expected routes: /v2/pets (PetStore) and /v1/games (TicTacToe)"
     exit 1
 fi
 
