@@ -11,6 +11,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // PetStore V2 handler bindings
+        $this->app->bind(\PetStoreApiV2\Server\Api\FindPetsHandlerInterface::class, \App\Handlers\PetStore\FindPetsHandler::class);
+        $this->app->bind(\PetStoreApiV2\Server\Api\FindPetByIdHandlerInterface::class, \App\Handlers\PetStore\FindPetByIdHandler::class);
+        $this->app->bind(\PetStoreApiV2\Server\Api\AddPetHandlerInterface::class, \App\Handlers\PetStore\AddPetHandler::class);
+        $this->app->bind(\PetStoreApiV2\Server\Api\DeletePetHandlerInterface::class, \App\Handlers\PetStore\DeletePetHandler::class);
+
+        // TicTacToe V2 handler bindings
+        $this->app->bind(\TicTacToeApiV2\Server\Api\CreateGameHandlerInterface::class, \App\Handlers\V2\CreateGameHandler::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\DeleteGameHandlerInterface::class, \App\Handlers\V2\DeleteGameHandler::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\GetBoardHandlerInterface::class, \App\Handlers\V2\GetBoardHandler::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\GetGameHandlerInterface::class, \App\Handlers\V2\GetGameHandler::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\GetLeaderboardHandlerInterface::class, \App\Handlers\V2\GetLeaderboardHandler::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\GetMovesHandlerInterface::class, \App\Handlers\V2\GetMovesHandler::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\GetPlayerStatsHandlerInterface::class, \App\Handlers\V2\GetPlayerStatsHandler::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\GetSquareHandlerInterface::class, \App\Handlers\V2\GetSquareHandler::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\ListGamesHandlerInterface::class, \App\Handlers\V2\ListGamesHandler::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\PutSquareHandlerInterface::class, \App\Handlers\V2\PutSquareHandler::class);
+
+
         // Bind TicTacToe V2 Handler interfaces to concrete implementations
         $this->app->bind(
             \TicTacToeApiV2\Server\Api\CreateGameHandlerInterface::class,

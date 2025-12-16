@@ -87,6 +87,8 @@ class CreateGameHandler implements CreateGameHandlerInterface
             completedAt: new \DateTime('2099-01-01')  // Far future for pending games
         );
 
-        return new CreateGame201Response($game);
+        // Return 201 response with Location header using setter
+        return (new CreateGame201Response($game))
+            ->setLocation('/v1/games/' . $game->id);
     }
 }

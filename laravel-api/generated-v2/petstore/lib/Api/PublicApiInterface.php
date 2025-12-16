@@ -74,7 +74,9 @@ class FindPetById200Response implements FindPetByIdResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 200);
+        $response = response()->json($serialized, 200);
+
+        return $response;
     }
 }
 
@@ -93,7 +95,9 @@ class FindPetById0Response implements FindPetByIdResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 0);
+        $response = response()->json($serialized, 0);
+
+        return $response;
     }
 }
 

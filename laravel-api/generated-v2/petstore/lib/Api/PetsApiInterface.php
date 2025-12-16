@@ -145,7 +145,9 @@ class AddPet200Response implements AddPetResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 200);
+        $response = response()->json($serialized, 200);
+
+        return $response;
     }
 }
 
@@ -164,7 +166,9 @@ class AddPet0Response implements AddPetResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 0);
+        $response = response()->json($serialized, 0);
+
+        return $response;
     }
 }
 
@@ -183,7 +187,9 @@ class DeletePet204Response implements DeletePetResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 204);
+        $response = response()->json($serialized, 204);
+
+        return $response;
     }
 }
 
@@ -202,7 +208,9 @@ class DeletePet0Response implements DeletePetResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 0);
+        $response = response()->json($serialized, 0);
+
+        return $response;
     }
 }
 
@@ -221,7 +229,9 @@ class FindPetById200Response implements FindPetByIdResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 200);
+        $response = response()->json($serialized, 200);
+
+        return $response;
     }
 }
 
@@ -240,7 +250,9 @@ class FindPetById0Response implements FindPetByIdResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 0);
+        $response = response()->json($serialized, 0);
+
+        return $response;
     }
 }
 
@@ -263,7 +275,9 @@ class FindPets200Response implements FindPetsResponseInterface
             fn($item) => $serializer->serialize($item, 'array'),
             $this->data
         );
-        return response()->json($serialized, 200);
+        $response = response()->json($serialized, 200);
+
+        return $response;
     }
 }
 
@@ -282,7 +296,9 @@ class FindPets0Response implements FindPetsResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 0);
+        $response = response()->json($serialized, 0);
+
+        return $response;
     }
 }
 

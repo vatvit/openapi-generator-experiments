@@ -307,19 +307,50 @@ interface PutSquareResponseInterface
 /**
  * HTTP 201 response for createGame operation
  * Game created successfully
+ *
+ * Response Headers:
+ * - Location (required): URL of the created game
  */
 class CreateGame201Response implements CreateGameResponseInterface
 {
+    private ?string $location = null;
+
     public function __construct(
         private readonly \TicTacToeApiV2\Server\Models\Game $data
     ) {}
 
+    // Header setter methods
+
+    /**
+     * Set Location header (required)
+     * URL of the created game
+     * @param string $value
+     * @return self
+     */
+    public function setLocation(string $value): self
+    {
+        $this->location = $value;
+        return $this;
+    }
+
     public function toJsonResponse(): JsonResponse
     {
+        // Validate required headers
+        if ($this->location === null) {
+            throw new \RuntimeException('Required header "Location" is not set for CreateGame201Response');
+        }
+
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 201);
+        $response = response()->json($serialized, 201);
+
+        // Add response headers
+        if ($this->location !== null) {
+            $response->header('Location', $this->location);
+        }
+
+        return $response;
     }
 }
 
@@ -338,7 +369,9 @@ class CreateGame400Response implements CreateGameResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 400);
+        $response = response()->json($serialized, 400);
+
+        return $response;
     }
 }
 
@@ -357,7 +390,9 @@ class CreateGame401Response implements CreateGameResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 401);
+        $response = response()->json($serialized, 401);
+
+        return $response;
     }
 }
 
@@ -376,7 +411,9 @@ class CreateGame422Response implements CreateGameResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 422);
+        $response = response()->json($serialized, 422);
+
+        return $response;
     }
 }
 
@@ -395,7 +432,9 @@ class DeleteGame204Response implements DeleteGameResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 204);
+        $response = response()->json($serialized, 204);
+
+        return $response;
     }
 }
 
@@ -414,7 +453,9 @@ class DeleteGame403Response implements DeleteGameResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 403);
+        $response = response()->json($serialized, 403);
+
+        return $response;
     }
 }
 
@@ -433,7 +474,9 @@ class DeleteGame404Response implements DeleteGameResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 404);
+        $response = response()->json($serialized, 404);
+
+        return $response;
     }
 }
 
@@ -452,7 +495,9 @@ class GetBoard200Response implements GetBoardResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 200);
+        $response = response()->json($serialized, 200);
+
+        return $response;
     }
 }
 
@@ -471,7 +516,9 @@ class GetBoard404Response implements GetBoardResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 404);
+        $response = response()->json($serialized, 404);
+
+        return $response;
     }
 }
 
@@ -490,7 +537,9 @@ class GetGame200Response implements GetGameResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 200);
+        $response = response()->json($serialized, 200);
+
+        return $response;
     }
 }
 
@@ -509,7 +558,9 @@ class GetGame404Response implements GetGameResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 404);
+        $response = response()->json($serialized, 404);
+
+        return $response;
     }
 }
 
@@ -528,7 +579,9 @@ class GetLeaderboard200Response implements GetLeaderboardResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 200);
+        $response = response()->json($serialized, 200);
+
+        return $response;
     }
 }
 
@@ -547,7 +600,9 @@ class GetMoves200Response implements GetMovesResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 200);
+        $response = response()->json($serialized, 200);
+
+        return $response;
     }
 }
 
@@ -566,7 +621,9 @@ class GetMoves404Response implements GetMovesResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 404);
+        $response = response()->json($serialized, 404);
+
+        return $response;
     }
 }
 
@@ -585,7 +642,9 @@ class GetPlayerStats200Response implements GetPlayerStatsResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 200);
+        $response = response()->json($serialized, 200);
+
+        return $response;
     }
 }
 
@@ -604,7 +663,9 @@ class GetPlayerStats404Response implements GetPlayerStatsResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 404);
+        $response = response()->json($serialized, 404);
+
+        return $response;
     }
 }
 
@@ -623,7 +684,9 @@ class GetSquare200Response implements GetSquareResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 200);
+        $response = response()->json($serialized, 200);
+
+        return $response;
     }
 }
 
@@ -642,7 +705,9 @@ class GetSquare400Response implements GetSquareResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 400);
+        $response = response()->json($serialized, 400);
+
+        return $response;
     }
 }
 
@@ -661,26 +726,76 @@ class GetSquare404Response implements GetSquareResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 404);
+        $response = response()->json($serialized, 404);
+
+        return $response;
     }
 }
 
 /**
  * HTTP 200 response for listGames operation
  * Successful response
+ *
+ * Response Headers:
+ * - X-Total-Count (required): Total number of games
+ * - X-Page-Number (optional): Current page number
  */
 class ListGames200Response implements ListGamesResponseInterface
 {
+    private ?int $xTotalCount = null;
+    private ?int $xPageNumber = null;
+
     public function __construct(
         private readonly \TicTacToeApiV2\Server\Models\GameListResponse $data
     ) {}
 
+    // Header setter methods
+
+    /**
+     * Set X-Total-Count header (required)
+     * Total number of games
+     * @param int $value
+     * @return self
+     */
+    public function setXTotalCount(int $value): self
+    {
+        $this->xTotalCount = $value;
+        return $this;
+    }
+
+    /**
+     * Set X-Page-Number header
+     * Current page number
+     * @param int $value
+     * @return self
+     */
+    public function setXPageNumber(int $value): self
+    {
+        $this->xPageNumber = $value;
+        return $this;
+    }
+
     public function toJsonResponse(): JsonResponse
     {
+        // Validate required headers
+        if ($this->xTotalCount === null) {
+            throw new \RuntimeException('Required header "X-Total-Count" is not set for ListGames200Response');
+        }
+
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 200);
+        $response = response()->json($serialized, 200);
+
+        // Add response headers
+        if ($this->xTotalCount !== null) {
+            $response->header('X-Total-Count', $this->xTotalCount);
+        }
+        if ($this->xPageNumber !== null) {
+            $response->header('X-Page-Number', $this->xPageNumber);
+        }
+
+        return $response;
     }
 }
 
@@ -699,7 +814,9 @@ class ListGames400Response implements ListGamesResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 400);
+        $response = response()->json($serialized, 400);
+
+        return $response;
     }
 }
 
@@ -718,7 +835,9 @@ class ListGames401Response implements ListGamesResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 401);
+        $response = response()->json($serialized, 401);
+
+        return $response;
     }
 }
 
@@ -737,7 +856,9 @@ class PutSquare200Response implements PutSquareResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 200);
+        $response = response()->json($serialized, 200);
+
+        return $response;
     }
 }
 
@@ -756,7 +877,9 @@ class PutSquare400Response implements PutSquareResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 400);
+        $response = response()->json($serialized, 400);
+
+        return $response;
     }
 }
 
@@ -775,7 +898,9 @@ class PutSquare404Response implements PutSquareResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 404);
+        $response = response()->json($serialized, 404);
+
+        return $response;
     }
 }
 
@@ -794,7 +919,9 @@ class PutSquare409Response implements PutSquareResponseInterface
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, 409);
+        $response = response()->json($serialized, 409);
+
+        return $response;
     }
 }
 

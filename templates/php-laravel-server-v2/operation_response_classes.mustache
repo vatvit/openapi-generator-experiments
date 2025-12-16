@@ -16,6 +16,13 @@ use {{dataType}};
 {{#message}}
  * Description: {{.}}
 {{/message}}
+{{#hasHeaders}}
+ *
+ * Response Headers:
+{{#headers}}
+ * - {{baseName}}: {{description}}
+{{/headers}}
+{{/hasHeaders}}
  */
 class {{operationIdCamelCase}}{{code}}Response implements {{operationIdCamelCase}}ResponseInterface
 {
@@ -23,15 +30,20 @@ class {{operationIdCamelCase}}{{code}}Response implements {{operationIdCamelCase
 {{#dataType}}
 {{#isArray}}
         /** @var {{baseType}}[] */
-        private array $data
+        private readonly array $data,
 {{/isArray}}
 {{^isArray}}
-        private {{dataType}} $data
+        private readonly {{dataType}} $data,
 {{/isArray}}
 {{/dataType}}
 {{^dataType}}
         // No content for {{code}} response
 {{/dataType}}
+{{#hasHeaders}}
+{{#headers}}
+        private readonly {{#isString}}string{{/isString}}{{#isInteger}}int{{/isInteger}}{{^isString}}{{^isInteger}}string{{/isInteger}}{{/isString}} ${{baseName}}{{^-last}},{{/-last}}
+{{/headers}}
+{{/hasHeaders}}
     ) {}
 
     public function toJsonResponse(): JsonResponse
@@ -44,18 +56,27 @@ class {{operationIdCamelCase}}{{code}}Response implements {{operationIdCamelCase
             fn($item) => $serializer->serialize($item, 'array'),
             $this->data
         );
-        return response()->json($serialized, {{code}});
+        $response = response()->json($serialized, {{code}});
 {{/isArray}}
 {{^isArray}}
         // Serialize single model
         $serializer = new \Crell\Serde\SerdeCommon();
         $serialized = $serializer->serialize($this->data, 'array');
-        return response()->json($serialized, {{code}});
+        $response = response()->json($serialized, {{code}});
 {{/isArray}}
 {{/dataType}}
 {{^dataType}}
-        return response()->json(null, {{code}});
+        $response = response()->json(null, {{code}});
 {{/dataType}}
+{{#hasHeaders}}
+
+        // Add response headers
+{{#headers}}
+        $response->header('{{baseName}}', $this->{{baseName}});
+{{/headers}}
+{{/hasHeaders}}
+
+        return $response;
     }
 }
 

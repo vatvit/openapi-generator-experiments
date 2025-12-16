@@ -1,4 +1,4 @@
-.PHONY: help generate-server generate-petshop generate-tictactoe extract-templates extract-laravel-templates validate-spec clean test-laravel test-complete start-laravel stop-laravel logs-laravel
+.PHONY: help generate-server generate-petshop generate-tictactoe extract-templates extract-laravel-templates validate-spec clean test-laravel test-laravel-phpunit test-complete start-laravel stop-laravel logs-laravel
 
 help: ## Show this help message
 	@echo "Laravel OpenAPI Generator - Development Commands"
@@ -167,6 +167,18 @@ test-laravel: ## Test Laravel application endpoints
 	else \
 		echo "❌ Laravel containers not running"; \
 		echo "   Start with: cd laravel-api && docker-compose up -d"; \
+	fi
+
+test-laravel-phpunit: ## Run PHPUnit tests (Unit and Feature tests)
+	@echo "🧪 Running PHPUnit tests..."
+	@if docker ps | grep -q laravel-api; then \
+		echo "✅ Laravel containers running"; \
+		echo ""; \
+		cd laravel-api && docker-compose exec -T app php artisan test; \
+	else \
+		echo "❌ Laravel containers not running"; \
+		echo "   Start with: cd laravel-api && docker-compose up -d"; \
+		exit 1; \
 	fi
 
 start-laravel: ## Start Laravel development environment

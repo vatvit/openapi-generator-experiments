@@ -44,10 +44,13 @@ class ListGamesHandler implements ListGamesHandlerInterface
         // );
 
         // Success case - return paginated list
+        $currentPage = $page ?? 1;
+        $totalGames = 0; // Would query database in real implementation
+
         $pagination = new Pagination(
-            page: $page ?? 1,
+            page: $currentPage,
             limit: $limit ?? 20,
-            total: 0,
+            total: $totalGames,
             hasNext: false,
             hasPrevious: false
         );
@@ -57,6 +60,9 @@ class ListGamesHandler implements ListGamesHandlerInterface
             pagination: $pagination
         );
 
-        return new ListGames200Response($gameListResponse);
+        // Return 200 response with pagination headers using setters
+        return (new ListGames200Response($gameListResponse))
+            ->setXTotalCount($totalGames)
+            ->setXPageNumber($currentPage);
     }
 }

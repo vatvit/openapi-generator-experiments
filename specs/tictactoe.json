@@ -97,12 +97,14 @@
             "headers": {
               "X-Total-Count": {
                 "description": "Total number of games",
+                "required": true,
                 "schema": {
                   "type": "integer"
                 }
               },
               "X-Page-Number": {
                 "description": "Current page number",
+                "required": false,
                 "schema": {
                   "type": "integer"
                 }
@@ -150,6 +152,7 @@
             "headers": {
               "Location": {
                 "description": "URL of the created game",
+                "required": true,
                 "schema": {
                   "type": "string",
                   "format": "uri"
