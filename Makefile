@@ -1,4 +1,4 @@
-.PHONY: help generate-server generate-petshop generate-tictactoe extract-templates extract-laravel-templates validate-spec clean test-laravel test-laravel-phpunit test-complete start-laravel stop-laravel logs-laravel
+.PHONY: help generate-server generate-petshop generate-tictactoe extract-templates extract-laravel-templates validate-spec clean test-laravel test-laravel-phpunit test-complete setup-laravel start-laravel stop-laravel logs-laravel
 
 help: ## Show this help message
 	@echo "Laravel OpenAPI Generator - Development Commands"
@@ -7,53 +7,56 @@ help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-25s\033[0m %s\n", $$1, $$2}'
 	@echo ""
 	@echo "🚀 Quick Start:"
-	@echo "   1. make generate-server  # Generate Laravel server from OpenAPI spec"
-	@echo "   2. cd laravel-api && docker-compose up -d  # Start Laravel application"
-	@echo "   3. make test-laravel          # Test the Laravel API endpoints"
+	@echo "   1. make generate-server      # Generate Laravel server from OpenAPI spec"
+	@echo "   2. make setup-laravel        # Setup Laravel (first time only - installs vendor/)"
+	@echo "   3. make test-laravel         # Test the Laravel API endpoints"
 
 # Main server generators
 generate-server: generate-petshop generate-tictactoe ## Generate all API server libraries
 
 generate-petshop: ## Generate PetStore API server
 	@echo "🏗️  Generating PetStore API server..."
-	@rm -rf laravel-api/generated-v2/petstore
-	@mkdir -p laravel-api/generated-v2
-	@echo "📋 Using OpenAPI spec: specs/petshop-extended.yaml"
+	@rm -rf generated/petstore
+	@mkdir -p generated
+	@echo "📋 Pre-processing: Removing tags from OpenAPI spec..."
+	@./openapi-generator/scripts/remove-tags.sh petshop/petshop-extended.yaml petshop/petshop-no-tags.yaml
+	@echo ""
+	@echo "📋 Generating from spec without tags: petshop/petshop-no-tags.yaml"
 	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli generate \
-		-i /local/specs/petshop-extended.yaml \
+		-i /local/petshop/petshop-no-tags.yaml \
 		-g php-laravel \
-		-o /local/laravel-api/generated-v2/petstore \
-		-c /local/config-v2/petshop-server-config.json \
-		--template-dir /local/templates/php-laravel-server-v2
+		-o /local/generated/petstore \
+		-c /local/petshop/petshop-server-config.json \
+		--template-dir /local/openapi-generator-server-laravel
 	@echo "✅ PetStore API server generated!"
-	@echo "📋 Post-processing: Merging tag-based controllers (if any)..."
-	@docker run --rm -v $$(pwd):/app -w /app php:8.3-cli php scripts/merge-controllers-simple.php \
-		laravel-api/generated-v2/petstore/lib/Http/Controllers \
-		laravel-api/generated-v2/petstore/lib/Http/Controllers/DefaultController.php || echo "ℹ️  No duplicate controllers to merge"
-	@echo "✅ PetStore server completed!"
-	@echo "📁 Output: laravel-api/generated-v2/petstore"
+	@echo "📁 Output: generated/petstore"
 
 generate-tictactoe: ## Generate TicTacToe API server
 	@echo "🏗️  Generating TicTacToe API server..."
-	@rm -rf laravel-api/generated-v2/tictactoe
-	@mkdir -p laravel-api/generated-v2
+	@rm -rf generated/tictactoe
+	@mkdir -p generated
 	@echo "📋 Pre-processing: Removing tags from OpenAPI spec..."
-	@./scripts/remove-tags.sh specs/tictactoe.json specs/tictactoe-no-tags.json
+	@./openapi-generator/scripts/remove-tags.sh tictactoe/tictactoe.json tictactoe/tictactoe-no-tags.json
 	@echo ""
-	@echo "📋 Generating from spec without tags: specs/tictactoe-no-tags.json"
+	@echo "📋 Generating from spec without tags: tictactoe/tictactoe-no-tags.json"
 	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli generate \
-		-i /local/specs/tictactoe-no-tags.json \
+		-i /local/tictactoe/tictactoe-no-tags.json \
 		-g php-laravel \
-		-o /local/laravel-api/generated-v2/tictactoe \
-		-c /local/config-v2/tictactoe-server-config.json \
-		--template-dir /local/templates/php-laravel-server-v2
+		-o /local/generated/tictactoe \
+		-c /local/tictactoe/tictactoe-server-config.json \
+		--template-dir /local/openapi-generator-server-laravel
 	@echo "✅ TicTacToe API server generated!"
 	@echo "ℹ️  Security interfaces generated via templates (SecurityInterfaces.php, SecurityValidator.php)"
-	@echo "📁 Output: laravel-api/generated-v2/tictactoe"
+	@echo "📁 Output: generated/tictactoe"
 
 # Utilities
 extract-templates: ## Extract default PHP client templates for customization
-	@./scripts/extract-default-templates.sh
+	@echo "📦 Extracting default PHP templates..."
+	@mkdir -p templates/php-default
+	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli author template \
+		-g php -o /local/templates/php-default
+	@echo "✅ PHP templates extracted to: templates/php-default/"
+	@echo "ℹ️  You can copy and modify templates from there to templates/custom-php/"
 
 extract-laravel-templates: ## Extract default php-laravel templates for customization
 	@echo "📦 Extracting php-laravel templates..."
@@ -65,18 +68,18 @@ extract-laravel-templates: ## Extract default php-laravel templates for customiz
 validate-spec: ## Validate the OpenAPI specification
 	@echo "📋 Validating PetStore OpenAPI specification..."
 	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli validate \
-		-i /local/specs/petshop-extended.yaml
+		-i /local/petshop/petshop-extended.yaml
 	@echo "✅ PetStore specification is valid!"
 	@echo ""
 	@echo "📋 Validating TicTacToe OpenAPI specification..."
 	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli validate \
-		-i /local/specs/tictactoe.json
+		-i /local/tictactoe/tictactoe.json
 	@echo "✅ TicTacToe specification is valid!"
 
 clean: ## Clean generated files
 	@echo "🧹 Cleaning generated files..."
-	@rm -rf laravel-api/generated-v2/petstore
-	@rm -rf laravel-api/generated-v2/tictactoe
+	@rm -rf generated/petstore
+	@rm -rf generated/tictactoe
 	@echo "✅ Generated files cleaned!"
 
 # Testing targets
@@ -86,29 +89,29 @@ test-complete: ## Complete test: generate server, start Laravel, and test endpoi
 	@echo ""
 	@echo "📋 Step 1: Validating OpenAPI specifications..."
 	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli validate \
-		-i /local/specs/petshop-extended.yaml
+		-i /local/petshop/petshop-extended.yaml
 	@echo "✅ PetStore specification is valid!"
 	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli validate \
-		-i /local/specs/tictactoe.json
+		-i /local/tictactoe/tictactoe.json
 	@echo "✅ TicTacToe specification is valid!"
 	@echo ""
 	@echo "📋 Step 2: Generating server for both specs..."
 	@$(MAKE) generate-server
 	@echo ""
 	@echo "📋 Step 3: Checking generated server..."
-	@if [ -d "laravel-api/generated-v2/petstore" ]; then \
+	@if [ -d "generated/petstore" ]; then \
 		echo "✅ PetStore server generated successfully"; \
-		find laravel-api/generated-v2/petstore -name "*.php" -type f | wc -l | xargs echo "   📄 PetStore files:"; \
+		find generated/petstore -name "*.php" -type f | wc -l | xargs echo "   📄 PetStore files:"; \
 	else \
 		echo "❌ PetStore server generation failed"; \
 		exit 1; \
 	fi
-	@if [ -d "laravel-api/generated-v2/tictactoe" ]; then \
+	@if [ -d "generated/tictactoe" ]; then \
 		echo "✅ TicTacToe server generated successfully"; \
-		find laravel-api/generated-v2/tictactoe -name "*.php" -type f | wc -l | xargs echo "   📄 TicTacToe files:"; \
-		if [ -f "laravel-api/generated-v2/tictactoe/lib/Http/Controllers/DefaultController.php" ]; then \
+		find generated/tictactoe -name "*.php" -type f | wc -l | xargs echo "   📄 TicTacToe files:"; \
+		if [ -f "generated/tictactoe/lib/Http/Controllers/DefaultController.php" ]; then \
 			echo "✅ DefaultController created successfully"; \
-			grep -c "public function" laravel-api/generated-v2/tictactoe/lib/Http/Controllers/DefaultController.php | xargs echo "   📝 Methods:"; \
+			grep -c "public function" generated/tictactoe/lib/Http/Controllers/DefaultController.php | xargs echo "   📝 Methods:"; \
 		else \
 			echo "❌ DefaultController not found"; \
 			exit 1; \
@@ -180,6 +183,23 @@ test-laravel-phpunit: ## Run PHPUnit tests (Unit and Feature tests)
 		echo "   Start with: cd laravel-api && docker-compose up -d"; \
 		exit 1; \
 	fi
+
+setup-laravel: ## Setup Laravel application (first time only)
+	@echo "🔧 Setting up Laravel application..."
+	@if [ -d "laravel-api/vendor" ]; then \
+		echo "✅ Vendor directory already exists, skipping setup"; \
+		exit 0; \
+	fi
+	@echo "📦 Starting Docker containers..."
+	@cd laravel-api && docker-compose up -d
+	@echo "⏳ Waiting for containers to be ready..."
+	@sleep 5
+	@echo "📦 Installing composer dependencies..."
+	@cd laravel-api && docker-compose exec -T app composer install
+	@echo "🔄 Generating autoload files..."
+	@cd laravel-api && docker-compose exec -T app composer dumpautoload
+	@echo "✅ Laravel setup complete! Vendor directory created at laravel-api/vendor/"
+	@echo "ℹ️  The vendor/ directory will persist on your host machine"
 
 start-laravel: ## Start Laravel development environment
 	@echo "🚀 Starting Laravel development environment..."
