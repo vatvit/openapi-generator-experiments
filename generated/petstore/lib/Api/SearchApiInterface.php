@@ -18,5 +18,24 @@
  */
 
 
-namespace PetStoreApiV2\Server\Security;
+namespace PetStoreApiV2\Server\Api;
 
+
+interface SearchApiInterface {
+
+
+    /**
+     * Operation findPets
+     * @param null | string[] $tags
+     * @param null | int $limit
+     * @return \PetStoreApiV2\Server\Models\Pet[] | \PetStoreApiV2\Server\Models\Error
+     */
+    public function findPets(
+            ?array $tags,
+            ?int $limit,
+    ):
+        array | 
+        \PetStoreApiV2\Server\Models\Error
+    ;
+
+}

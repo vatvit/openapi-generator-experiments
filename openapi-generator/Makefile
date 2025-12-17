@@ -23,20 +23,16 @@ endif
 ifndef CONFIG
 	$(error CONFIG is required. Example: CONFIG=petshop-server-config.json)
 endif
-	@echo "🏗️  Generating $(SPEC_NAME) API server..."
+	@echo "🏗️  Generating $(SPEC_NAME) API server with default templates (PSR-4 compliant)..."
 	@rm -rf ../generated/$(OUTPUT_NAME)
 	@mkdir -p ../generated
-	@echo "📋 Pre-processing: Removing tags from OpenAPI spec..."
-	@./scripts/remove-tags.sh ../$(SPEC_NAME)/$(SPEC_FILE) ../$(SPEC_NAME)/$(SPEC_NAME)-no-tags.$(shell echo $(SPEC_FILE) | rev | cut -d. -f1 | rev)
-	@echo ""
 	@echo "📋 Generating from spec: $(SPEC_NAME)/$(SPEC_FILE)"
 	@docker run --rm -v $$(pwd)/..:/local openapitools/openapi-generator-cli generate \
-		-i /local/$(SPEC_NAME)/$(SPEC_NAME)-no-tags.$(shell echo $(SPEC_FILE) | rev | cut -d. -f1 | rev) \
+		-i /local/$(SPEC_NAME)/$(SPEC_FILE) \
 		-g php-laravel \
 		-o /local/generated/$(OUTPUT_NAME) \
-		-c /local/laravel-api/openapi-generator-configs/$(CONFIG) \
-		--template-dir /local/openapi-generator-server-laravel
-	@echo "✅ $(SPEC_NAME) API server generated!"
+		-c /local/laravel-api/openapi-generator-configs/$(CONFIG)
+	@echo "✅ $(SPEC_NAME) API server generated (PSR-4: one class per file)!"
 	@echo "📁 Output: generated/$(OUTPUT_NAME)"
 
 extract-templates: ## Extract default PHP client templates for customization

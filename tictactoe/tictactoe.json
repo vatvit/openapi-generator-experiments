@@ -521,7 +521,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/error"
+              "$ref": "#/components/schemas/badRequestError"
             }
           }
         }
@@ -531,7 +531,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/error"
+              "$ref": "#/components/schemas/unauthorizedError"
             }
           }
         }
@@ -541,7 +541,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/error"
+              "$ref": "#/components/schemas/forbiddenError"
             }
           }
         }
@@ -551,7 +551,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/error"
+              "$ref": "#/components/schemas/notFoundError"
             }
           }
         }
@@ -971,6 +971,82 @@
             "description": "Additional error details"
           }
         }
+      },
+      "badRequestError": {
+        "type": "object",
+        "description": "Bad request error with invalid parameters",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/error"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "errorType": {
+                "type": "string",
+                "enum": ["BAD_REQUEST"],
+                "description": "Error type identifier"
+              }
+            }
+          }
+        ]
+      },
+      "unauthorizedError": {
+        "type": "object",
+        "description": "Unauthorized error - authentication required",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/error"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "errorType": {
+                "type": "string",
+                "enum": ["UNAUTHORIZED"],
+                "description": "Error type identifier"
+              }
+            }
+          }
+        ]
+      },
+      "forbiddenError": {
+        "type": "object",
+        "description": "Forbidden error - insufficient permissions",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/error"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "errorType": {
+                "type": "string",
+                "enum": ["FORBIDDEN"],
+                "description": "Error type identifier"
+              }
+            }
+          }
+        ]
+      },
+      "notFoundError": {
+        "type": "object",
+        "description": "Not found error - resource does not exist",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/error"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "errorType": {
+                "type": "string",
+                "enum": ["NOT_FOUND"],
+                "description": "Error type identifier"
+              }
+            }
+          }
+        ]
       },
       "validationError": {
         "allOf": [

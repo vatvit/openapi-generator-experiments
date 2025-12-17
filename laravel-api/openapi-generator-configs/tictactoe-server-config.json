@@ -25,17 +25,5 @@
   "hideGenerationTimestamp": true,
   "withGeneratorVersionComment": false,
   "appName": "TicTacToeApiController",
-  "skipOperationExample": true,
-  "files": {
-    "SecurityInterfaces.php.mustache": {
-      "folder": "lib/Security",
-      "destinationFilename": "SecurityInterfaces.php",
-      "templateType": "SupportingFiles"
-    },
-    "SecurityValidator.php.mustache": {
-      "folder": "lib/Security",
-      "destinationFilename": "SecurityValidator.php",
-      "templateType": "SupportingFiles"
-    }
-  }
+  "skipOperationExample": true
 }

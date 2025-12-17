@@ -95,11 +95,11 @@ test-complete: ## Complete test: validate → generate → test
 	@if [ -d "generated/tictactoe" ]; then \
 		echo "✅ TicTacToe server generated successfully"; \
 		find generated/tictactoe -name "*.php" -type f | wc -l | xargs echo "   📄 TicTacToe files:"; \
-		if [ -f "generated/tictactoe/lib/Http/Controllers/DefaultController.php" ]; then \
-			echo "✅ DefaultController created successfully"; \
-			grep -c "public function" generated/tictactoe/lib/Http/Controllers/DefaultController.php | xargs echo "   📝 Methods:"; \
+		if [ -f "generated/tictactoe/lib/Http/Controllers/GameManagementController.php" ]; then \
+			echo "✅ Controllers created successfully (PSR-4 compliant)"; \
+			find generated/tictactoe/lib/Http/Controllers -name "*Controller.php" -type f | wc -l | xargs echo "   📝 Controllers:"; \
 		else \
-			echo "❌ DefaultController not found"; \
+			echo "❌ Controllers not found"; \
 			exit 1; \
 		fi; \
 	else \

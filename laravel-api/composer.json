@@ -28,9 +28,9 @@
             "PetStoreApiV2\\Server\\": "../generated/petstore/lib/",
             "TicTacToeApiV2\\Server\\": "../generated/tictactoe/lib/"
         },
-        "files": [
-            "../generated/petstore/lib/Api/DefaultApiInterface.php",
-            "../generated/tictactoe/lib/Api/DefaultApiInterface.php"
+        "classmap": [
+            "../generated/petstore/lib/Http/Controllers",
+            "../generated/tictactoe/lib/Http/Controllers"
         ]
     },
     "autoload-dev": {

@@ -11,21 +11,21 @@ class HandlerBindingTest extends TestCase
      */
     public function test_petstore_handlers_are_bound(): void
     {
-        // Verify FindPetsHandler binding
-        $handler = app(\PetStoreApiV2\Server\Api\FindPetsHandlerInterface::class);
-        $this->assertInstanceOf(\App\Handlers\PetStore\FindPetsHandler::class, $handler);
+        // Verify AdminApiHandler binding
+        $handler = app(\PetStoreApiV2\Server\Api\AdminApiInterface::class);
+        $this->assertInstanceOf(\App\Handlers\PetStore\AdminApiHandler::class, $handler);
 
-        // Verify FindPetByIdHandler binding
-        $handler = app(\PetStoreApiV2\Server\Api\FindPetByIdHandlerInterface::class);
-        $this->assertInstanceOf(\App\Handlers\PetStore\FindPetByIdHandler::class, $handler);
+        // Verify AnalyticsApiHandler binding
+        $handler = app(\PetStoreApiV2\Server\Api\AnalyticsApiInterface::class);
+        $this->assertInstanceOf(\App\Handlers\PetStore\AnalyticsApiHandler::class, $handler);
 
-        // Verify AddPetHandler binding
-        $handler = app(\PetStoreApiV2\Server\Api\AddPetHandlerInterface::class);
-        $this->assertInstanceOf(\App\Handlers\PetStore\AddPetHandler::class, $handler);
+        // Verify CreationApiHandler binding
+        $handler = app(\PetStoreApiV2\Server\Api\CreationApiInterface::class);
+        $this->assertInstanceOf(\App\Handlers\PetStore\CreationApiHandler::class, $handler);
 
-        // Verify DeletePetHandler binding
-        $handler = app(\PetStoreApiV2\Server\Api\DeletePetHandlerInterface::class);
-        $this->assertInstanceOf(\App\Handlers\PetStore\DeletePetHandler::class, $handler);
+        // Verify DetailsApiHandler binding
+        $handler = app(\PetStoreApiV2\Server\Api\DetailsApiInterface::class);
+        $this->assertInstanceOf(\App\Handlers\PetStore\DetailsApiHandler::class, $handler);
     }
 
     /**
@@ -33,20 +33,20 @@ class HandlerBindingTest extends TestCase
      */
     public function test_tictactoe_handlers_are_bound(): void
     {
-        // Verify CreateGameHandler binding
-        $handler = app(\TicTacToeApiV2\Server\Api\CreateGameHandlerInterface::class);
-        $this->assertInstanceOf(\App\Handlers\V2\CreateGameHandler::class, $handler);
+        // Verify GameManagementApiHandler binding
+        $handler = app(\TicTacToeApiV2\Server\Api\GameManagementApiInterface::class);
+        $this->assertInstanceOf(\App\Handlers\V2\GameManagementApiHandler::class, $handler);
 
-        // Verify GetBoardHandler binding
-        $handler = app(\TicTacToeApiV2\Server\Api\GetBoardHandlerInterface::class);
-        $this->assertInstanceOf(\App\Handlers\V2\GetBoardHandler::class, $handler);
+        // Verify GameplayApiHandler binding
+        $handler = app(\TicTacToeApiV2\Server\Api\GameplayApiInterface::class);
+        $this->assertInstanceOf(\App\Handlers\V2\GameplayApiHandler::class, $handler);
 
-        // Verify ListGamesHandler binding
-        $handler = app(\TicTacToeApiV2\Server\Api\ListGamesHandlerInterface::class);
-        $this->assertInstanceOf(\App\Handlers\V2\ListGamesHandler::class, $handler);
+        // Verify StatisticsApiHandler binding
+        $handler = app(\TicTacToeApiV2\Server\Api\StatisticsApiInterface::class);
+        $this->assertInstanceOf(\App\Handlers\V2\StatisticsApiHandler::class, $handler);
 
-        // Verify PutSquareHandler binding
-        $handler = app(\TicTacToeApiV2\Server\Api\PutSquareHandlerInterface::class);
-        $this->assertInstanceOf(\App\Handlers\V2\PutSquareHandler::class, $handler);
+        // Verify TicTacApiHandler binding
+        $handler = app(\TicTacToeApiV2\Server\Api\TicTacApiInterface::class);
+        $this->assertInstanceOf(\App\Handlers\V2\TicTacApiHandler::class, $handler);
     }
 }
