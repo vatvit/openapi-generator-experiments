@@ -19,27 +19,30 @@ make test-complete-v2           # Run complete test suite
 ## Project Structure
 
 ```
-specs/                          # OpenAPI specifications (source of truth)
-├── petshop-extended.yaml
-└── tictactoe.json
+petshop/                        # PetStore OpenAPI specification
+├── petshop-extended.yaml      # Source spec
+└── petshop-no-tags.yaml       # Pre-processed spec (generated)
 
-config-v2/                      # Generator configs (one per spec)
-├── petshop-server-config.json
-└── tictactoe-server-config.json
+tictactoe/                      # TicTacToe OpenAPI specification
+├── tictactoe.json             # Source spec
+└── tictactoe-no-tags.json     # Pre-processed spec (generated)
 
-templates/php-laravel-server-v2/  # Mustache templates
+openapi-generator-server-laravel/  # Custom Mustache templates
 
-scripts/
-├── merge-controllers-simple.php    # Post-processor: merges tag-based controllers
-└── remove-tags.sh                  # Pre-processor: removes tags from spec
+openapi-generator/scripts/
+└── remove-tags.sh             # Pre-processor: removes tags from spec
+
+generated/                      # Generated server code
+├── petstore/lib/              # PetStoreApiV2\Server namespace
+└── tictactoe/lib/             # TicTacToeApiV2\Server namespace
 
 laravel-api/
-├── generated-v2/                      # Generated server (external libraries)
-│   ├── petstore/lib/                 # PetStoreApiV2\Server namespace
-│   └── tictactoe/lib/                # TicTacToeApiV2\Server namespace
-├── app/Handlers/V2/                   # Business logic implementations
-├── app/Http/Middleware/               # Security middleware
-└── bootstrap/app.php                  # DI bindings and route registration
+├── openapi-generator-configs/ # Generator configs (one per spec)
+│   ├── petshop-server-config.json
+│   └── tictactoe-server-config.json
+├── app/Handlers/V2/           # Business logic implementations
+├── app/Http/Middleware/       # Security middleware
+└── bootstrap/app.php          # DI bindings and route registration
 ```
 
 ## Architecture: External Library Pattern
