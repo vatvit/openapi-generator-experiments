@@ -58,3 +58,4 @@ class LeaderboardEntry
         public int $gamesPlayed,
     ) {}
 }
+

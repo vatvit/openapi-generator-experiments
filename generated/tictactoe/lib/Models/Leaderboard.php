@@ -50,3 +50,4 @@ class Leaderboard
         public \DateTime $generatedAt,
     ) {}
 }
+

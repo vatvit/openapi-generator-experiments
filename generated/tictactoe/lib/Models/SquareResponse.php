@@ -50,3 +50,4 @@ class SquareResponse
         public \TicTacToeApiV2\Server\Models\Mark $mark,
     ) {}
 }
+

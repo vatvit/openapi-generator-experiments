@@ -54,3 +54,4 @@ class CreateGameRequest
         public array $metadata,
     ) {}
 }
+

@@ -46,3 +46,4 @@ class MoveHistory
         public array $moves,
     ) {}
 }
+

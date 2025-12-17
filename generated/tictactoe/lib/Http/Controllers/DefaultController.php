@@ -424,6 +424,10 @@ class DefaultController extends Controller
     protected function createGameValidationRules(): array
     {
         return [
+            'mode' => 'required',
+            'opponentId' => 'sometimes|string',
+            'isPrivate' => 'sometimes|boolean',
+            'metadata' => 'sometimes',
         ];
     }
 
@@ -538,6 +542,7 @@ class DefaultController extends Controller
     protected function putSquareValidationRules(string $gameId, int $row, int $column): array
     {
         return [
+            'mark' => 'required',
         ];
     }
 

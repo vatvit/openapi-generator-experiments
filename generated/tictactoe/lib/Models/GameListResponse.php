@@ -46,3 +46,4 @@ class GameListResponse
         public \TicTacToeApiV2\Server\Models\Pagination $pagination,
     ) {}
 }
+

@@ -43,3 +43,4 @@ class NoContent403
         public ?string $dummy = null,
     ) {}
 }
+

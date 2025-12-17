@@ -42,3 +42,4 @@ class MoveRequest
         public \TicTacToeApiV2\Server\Models\MoveRequestMark $mark,
     ) {}
 }
+

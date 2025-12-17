@@ -82,3 +82,4 @@ class Game
         public \DateTime $completedAt,
     ) {}
 }
+

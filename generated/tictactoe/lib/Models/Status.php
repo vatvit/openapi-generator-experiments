@@ -47,3 +47,4 @@ class Status
         public array $board,
     ) {}
 }
+

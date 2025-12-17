@@ -174,6 +174,8 @@ class DefaultController extends Controller
     protected function addPetValidationRules(): array
     {
         return [
+            'name' => 'required|string',
+            'tag' => 'sometimes|string',
         ];
     }
 

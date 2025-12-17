@@ -54,3 +54,4 @@ class ValidationError
         public array $errors,
     ) {}
 }
+

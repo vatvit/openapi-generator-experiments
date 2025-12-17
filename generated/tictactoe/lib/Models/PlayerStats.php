@@ -74,3 +74,4 @@ class PlayerStats
         public int $longestWinStreak,
     ) {}
 }
+
