@@ -8,8 +8,8 @@ help: ## Show this help message
 	@echo ""
 	@echo "🚀 Quick Start:"
 	@echo "   1. make generate-server      # Generate Laravel server from OpenAPI spec"
-	@echo "   2. make setup-laravel        # Setup Laravel (first time only - installs vendor/)"
-	@echo "   3. make test-laravel         # Test the Laravel API endpoints"
+	@echo "   2. make start-laravel        # Start Laravel (auto-refreshes autoload)"
+	@echo "   3. make test-laravel-phpunit # Run PHPUnit tests"
 
 # Main server generators
 generate-server: generate-petshop generate-tictactoe ## Generate all API server libraries
@@ -184,26 +184,26 @@ test-laravel-phpunit: ## Run PHPUnit tests (Unit and Feature tests)
 		exit 1; \
 	fi
 
-setup-laravel: ## Setup Laravel application (first time only)
+setup-laravel: ## Setup Laravel application and refresh autoload
 	@echo "🔧 Setting up Laravel application..."
-	@if [ -d "laravel-api/vendor" ]; then \
-		echo "✅ Vendor directory already exists, skipping setup"; \
-		exit 0; \
+	@if [ ! -d "laravel-api/vendor" ]; then \
+		echo "📦 Starting Docker containers..."; \
+		cd laravel-api && docker-compose up -d; \
+		echo "⏳ Waiting for containers to be ready..."; \
+		sleep 5; \
+		echo "📦 Installing composer dependencies..."; \
+		cd laravel-api && docker-compose exec -T app composer install; \
+		echo "✅ Vendor directory created at laravel-api/vendor/"; \
+	else \
+		echo "✅ Vendor directory already exists"; \
+		echo "🔄 Ensuring containers are running..."; \
+		cd laravel-api && docker-compose up -d; \
 	fi
-	@echo "📦 Starting Docker containers..."
-	@cd laravel-api && docker-compose up -d
-	@echo "⏳ Waiting for containers to be ready..."
-	@sleep 5
-	@echo "📦 Installing composer dependencies..."
-	@cd laravel-api && docker-compose exec -T app composer install
-	@echo "🔄 Generating autoload files..."
+	@echo "🔄 Refreshing autoload files..."
 	@cd laravel-api && docker-compose exec -T app composer dumpautoload
-	@echo "✅ Laravel setup complete! Vendor directory created at laravel-api/vendor/"
-	@echo "ℹ️  The vendor/ directory will persist on your host machine"
+	@echo "✅ Laravel setup complete!"
 
-start-laravel: ## Start Laravel development environment
-	@echo "🚀 Starting Laravel development environment..."
-	@cd laravel-api && docker-compose up -d
+start-laravel: setup-laravel ## Start Laravel development environment
 	@echo "✅ Laravel application started at http://localhost:8000"
 
 stop-laravel: ## Stop Laravel development environment
