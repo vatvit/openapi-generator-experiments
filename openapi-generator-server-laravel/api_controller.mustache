@@ -142,6 +142,11 @@ class {{controllerName}} extends Controller
 {{^isBodyParam}}
             '{{paramName}}' => '{{#required}}required{{/required}}{{^required}}sometimes{{/required}}{{#isInteger}}|integer{{/isInteger}}{{#isLong}}|integer{{/isLong}}{{#isFloat}}|numeric{{/isFloat}}{{#isDouble}}|numeric{{/isDouble}}{{#isString}}|string{{/isString}}{{#isBoolean}}|boolean{{/isBoolean}}{{#isArray}}|array{{/isArray}}{{#minimum}}|min:{{minimum}}{{/minimum}}{{#maximum}}|max:{{maximum}}{{/maximum}}{{#minLength}}|min:{{minLength}}{{/minLength}}{{#maxLength}}|max:{{maxLength}}{{/maxLength}}{{#pattern}}|regex:{{pattern}}{{/pattern}}{{#hasValidation}}{{#_enum}}|in:{{#allowableValues}}{{#values}}{{.}}{{#hasMore}},{{/hasMore}}{{/values}}{{/allowableValues}}{{/_enum}}{{/hasValidation}}',
 {{/isBodyParam}}
+{{#isBodyParam}}
+{{#vars}}
+            '{{name}}' => '{{#required}}required{{/required}}{{^required}}sometimes{{/required}}{{#isInteger}}|integer{{/isInteger}}{{#isLong}}|integer{{/isLong}}{{#isFloat}}|numeric{{/isFloat}}{{#isDouble}}|numeric{{/isDouble}}{{#isString}}|string{{/isString}}{{#isBoolean}}|boolean{{/isBoolean}}{{#isArray}}|array{{/isArray}}{{#minimum}}|min:{{minimum}}{{/minimum}}{{#maximum}}|max:{{maximum}}{{/maximum}}{{#minLength}}|min:{{minLength}}{{/minLength}}{{#maxLength}}|max:{{maxLength}}{{/maxLength}}{{#pattern}}|regex:{{pattern}}{{/pattern}}{{#isEnum}}|in:{{#allowableValues}}{{#enumVars}}{{value}}{{^-last}},{{/-last}}{{/enumVars}}{{/allowableValues}}{{/isEnum}}',
+{{/vars}}
+{{/isBodyParam}}
 {{/isPathParam}}
 {{/allParams}}
         ];
