@@ -19,12 +19,12 @@ return Application::configure(basePath: dirname(__DIR__))
             // === Generated API Routes ===
             // PetStore V2 API Routes (paths already include /v2 prefix)
             Route::group([], function ($router) {
-                require base_path('generated-v2/petstore/routes.php');
+                require base_path('../generated/petstore/routes.php');
             });
 
             // TicTacToe V2 API Routes (paths already include /v1 prefix from spec)
             Route::group([], function ($router) {
-                require base_path('generated-v2/tictactoe/routes.php');
+                require base_path('../generated/tictactoe/routes.php');
             });
         },
     )

@@ -1,0 +1,134 @@
+{{>php_file_header}}
+
+namespace {{invokerPackage}}\Security;
+
+{{#hasAuthMethods}}
+{{#authMethods}}
+/**
+ * Security Interface: {{name}}
+ *
+ * Generated from OpenAPI security scheme
+ * Type: {{type}}
+{{#description}}
+ * Description: {{description}}
+{{/description}}
+{{#isApiKey}}
+ * API Key Parameter: {{keyParamName}}
+ * Location: {{#isKeyInHeader}}header{{/isKeyInHeader}}{{#isKeyInQuery}}query parameter{{/isKeyInQuery}}{{#isKeyInCookie}}cookie{{/isKeyInCookie}}
+{{/isApiKey}}
+{{#isBasic}}
+{{#isBasicBearer}}
+ * Scheme: Bearer
+{{#bearerFormat}}
+ * Bearer Format: {{bearerFormat}}
+{{/bearerFormat}}
+{{/isBasicBearer}}
+{{#isBasicBasic}}
+ * Scheme: Basic HTTP Authentication
+{{/isBasicBasic}}
+{{/isBasic}}
+{{#isOAuth}}
+ * OAuth Flow: {{flow}}
+{{#authorizationUrl}}
+ * Authorization URL: {{authorizationUrl}}
+{{/authorizationUrl}}
+{{#tokenUrl}}
+ * Token URL: {{tokenUrl}}
+{{/tokenUrl}}
+{{#scopes}}
+ * Available Scopes:
+{{#scopes}}
+ *   - {{scope}}{{#description}}: {{description}}{{/description}}
+{{/scopes}}
+{{/scopes}}
+{{/isOAuth}}
+ *
+ * Implementation Requirements:
+ * - Middleware MUST implement this interface
+ * - Middleware will be validated at route registration
+ * - Failed validation will throw RuntimeException
+ *
+ * Example Implementation:
+ * ```php
+ * namespace App\Http\Middleware;
+ *
+ * use {{invokerPackage}}\Security\{{name}}Interface;
+ * use Closure;
+ * use Illuminate\Http\Request;
+ * use Symfony\Component\HttpFoundation\Response;
+ *
+ * class Validate{{name}} implements {{name}}Interface
+ * {
+ *     public function handle(Request $request, Closure $next): Response
+ *     {
+{{#isApiKey}}
+ *         // Validate {{keyParamName}} from {{#isKeyInHeader}}header{{/isKeyInHeader}}{{#isKeyInQuery}}query{{/isKeyInQuery}}
+ *         $apiKey = $request->{{#isKeyInHeader}}header{{/isKeyInHeader}}{{#isKeyInQuery}}query{{/isKeyInQuery}}('{{keyParamName}}');
+ *         if (empty($apiKey)) {
+ *             return response()->json(['error' => 'API key required'], 401);
+ *         }
+ *         // TODO: Validate API key against your storage
+{{/isApiKey}}
+{{#isBasicBearer}}
+ *         // Validate Bearer token from Authorization header
+ *         $authHeader = $request->header('Authorization');
+ *         if (!str_starts_with($authHeader, 'Bearer ')) {
+ *             return response()->json(['error' => 'Bearer token required'], 401);
+ *         }
+ *         $token = substr($authHeader, 7);
+ *         // TODO: Validate JWT token
+{{/isBasicBearer}}
+{{#isBasicBasic}}
+ *         // Validate Basic auth from Authorization header
+ *         $authHeader = $request->header('Authorization');
+ *         if (!str_starts_with($authHeader, 'Basic ')) {
+ *             return response()->json(['error' => 'Basic auth required'], 401);
+ *         }
+ *         // TODO: Validate credentials
+{{/isBasicBasic}}
+{{#isOAuth}}
+ *         // Validate OAuth token and scopes
+ *         $token = $request->bearerToken();
+ *         if (empty($token)) {
+ *             return response()->json(['error' => 'OAuth token required'], 401);
+ *         }
+ *         // TODO: Validate token and scopes
+{{/isOAuth}}
+ *         return $next($request);
+ *     }
+{{#isOAuth}}
+ *
+ *     public function validateScopes(array $requiredScopes): bool
+ *     {
+ *         // TODO: Implement scope validation
+ *         // Compare required scopes against token scopes
+ *         return true;
+ *     }
+{{/isOAuth}}
+ * }
+ * ```
+ */
+interface {{name}}Interface
+{
+    /**
+     * Handle incoming request with {{type}} authentication
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function handle($request, \Closure $next);
+{{#isOAuth}}
+
+    /**
+     * Validate OAuth scopes
+     *
+     * @param array $requiredScopes List of required scope names
+     * @return bool True if all required scopes are present
+     */
+    public function validateScopes(array $requiredScopes): bool;
+{{/isOAuth}}
+}
+
+{{/authMethods}}
+{{/hasAuthMethods}}

@@ -1,0 +1,83 @@
+{{>php_file_header}}
+
+namespace {{invokerPackage}}\Http\Responses;
+
+use Illuminate\Http\JsonResponse;
+{{#responses}}
+{{#dataType}}
+use {{dataType}};
+{{/dataType}}
+{{/responses}}
+
+{{#responses}}
+/**
+ * {{message}} response for {{operationId}} operation
+ * HTTP Status: {{code}}
+{{#message}}
+ * Description: {{.}}
+{{/message}}
+{{#hasHeaders}}
+ *
+ * Response Headers:
+{{#headers}}
+ * - {{baseName}}: {{description}}
+{{/headers}}
+{{/hasHeaders}}
+ */
+class {{operationIdCamelCase}}{{code}}Response implements {{operationIdCamelCase}}ResponseInterface
+{
+    public function __construct(
+{{#dataType}}
+{{#isArray}}
+        /** @var {{baseType}}[] */
+        private readonly array $data,
+{{/isArray}}
+{{^isArray}}
+        private readonly {{dataType}} $data,
+{{/isArray}}
+{{/dataType}}
+{{^dataType}}
+        // No content for {{code}} response
+{{/dataType}}
+{{#hasHeaders}}
+{{#headers}}
+        private readonly {{#isString}}string{{/isString}}{{#isInteger}}int{{/isInteger}}{{^isString}}{{^isInteger}}string{{/isInteger}}{{/isString}} ${{baseName}}{{^-last}},{{/-last}}
+{{/headers}}
+{{/hasHeaders}}
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+{{#dataType}}
+{{#isArray}}
+        // Serialize array of models
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = array_map(
+            fn($item) => $serializer->serialize($item, 'array'),
+            $this->data
+        );
+        $response = response()->json($serialized, {{code}});
+{{/isArray}}
+{{^isArray}}
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, {{code}});
+{{/isArray}}
+{{/dataType}}
+{{^dataType}}
+        $response = response()->json(null, {{code}});
+{{/dataType}}
+{{#hasHeaders}}
+
+        // Add response headers
+{{#headers}}
+        $response->header('{{baseName}}', $this->{{baseName}});
+{{/headers}}
+{{/hasHeaders}}
+
+        return $response;
+    }
+}
+
+{{/responses}}

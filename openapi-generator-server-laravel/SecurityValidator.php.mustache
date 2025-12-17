@@ -1,0 +1,134 @@
+{{>php_file_header}}
+
+namespace {{invokerPackage}}\Security;
+
+/**
+ * Security Middleware Validator
+ *
+ * Auto-generated validation helper for security middleware
+ * Validates that all required security middleware is properly configured
+ *
+ * Call from Laravel service provider or bootstrap to validate middleware configuration:
+ *
+ * ```php
+ * {{invokerPackage}}\Security\SecurityValidator::validateMiddleware(app('router'));
+ * ```
+ */
+class SecurityValidator
+{
+    /**
+     * Validate that all required middleware is registered and implements correct interfaces
+     *
+     * @param \Illuminate\Routing\Router $router Laravel router instance
+     * @throws \RuntimeException if validation fails
+     * @return void
+     */
+    public static function validateMiddleware(\Illuminate\Routing\Router $router): void
+    {
+        $errors = [];
+
+{{#apiInfo}}
+{{#apis}}
+{{#operations}}
+{{#operation}}
+{{#hasAuthMethods}}
+        // Validate {{operationId}} operation security
+        if ($router->hasMiddlewareGroup('api.middlewareGroup.{{operationId}}')) {
+            $middlewares = $router->getMiddlewareGroups()['api.middlewareGroup.{{operationId}}'] ?? [];
+            $requiredInterfaces = [
+{{#authMethods}}
+                {{name}}Interface::class,
+{{/authMethods}}
+            ];
+
+            foreach ($requiredInterfaces as $interface) {
+                $hasImplementation = false;
+                foreach ($middlewares as $middleware) {
+                    // Handle both class strings and instances
+                    $middlewareClass = is_string($middleware) ? $middleware : get_class($middleware);
+                    if (is_subclass_of($middlewareClass, $interface)) {
+                        $hasImplementation = true;
+                        break;
+                    }
+                }
+                if (!$hasImplementation) {
+                    $errors[] = "Operation '{{operationId}}' requires middleware implementing: {$interface}";
+                }
+            }
+        } else {
+            // Only warn if operation requires security but group is missing
+            $errors[] = "Operation '{{operationId}}' requires authentication but middleware group 'api.middlewareGroup.{{operationId}}' is not registered";
+        }
+
+{{/hasAuthMethods}}
+{{/operation}}
+{{/operations}}
+{{/apis}}
+{{/apiInfo}}
+
+        if (!empty($errors)) {
+            throw new \RuntimeException(
+                "Security middleware validation failed:\n  - " . implode("\n  - ", $errors)
+            );
+        }
+    }
+
+    /**
+     * Get required security interfaces for each operation
+     *
+     * @return array<string, array<string>> Operation ID => Array of required interface class names
+     */
+    public static function getRequiredInterfaces(): array
+    {
+        return [
+{{#apiInfo}}
+{{#apis}}
+{{#operations}}
+{{#operation}}
+{{#hasAuthMethods}}
+            '{{operationId}}' => [
+{{#authMethods}}
+                {{name}}Interface::class,
+{{/authMethods}}
+            ],
+{{/hasAuthMethods}}
+{{/operation}}
+{{/operations}}
+{{/apis}}
+{{/apiInfo}}
+        ];
+    }
+
+    /**
+     * Get all operations that require security
+     *
+     * @return array<string> Array of operation IDs
+     */
+    public static function getSecuredOperations(): array
+    {
+        return [
+{{#apiInfo}}
+{{#apis}}
+{{#operations}}
+{{#operation}}
+{{#hasAuthMethods}}
+            '{{operationId}}',
+{{/hasAuthMethods}}
+{{/operation}}
+{{/operations}}
+{{/apis}}
+{{/apiInfo}}
+        ];
+    }
+
+    /**
+     * Check if a specific operation requires security
+     *
+     * @param string $operationId Operation identifier
+     * @return bool True if operation requires authentication
+     */
+    public static function requiresSecurity(string $operationId): bool
+    {
+        return in_array($operationId, self::getSecuredOperations(), true);
+    }
+}
