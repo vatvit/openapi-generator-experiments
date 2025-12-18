@@ -20,6 +20,8 @@
 
 namespace TicTacToeApiV2\Server\Api;
 
+use Illuminate\Http\JsonResponse;
+
 
 interface TicTacApiInterface {
 
@@ -29,13 +31,99 @@ interface TicTacApiInterface {
      *
      * Get the game board
      * @param string $gameId
-     * @return \TicTacToeApiV2\Server\Models\Status | \TicTacToeApiV2\Server\Models\NotFoundError
+     * @return GetBoardResponseInterface
      */
     public function getBoard(
             string $gameId,
-    ):
-        \TicTacToeApiV2\Server\Models\Status | 
-        \TicTacToeApiV2\Server\Models\NotFoundError
-    ;
+    ): GetBoardResponseInterface;
 
 }
+
+// ============================================================================
+// Response Interfaces - One per operation
+// ============================================================================
+
+/**
+ * Response interface for getBoard operation
+ * All possible responses for this operation must implement this interface
+ */
+interface GetBoardResponseInterface
+{
+    /**
+     * Convert this response to a JSON response
+     * @return JsonResponse
+     */
+    public function toJsonResponse(): JsonResponse;
+}
+
+
+// ============================================================================
+// Concrete Response Classes - One per response code per operation
+// ============================================================================
+
+/**
+ * HTTP 200 response for getBoard operation
+ * OK
+ */
+class GetBoard200Response implements GetBoardResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\Status $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 200);
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 404 response for getBoard operation
+ * Not Found - Resource does not exist
+ */
+class GetBoard404Response implements GetBoardResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\NotFoundError $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 404);
+
+        return $response;
+    }
+}
+
+
+// ============================================================================
+// Handler Interfaces - One per operation
+// ============================================================================
+
+/**
+ * Handler interface for getBoard operation
+ * Implement this interface in your application to provide business logic
+ */
+interface GetBoardHandlerInterface
+{
+    /**
+     * Handle getBoard operation
+     *
+     * Retrieves the current state of the board and the winner.
+     *
+     * @param string $gameId Unique game identifier
+     * @return GetBoardResponseInterface
+     */
+    public function handle(
+        string $gameId
+    ): GetBoardResponseInterface;
+}
+

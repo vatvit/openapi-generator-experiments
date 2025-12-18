@@ -20,6 +20,8 @@
 
 namespace PetStoreApiV2\Server\Api;
 
+use Illuminate\Http\JsonResponse;
+
 
 interface WorkflowApiInterface {
 
@@ -27,13 +29,99 @@ interface WorkflowApiInterface {
     /**
      * Operation addPet
      * @param \PetStoreApiV2\Server\Models\NewPet $newPet
-     * @return \PetStoreApiV2\Server\Models\Pet | \PetStoreApiV2\Server\Models\Error
+     * @return AddPetResponseInterface
      */
     public function addPet(
             \PetStoreApiV2\Server\Models\NewPet $newPet,
-    ):
-        \PetStoreApiV2\Server\Models\Pet | 
-        \PetStoreApiV2\Server\Models\Error
-    ;
+    ): AddPetResponseInterface;
 
 }
+
+// ============================================================================
+// Response Interfaces - One per operation
+// ============================================================================
+
+/**
+ * Response interface for addPet operation
+ * All possible responses for this operation must implement this interface
+ */
+interface AddPetResponseInterface
+{
+    /**
+     * Convert this response to a JSON response
+     * @return JsonResponse
+     */
+    public function toJsonResponse(): JsonResponse;
+}
+
+
+// ============================================================================
+// Concrete Response Classes - One per response code per operation
+// ============================================================================
+
+/**
+ * HTTP 200 response for addPet operation
+ * pet response
+ */
+class AddPet200Response implements AddPetResponseInterface
+{
+    public function __construct(
+        private readonly \PetStoreApiV2\Server\Models\Pet $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 200);
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 0 response for addPet operation
+ * unexpected error
+ */
+class AddPet0Response implements AddPetResponseInterface
+{
+    public function __construct(
+        private readonly \PetStoreApiV2\Server\Models\Error $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 0);
+
+        return $response;
+    }
+}
+
+
+// ============================================================================
+// Handler Interfaces - One per operation
+// ============================================================================
+
+/**
+ * Handler interface for addPet operation
+ * Implement this interface in your application to provide business logic
+ */
+interface AddPetHandlerInterface
+{
+    /**
+     * Handle addPet operation
+     *
+     * Creates a new pet in the store. Duplicates are allowed
+     *
+     * @param \PetStoreApiV2\Server\Models\NewPet $newPet Pet to add to the store
+     * @return AddPetResponseInterface
+     */
+    public function handle(
+        \PetStoreApiV2\Server\Models\NewPet $newPet
+    ): AddPetResponseInterface;
+}
+

@@ -92,7 +92,7 @@
  * ]);
 {{/hasAuthMethods}}
  */
-$route = $router->{{httpMethod}}('{{{basePathWithoutHost}}}{{{path}}}', [{{invokerPackage}}\Http\Controllers\DefaultController::class, '{{operationId}}'])
+$route = $router->{{httpMethod}}('{{{basePathWithoutHost}}}{{{path}}}', [{{invokerPackage}}\Http\Controllers\{{controllerName}}::class, '{{operationId}}'])
     ->name('api.{{operationId}}');
 
 {{#hasAuthMethods}}

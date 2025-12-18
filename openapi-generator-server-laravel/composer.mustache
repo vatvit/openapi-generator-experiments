@@ -1,0 +1,57 @@
+{
+    "name": "{{composerVendorName}}/{{composerPackageName}}",
+    {{#artifactVersion}}
+    "version": "{{.}}",
+    {{/artifactVersion}}
+    {{#appDescription}}
+    "description": "{{.}}",
+    {{/appDescription}}
+    {{^appDescription}}
+    "description": "Generated OpenAPI server",
+    {{/appDescription}}
+    "keywords": [
+        "openapi",
+        "php",
+        "laravel",
+        "server",
+        "api"{{#packageKeywords}},
+        "{{.}}"{{/packageKeywords}}
+    ],
+    {{#artifactUrl}}
+    "homepage": "{{{.}}}",
+    {{/artifactUrl}}
+    {{^artifactUrl}}
+    "homepage": "https://openapi-generator.tech",
+    {{/artifactUrl}}
+    {{#licenseName}}
+    "license": "{{.}}",
+    {{/licenseName}}
+    {{^licenseName}}
+    "license": "unlicense",
+    {{/licenseName}}
+    "authors": [
+        {{#developerName}}
+        {
+            "name": "{{developerName}}"{{#developerEmail}},
+            "email": "{{developerEmail}}"{{/developerEmail}}{{#developerOrganizationUrl}},
+            "homepage": "{{{developerOrganizationUrl}}}"{{/developerOrganizationUrl}}
+        }
+        {{/developerName}}
+        {{^developerName}}
+        {
+            "name": "OpenAPI Generator",
+            "homepage": "https://openapi-generator.tech"
+        }
+        {{/developerName}}
+    ],
+    "require": {
+        "php": "^8.1",
+        "laravel/framework": "^10.0|^11.0",
+        "crell/serde": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "{{escapedInvokerPackage}}\\": "lib/"
+        }
+    }
+}

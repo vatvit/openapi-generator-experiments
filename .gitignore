@@ -2,7 +2,7 @@
 # generated/
 
 # Extracted default templates (regenerated as needed)
-templates/php-default/
+templates/
 
 # Custom generator builds
 generators/*/target/

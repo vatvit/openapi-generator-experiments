@@ -20,6 +20,8 @@
 
 namespace TicTacToeApiV2\Server\Api;
 
+use Illuminate\Http\JsonResponse;
+
 
 interface GameManagementApiInterface {
 
@@ -29,16 +31,11 @@ interface GameManagementApiInterface {
      *
      * Create a new game
      * @param \TicTacToeApiV2\Server\Models\CreateGameRequest $createGameRequest
-     * @return \TicTacToeApiV2\Server\Models\Game | \TicTacToeApiV2\Server\Models\BadRequestError | \TicTacToeApiV2\Server\Models\UnauthorizedError | \TicTacToeApiV2\Server\Models\ValidationError
+     * @return CreateGameResponseInterface
      */
     public function createGame(
             \TicTacToeApiV2\Server\Models\CreateGameRequest $createGameRequest,
-    ):
-        \TicTacToeApiV2\Server\Models\Game | 
-        \TicTacToeApiV2\Server\Models\BadRequestError | 
-        \TicTacToeApiV2\Server\Models\UnauthorizedError | 
-        \TicTacToeApiV2\Server\Models\ValidationError
-    ;
+    ): CreateGameResponseInterface;
 
 
     /**
@@ -46,15 +43,11 @@ interface GameManagementApiInterface {
      *
      * Delete a game
      * @param string $gameId
-     * @return \TicTacToeApiV2\Server\Models\NoContent204 | \TicTacToeApiV2\Server\Models\ForbiddenError | \TicTacToeApiV2\Server\Models\NotFoundError
+     * @return DeleteGameResponseInterface
      */
     public function deleteGame(
             string $gameId,
-    ):
-        \TicTacToeApiV2\Server\Models\NoContent204 | 
-        \TicTacToeApiV2\Server\Models\ForbiddenError | 
-        \TicTacToeApiV2\Server\Models\NotFoundError
-    ;
+    ): DeleteGameResponseInterface;
 
 
     /**
@@ -62,14 +55,11 @@ interface GameManagementApiInterface {
      *
      * Get game details
      * @param string $gameId
-     * @return \TicTacToeApiV2\Server\Models\Game | \TicTacToeApiV2\Server\Models\NotFoundError
+     * @return GetGameResponseInterface
      */
     public function getGame(
             string $gameId,
-    ):
-        \TicTacToeApiV2\Server\Models\Game | 
-        \TicTacToeApiV2\Server\Models\NotFoundError
-    ;
+    ): GetGameResponseInterface;
 
 
     /**
@@ -80,17 +70,489 @@ interface GameManagementApiInterface {
      * @param null | int $limit
      * @param null | \TicTacToeApiV2\Server\Models\GameStatus $status
      * @param null | string $playerId
-     * @return \TicTacToeApiV2\Server\Models\GameListResponse | \TicTacToeApiV2\Server\Models\BadRequestError | \TicTacToeApiV2\Server\Models\UnauthorizedError
+     * @return ListGamesResponseInterface
      */
     public function listGames(
             ?int $page,
             ?int $limit,
             ?\TicTacToeApiV2\Server\Models\GameStatus $status,
             ?string $playerId,
-    ):
-        \TicTacToeApiV2\Server\Models\GameListResponse | 
-        \TicTacToeApiV2\Server\Models\BadRequestError | 
-        \TicTacToeApiV2\Server\Models\UnauthorizedError
-    ;
+    ): ListGamesResponseInterface;
 
 }
+
+// ============================================================================
+// Response Interfaces - One per operation
+// ============================================================================
+
+/**
+ * Response interface for createGame operation
+ * All possible responses for this operation must implement this interface
+ */
+interface CreateGameResponseInterface
+{
+    /**
+     * Convert this response to a JSON response
+     * @return JsonResponse
+     */
+    public function toJsonResponse(): JsonResponse;
+}
+
+/**
+ * Response interface for deleteGame operation
+ * All possible responses for this operation must implement this interface
+ */
+interface DeleteGameResponseInterface
+{
+    /**
+     * Convert this response to a JSON response
+     * @return JsonResponse
+     */
+    public function toJsonResponse(): JsonResponse;
+}
+
+/**
+ * Response interface for getGame operation
+ * All possible responses for this operation must implement this interface
+ */
+interface GetGameResponseInterface
+{
+    /**
+     * Convert this response to a JSON response
+     * @return JsonResponse
+     */
+    public function toJsonResponse(): JsonResponse;
+}
+
+/**
+ * Response interface for listGames operation
+ * All possible responses for this operation must implement this interface
+ */
+interface ListGamesResponseInterface
+{
+    /**
+     * Convert this response to a JSON response
+     * @return JsonResponse
+     */
+    public function toJsonResponse(): JsonResponse;
+}
+
+
+// ============================================================================
+// Concrete Response Classes - One per response code per operation
+// ============================================================================
+
+/**
+ * HTTP 201 response for createGame operation
+ * Game created successfully
+ *
+ * Response Headers:
+ * - Location (required): URL of the created game
+ */
+class CreateGame201Response implements CreateGameResponseInterface
+{
+    private ?string $location = null;
+
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\Game $data
+    ) {}
+
+    // Header setter methods
+
+    /**
+     * Set Location header (required)
+     * URL of the created game
+     * @param string $value
+     * @return self
+     */
+    public function setLocation(string $value): self
+    {
+        $this->location = $value;
+        return $this;
+    }
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Validate required headers
+        if ($this->location === null) {
+            throw new \RuntimeException('Required header "Location" is not set for CreateGame201Response');
+        }
+
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 201);
+
+        // Add response headers
+        if ($this->location !== null) {
+            $response->header('Location', $this->location);
+        }
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 400 response for createGame operation
+ * Bad Request - Invalid parameters
+ */
+class CreateGame400Response implements CreateGameResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\BadRequestError $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 400);
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 401 response for createGame operation
+ * Unauthorized - Authentication required
+ */
+class CreateGame401Response implements CreateGameResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\UnauthorizedError $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 401);
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 422 response for createGame operation
+ * Validation Error - Request body validation failed
+ */
+class CreateGame422Response implements CreateGameResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\ValidationError $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 422);
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 204 response for deleteGame operation
+ * Game deleted successfully
+ */
+class DeleteGame204Response implements DeleteGameResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\NoContent204 $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 204);
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 403 response for deleteGame operation
+ * Forbidden - Insufficient permissions
+ */
+class DeleteGame403Response implements DeleteGameResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\ForbiddenError $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 403);
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 404 response for deleteGame operation
+ * Not Found - Resource does not exist
+ */
+class DeleteGame404Response implements DeleteGameResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\NotFoundError $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 404);
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 200 response for getGame operation
+ * Successful response
+ */
+class GetGame200Response implements GetGameResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\Game $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 200);
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 404 response for getGame operation
+ * Not Found - Resource does not exist
+ */
+class GetGame404Response implements GetGameResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\NotFoundError $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 404);
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 200 response for listGames operation
+ * Successful response
+ *
+ * Response Headers:
+ * - X-Total-Count (required): Total number of games
+ * - X-Page-Number (optional): Current page number
+ */
+class ListGames200Response implements ListGamesResponseInterface
+{
+    private ?int $xTotalCount = null;
+    private ?int $xPageNumber = null;
+
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\GameListResponse $data
+    ) {}
+
+    // Header setter methods
+
+    /**
+     * Set X-Total-Count header (required)
+     * Total number of games
+     * @param int $value
+     * @return self
+     */
+    public function setXTotalCount(int $value): self
+    {
+        $this->xTotalCount = $value;
+        return $this;
+    }
+
+    /**
+     * Set X-Page-Number header
+     * Current page number
+     * @param int $value
+     * @return self
+     */
+    public function setXPageNumber(int $value): self
+    {
+        $this->xPageNumber = $value;
+        return $this;
+    }
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Validate required headers
+        if ($this->xTotalCount === null) {
+            throw new \RuntimeException('Required header "X-Total-Count" is not set for ListGames200Response');
+        }
+
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 200);
+
+        // Add response headers
+        if ($this->xTotalCount !== null) {
+            $response->header('X-Total-Count', $this->xTotalCount);
+        }
+        if ($this->xPageNumber !== null) {
+            $response->header('X-Page-Number', $this->xPageNumber);
+        }
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 400 response for listGames operation
+ * Bad Request - Invalid parameters
+ */
+class ListGames400Response implements ListGamesResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\BadRequestError $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 400);
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 401 response for listGames operation
+ * Unauthorized - Authentication required
+ */
+class ListGames401Response implements ListGamesResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\UnauthorizedError $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 401);
+
+        return $response;
+    }
+}
+
+
+// ============================================================================
+// Handler Interfaces - One per operation
+// ============================================================================
+
+/**
+ * Handler interface for createGame operation
+ * Implement this interface in your application to provide business logic
+ */
+interface CreateGameHandlerInterface
+{
+    /**
+     * Handle createGame operation
+     *
+     * Creates a new TicTacToe game with specified configuration.
+     *
+     * @param \TicTacToeApiV2\Server\Models\CreateGameRequest $createGameRequest 
+     * @return CreateGameResponseInterface
+     */
+    public function handle(
+        \TicTacToeApiV2\Server\Models\CreateGameRequest $createGameRequest
+    ): CreateGameResponseInterface;
+}
+
+/**
+ * Handler interface for deleteGame operation
+ * Implement this interface in your application to provide business logic
+ */
+interface DeleteGameHandlerInterface
+{
+    /**
+     * Handle deleteGame operation
+     *
+     * Deletes a game. Only allowed for game creators or admins.
+     *
+     * @param string $gameId Unique game identifier
+     * @return DeleteGameResponseInterface
+     */
+    public function handle(
+        string $gameId
+    ): DeleteGameResponseInterface;
+}
+
+/**
+ * Handler interface for getGame operation
+ * Implement this interface in your application to provide business logic
+ */
+interface GetGameHandlerInterface
+{
+    /**
+     * Handle getGame operation
+     *
+     * Retrieves detailed information about a specific game.
+     *
+     * @param string $gameId Unique game identifier
+     * @return GetGameResponseInterface
+     */
+    public function handle(
+        string $gameId
+    ): GetGameResponseInterface;
+}
+
+/**
+ * Handler interface for listGames operation
+ * Implement this interface in your application to provide business logic
+ */
+interface ListGamesHandlerInterface
+{
+    /**
+     * Handle listGames operation
+     *
+     * Retrieves a paginated list of games with optional filtering.
+     *
+     * @param int $page Page number for pagination
+     * @param int $limit Number of items per page
+     * @param \TicTacToeApiV2\Server\Models\GameStatus $status Filter by game status
+     * @param string $playerId Filter games by player ID
+     * @return ListGamesResponseInterface
+     */
+    public function handle(
+        ?int $page,
+        ?int $limit,
+        ?\TicTacToeApiV2\Server\Models\GameStatus $status,
+        ?string $playerId
+    ): ListGamesResponseInterface;
+}
+

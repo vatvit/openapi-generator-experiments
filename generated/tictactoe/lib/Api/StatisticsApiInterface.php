@@ -20,6 +20,8 @@
 
 namespace TicTacToeApiV2\Server\Api;
 
+use Illuminate\Http\JsonResponse;
+
 
 interface StatisticsApiInterface {
 
@@ -30,14 +32,12 @@ interface StatisticsApiInterface {
      * Get leaderboard
      * @param null | \TicTacToeApiV2\Server\Models\GetLeaderboardTimeframeParameter $timeframe
      * @param null | int $limit
-     * @return \TicTacToeApiV2\Server\Models\Leaderboard
+     * @return GetLeaderboardResponseInterface
      */
     public function getLeaderboard(
             ?\TicTacToeApiV2\Server\Models\GetLeaderboardTimeframeParameter $timeframe,
             ?int $limit,
-    ):
-        \TicTacToeApiV2\Server\Models\Leaderboard
-    ;
+    ): GetLeaderboardResponseInterface;
 
 
     /**
@@ -45,13 +45,154 @@ interface StatisticsApiInterface {
      *
      * Get player statistics
      * @param string $playerId
-     * @return \TicTacToeApiV2\Server\Models\PlayerStats | \TicTacToeApiV2\Server\Models\NotFoundError
+     * @return GetPlayerStatsResponseInterface
      */
     public function getPlayerStats(
             string $playerId,
-    ):
-        \TicTacToeApiV2\Server\Models\PlayerStats | 
-        \TicTacToeApiV2\Server\Models\NotFoundError
-    ;
+    ): GetPlayerStatsResponseInterface;
 
 }
+
+// ============================================================================
+// Response Interfaces - One per operation
+// ============================================================================
+
+/**
+ * Response interface for getLeaderboard operation
+ * All possible responses for this operation must implement this interface
+ */
+interface GetLeaderboardResponseInterface
+{
+    /**
+     * Convert this response to a JSON response
+     * @return JsonResponse
+     */
+    public function toJsonResponse(): JsonResponse;
+}
+
+/**
+ * Response interface for getPlayerStats operation
+ * All possible responses for this operation must implement this interface
+ */
+interface GetPlayerStatsResponseInterface
+{
+    /**
+     * Convert this response to a JSON response
+     * @return JsonResponse
+     */
+    public function toJsonResponse(): JsonResponse;
+}
+
+
+// ============================================================================
+// Concrete Response Classes - One per response code per operation
+// ============================================================================
+
+/**
+ * HTTP 200 response for getLeaderboard operation
+ * Successful response
+ */
+class GetLeaderboard200Response implements GetLeaderboardResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\Leaderboard $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 200);
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 200 response for getPlayerStats operation
+ * Successful response
+ */
+class GetPlayerStats200Response implements GetPlayerStatsResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\PlayerStats $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 200);
+
+        return $response;
+    }
+}
+
+/**
+ * HTTP 404 response for getPlayerStats operation
+ * Not Found - Resource does not exist
+ */
+class GetPlayerStats404Response implements GetPlayerStatsResponseInterface
+{
+    public function __construct(
+        private readonly \TicTacToeApiV2\Server\Models\NotFoundError $data
+    ) {}
+
+    public function toJsonResponse(): JsonResponse
+    {
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, 404);
+
+        return $response;
+    }
+}
+
+
+// ============================================================================
+// Handler Interfaces - One per operation
+// ============================================================================
+
+/**
+ * Handler interface for getLeaderboard operation
+ * Implement this interface in your application to provide business logic
+ */
+interface GetLeaderboardHandlerInterface
+{
+    /**
+     * Handle getLeaderboard operation
+     *
+     * Retrieves the global leaderboard with top players.
+     *
+     * @param \TicTacToeApiV2\Server\Models\GetLeaderboardTimeframeParameter $timeframe Timeframe for leaderboard statistics
+     * @param int $limit Number of top players to return
+     * @return GetLeaderboardResponseInterface
+     */
+    public function handle(
+        ?\TicTacToeApiV2\Server\Models\GetLeaderboardTimeframeParameter $timeframe,
+        ?int $limit
+    ): GetLeaderboardResponseInterface;
+}
+
+/**
+ * Handler interface for getPlayerStats operation
+ * Implement this interface in your application to provide business logic
+ */
+interface GetPlayerStatsHandlerInterface
+{
+    /**
+     * Handle getPlayerStats operation
+     *
+     * Retrieves comprehensive statistics for a player.
+     *
+     * @param string $playerId Unique player identifier
+     * @return GetPlayerStatsResponseInterface
+     */
+    public function handle(
+        string $playerId
+    ): GetPlayerStatsResponseInterface;
+}
+

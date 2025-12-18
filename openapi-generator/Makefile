@@ -23,7 +23,7 @@ endif
 ifndef CONFIG
 	$(error CONFIG is required. Example: CONFIG=petshop-server-config.json)
 endif
-	@echo "🏗️  Generating $(SPEC_NAME) API server with default templates (PSR-4 compliant)..."
+	@echo "🏗️  Generating $(SPEC_NAME) API server with custom templates (PSR-4 compliant)..."
 	@rm -rf ../generated/$(OUTPUT_NAME)
 	@mkdir -p ../generated
 	@echo "📋 Generating from spec: $(SPEC_NAME)/$(SPEC_FILE)"
@@ -31,7 +31,8 @@ endif
 		-i /local/$(SPEC_NAME)/$(SPEC_FILE) \
 		-g php-laravel \
 		-o /local/generated/$(OUTPUT_NAME) \
-		-c /local/laravel-api/openapi-generator-configs/$(CONFIG)
+		-c /local/laravel-api/openapi-generator-configs/$(CONFIG) \
+		-t /local/openapi-generator-server-laravel
 	@echo "✅ $(SPEC_NAME) API server generated (PSR-4: one class per file)!"
 	@echo "📁 Output: generated/$(OUTPUT_NAME)"
 

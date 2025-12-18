@@ -27,11 +27,7 @@
             "Database\\Seeders\\": "database/seeders/",
             "PetStoreApiV2\\Server\\": "../generated/petstore/lib/",
             "TicTacToeApiV2\\Server\\": "../generated/tictactoe/lib/"
-        },
-        "classmap": [
-            "../generated/petstore/lib/Http/Controllers",
-            "../generated/tictactoe/lib/Http/Controllers"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
