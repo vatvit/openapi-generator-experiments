@@ -14,6 +14,7 @@ lib/Api/ReportingApiInterface.php
 lib/Api/RetrievalApiInterface.php
 lib/Api/SearchApiInterface.php
 lib/Api/WorkflowApiInterface.php
+lib/Handlers/HandlerInterfaces.php
 lib/Http/Controllers/AdminController.php
 lib/Http/Controllers/AnalyticsController.php
 lib/Http/Controllers/CreationController.php
@@ -26,6 +27,8 @@ lib/Http/Controllers/ReportingController.php
 lib/Http/Controllers/RetrievalController.php
 lib/Http/Controllers/SearchController.php
 lib/Http/Controllers/WorkflowController.php
+lib/Http/Responses/ResponseClasses.php
+lib/Http/Responses/ResponseInterfaces.php
 lib/Models/Error.php
 lib/Models/NewPet.php
 lib/Models/NoContent204.php

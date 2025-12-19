@@ -1,6 +1,9 @@
 .PHONY: help generate-server generate-petshop generate-tictactoe validate-spec clean test-complete
 .PHONY: setup-laravel start-laravel stop-laravel logs-laravel test-laravel test-laravel-phpunit dumpautoload
-.PHONY: extract-templates extract-laravel-templates
+.PHONY: extract-templates extract-laravel-templates check-version update-generator-version
+
+# OpenAPI Generator version (using latest to get 7.18.0-SNAPSHOT)
+OPENAPI_GENERATOR_VERSION := latest
 
 help: ## Show this help message
 	@echo "OpenAPI Generator Experiments - Development Commands"
@@ -33,10 +36,14 @@ help: ## Show this help message
 	@echo "🔧 OpenAPI Generator Utilities:"
 	@echo "  \033[36mextract-templates\033[0m        Extract default PHP templates"
 	@echo "  \033[36mextract-laravel-templates\033[0m Extract default php-laravel templates"
+	@echo "  \033[36mcheck-version\033[0m            Verify generator version matches expected"
+	@echo "  \033[36mupdate-generator-version\033[0m Update to new generator version"
 	@echo ""
 	@echo "💡 Tip: Each subdirectory has its own Makefile with more commands:"
 	@echo "   cd laravel-api && make help"
 	@echo "   cd openapi-generator && make help"
+	@echo ""
+	@echo "🔖 Current OpenAPI Generator version: $(OPENAPI_GENERATOR_VERSION)"
 
 # Generation Commands
 generate-server: generate-petshop generate-tictactoe ## Generate all API server libraries
@@ -58,12 +65,12 @@ generate-tictactoe: ## Generate TicTacToe API server
 
 validate-spec: ## Validate the OpenAPI specifications
 	@echo "📋 Validating PetStore OpenAPI specification..."
-	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli validate \
+	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli:$(OPENAPI_GENERATOR_VERSION) validate \
 		-i /local/petshop/petshop-extended.yaml
 	@echo "✅ PetStore specification is valid!"
 	@echo ""
 	@echo "📋 Validating TicTacToe OpenAPI specification..."
-	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli validate \
+	@docker run --rm -v $$(pwd):/local openapitools/openapi-generator-cli:$(OPENAPI_GENERATOR_VERSION) validate \
 		-i /local/tictactoe/tictactoe.json
 	@echo "✅ TicTacToe specification is valid!"
 
@@ -74,7 +81,7 @@ clean: ## Clean generated files
 	@echo "✅ Generated files cleaned!"
 
 # Testing Orchestration
-test-complete: ## Complete test: validate → generate → test
+test-complete: ## Complete test: validate → generate → version check → test
 	@echo "🎯 Running Complete Test"
 	@echo "========================"
 	@echo ""
@@ -84,7 +91,10 @@ test-complete: ## Complete test: validate → generate → test
 	@echo "📋 Step 2: Generating server for both specs..."
 	@$(MAKE) generate-server
 	@echo ""
-	@echo "📋 Step 3: Checking generated server..."
+	@echo "📋 Step 3: Verifying generator version..."
+	@$(MAKE) check-version
+	@echo ""
+	@echo "📋 Step 4: Checking generated server..."
 	@if [ -d "generated/petstore" ]; then \
 		echo "✅ PetStore server generated successfully"; \
 		find generated/petstore -name "*.php" -type f | wc -l | xargs echo "   📄 PetStore files:"; \
@@ -107,10 +117,10 @@ test-complete: ## Complete test: validate → generate → test
 		exit 1; \
 	fi
 	@echo ""
-	@echo "📋 Step 4: Starting Laravel and refreshing autoload..."
+	@echo "📋 Step 5: Starting Laravel and refreshing autoload..."
 	@$(MAKE) -C laravel-api start
 	@echo ""
-	@echo "📋 Step 5: Running PHPUnit tests..."
+	@echo "📋 Step 6: Running PHPUnit tests..."
 	@$(MAKE) test-laravel-phpunit
 	@echo ""
 	@echo "🎉 Complete test finished for both PetStore and TicTacToe!"
@@ -143,3 +153,9 @@ extract-templates: ## Extract default PHP client templates for customization
 
 extract-laravel-templates: ## Extract default php-laravel templates for customization
 	@$(MAKE) -C openapi-generator extract-laravel-templates
+
+check-version: ## Verify generator version matches expected
+	@$(MAKE) -C openapi-generator check-version
+
+update-generator-version: ## Update OpenAPI Generator version (Usage: make update-generator-version VERSION=v7.19.0)
+	@$(MAKE) -C openapi-generator update-generator-version VERSION=$(VERSION)

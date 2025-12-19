@@ -46,4 +46,3 @@ class Error
         public string $message,
     ) {}
 }
-

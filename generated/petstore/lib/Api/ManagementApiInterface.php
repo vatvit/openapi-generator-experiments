@@ -29,183 +29,20 @@ interface ManagementApiInterface {
     /**
      * Operation addPet
      * @param \PetStoreApiV2\Server\Models\NewPet $newPet
-     * @return AddPetResponseInterface
+     * @return \PetStoreApiV2\Server\Http\Responses\AddPetResponseInterface
      */
     public function addPet(
             \PetStoreApiV2\Server\Models\NewPet $newPet,
-    ): AddPetResponseInterface;
+    ): \PetStoreApiV2\Server\Http\Responses\AddPetResponseInterface;
 
 
     /**
      * Operation deletePet
      * @param int $id
-     * @return DeletePetResponseInterface
+     * @return \PetStoreApiV2\Server\Http\Responses\DeletePetResponseInterface
      */
     public function deletePet(
             int $id,
-    ): DeletePetResponseInterface;
+    ): \PetStoreApiV2\Server\Http\Responses\DeletePetResponseInterface;
 
 }
-
-// ============================================================================
-// Response Interfaces - One per operation
-// ============================================================================
-
-/**
- * Response interface for addPet operation
- * All possible responses for this operation must implement this interface
- */
-interface AddPetResponseInterface
-{
-    /**
-     * Convert this response to a JSON response
-     * @return JsonResponse
-     */
-    public function toJsonResponse(): JsonResponse;
-}
-
-/**
- * Response interface for deletePet operation
- * All possible responses for this operation must implement this interface
- */
-interface DeletePetResponseInterface
-{
-    /**
-     * Convert this response to a JSON response
-     * @return JsonResponse
-     */
-    public function toJsonResponse(): JsonResponse;
-}
-
-
-// ============================================================================
-// Concrete Response Classes - One per response code per operation
-// ============================================================================
-
-/**
- * HTTP 200 response for addPet operation
- * pet response
- */
-class AddPet200Response implements AddPetResponseInterface
-{
-    public function __construct(
-        private readonly \PetStoreApiV2\Server\Models\Pet $data
-    ) {}
-
-    public function toJsonResponse(): JsonResponse
-    {
-        // Serialize single model
-        $serializer = new \Crell\Serde\SerdeCommon();
-        $serialized = $serializer->serialize($this->data, 'array');
-        $response = response()->json($serialized, 200);
-
-        return $response;
-    }
-}
-
-/**
- * HTTP 0 response for addPet operation
- * unexpected error
- */
-class AddPet0Response implements AddPetResponseInterface
-{
-    public function __construct(
-        private readonly \PetStoreApiV2\Server\Models\Error $data
-    ) {}
-
-    public function toJsonResponse(): JsonResponse
-    {
-        // Serialize single model
-        $serializer = new \Crell\Serde\SerdeCommon();
-        $serialized = $serializer->serialize($this->data, 'array');
-        $response = response()->json($serialized, 0);
-
-        return $response;
-    }
-}
-
-/**
- * HTTP 204 response for deletePet operation
- * pet deleted
- */
-class DeletePet204Response implements DeletePetResponseInterface
-{
-    public function __construct(
-        private readonly \PetStoreApiV2\Server\Models\NoContent204 $data
-    ) {}
-
-    public function toJsonResponse(): JsonResponse
-    {
-        // Serialize single model
-        $serializer = new \Crell\Serde\SerdeCommon();
-        $serialized = $serializer->serialize($this->data, 'array');
-        $response = response()->json($serialized, 204);
-
-        return $response;
-    }
-}
-
-/**
- * HTTP 0 response for deletePet operation
- * unexpected error
- */
-class DeletePet0Response implements DeletePetResponseInterface
-{
-    public function __construct(
-        private readonly \PetStoreApiV2\Server\Models\Error $data
-    ) {}
-
-    public function toJsonResponse(): JsonResponse
-    {
-        // Serialize single model
-        $serializer = new \Crell\Serde\SerdeCommon();
-        $serialized = $serializer->serialize($this->data, 'array');
-        $response = response()->json($serialized, 0);
-
-        return $response;
-    }
-}
-
-
-// ============================================================================
-// Handler Interfaces - One per operation
-// ============================================================================
-
-/**
- * Handler interface for addPet operation
- * Implement this interface in your application to provide business logic
- */
-interface AddPetHandlerInterface
-{
-    /**
-     * Handle addPet operation
-     *
-     * Creates a new pet in the store. Duplicates are allowed
-     *
-     * @param \PetStoreApiV2\Server\Models\NewPet $newPet Pet to add to the store
-     * @return AddPetResponseInterface
-     */
-    public function handle(
-        \PetStoreApiV2\Server\Models\NewPet $newPet
-    ): AddPetResponseInterface;
-}
-
-/**
- * Handler interface for deletePet operation
- * Implement this interface in your application to provide business logic
- */
-interface DeletePetHandlerInterface
-{
-    /**
-     * Handle deletePet operation
-     *
-     * deletes a single pet based on the ID supplied
-     *
-     * @param int $id ID of pet to delete
-     * @return DeletePetResponseInterface
-     */
-    public function handle(
-        int $id
-    ): DeletePetResponseInterface;
-}
-

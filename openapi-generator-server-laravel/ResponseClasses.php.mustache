@@ -1,0 +1,121 @@
+{{>php_file_header}}
+
+namespace {{invokerPackage}}\Http\Responses;
+
+use Illuminate\Http\JsonResponse;
+
+// ============================================================================
+// Concrete Response Classes - All Operations
+// ============================================================================
+
+{{#apiInfo}}
+{{#apis}}
+{{#operations}}
+{{#operation}}
+{{#responses}}
+/**
+ * HTTP {{code}} response for {{operationId}} operation
+{{#message}}
+ * {{.}}
+{{/message}}
+{{#hasHeaders}}
+ *
+ * Response Headers:
+{{#headers}}
+ * - {{baseName}}{{#required}} (required){{/required}}{{^required}} (optional){{/required}}: {{description}}
+{{/headers}}
+{{/hasHeaders}}
+ */
+class {{operationIdCamelCase}}{{code}}Response implements {{operationIdCamelCase}}ResponseInterface
+{
+{{#hasHeaders}}
+{{#headers}}
+    private {{#isString}}?string{{/isString}}{{#isInteger}}?int{{/isInteger}}{{^isString}}{{^isInteger}}?string{{/isInteger}}{{/isString}} ${{nameInCamelCase}} = null;
+{{/headers}}
+
+{{/hasHeaders}}
+    public function __construct(
+{{#dataType}}
+{{#isArray}}
+        /** @var {{baseType}}[] */
+        private readonly array $data
+{{/isArray}}
+{{^isArray}}
+        private readonly {{{dataType}}} $data
+{{/isArray}}
+{{/dataType}}
+{{^dataType}}
+        // No content for {{code}} response
+{{/dataType}}
+    ) {}
+{{#hasHeaders}}
+
+    // Header setter methods
+{{#headers}}
+
+    /**
+     * Set {{baseName}} header{{#required}} (required){{/required}}
+     * {{description}}
+     * @param {{#isString}}string{{/isString}}{{#isInteger}}int{{/isInteger}}{{^isString}}{{^isInteger}}string{{/isInteger}}{{/isString}} $value
+     * @return self
+     */
+    public function set{{nameInPascalCase}}({{#isString}}string{{/isString}}{{#isInteger}}int{{/isInteger}}{{^isString}}{{^isInteger}}string{{/isInteger}}{{/isString}} $value): self
+    {
+        $this->{{nameInCamelCase}} = $value;
+        return $this;
+    }
+{{/headers}}
+{{/hasHeaders}}
+
+    public function toJsonResponse(): JsonResponse
+    {
+{{#hasHeaders}}
+        // Validate required headers
+{{#headers}}
+{{#required}}
+        if ($this->{{nameInCamelCase}} === null) {
+            throw new \RuntimeException('Required header "{{baseName}}" is not set for {{operationIdCamelCase}}{{code}}Response');
+        }
+{{/required}}
+{{/headers}}
+
+{{/hasHeaders}}
+{{#dataType}}
+{{#isArray}}
+        // Serialize array of models
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = array_map(
+            fn($item) => $serializer->serialize($item, 'array'),
+            $this->data
+        );
+        $response = response()->json($serialized, {{code}});
+{{/isArray}}
+{{^isArray}}
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, {{code}});
+{{/isArray}}
+{{/dataType}}
+{{^dataType}}
+        $response = response()->json(null, {{code}});
+{{/dataType}}
+{{#hasHeaders}}
+
+        // Add response headers
+{{#headers}}
+        if ($this->{{nameInCamelCase}} !== null) {
+            $response->header('{{baseName}}', $this->{{nameInCamelCase}});
+        }
+{{/headers}}
+{{/hasHeaders}}
+
+        return $response;
+    }
+}
+
+{{/responses}}
+{{/operation}}
+{{/operations}}
+{{/apis}}
+{{/apiInfo}}

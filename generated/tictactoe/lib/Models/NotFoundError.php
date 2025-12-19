@@ -55,4 +55,3 @@ class NotFoundError
         public \TicTacToeApiV2\Server\Models\NotFoundErrorAllOfErrorType $errorType,
     ) {}
 }
-

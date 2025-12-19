@@ -1,4 +1,7 @@
-.PHONY: help generate extract-templates extract-laravel-templates
+# OpenAPI Generator version (pinned for reproducibility)
+OPENAPI_GENERATOR_VERSION := latest
+
+.PHONY: help generate extract-templates extract-laravel-templates check-version update-generator-version
 
 help: ## Show OpenAPI Generator utility commands
 	@echo "OpenAPI Generator - Utility Commands"
@@ -27,7 +30,7 @@ endif
 	@rm -rf ../generated/$(OUTPUT_NAME)
 	@mkdir -p ../generated
 	@echo "📋 Generating from spec: $(SPEC_NAME)/$(SPEC_FILE)"
-	@docker run --rm -v $$(pwd)/..:/local openapitools/openapi-generator-cli generate \
+	@docker run --rm -v $$(pwd)/..:/local openapitools/openapi-generator-cli:$(OPENAPI_GENERATOR_VERSION) generate \
 		-i /local/$(SPEC_NAME)/$(SPEC_FILE) \
 		-g php-laravel \
 		-o /local/generated/$(OUTPUT_NAME) \
@@ -39,7 +42,7 @@ endif
 extract-templates: ## Extract default PHP client templates for customization
 	@echo "📦 Extracting default PHP templates..."
 	@mkdir -p ../templates/php-default
-	@docker run --rm -v $$(pwd)/..:/local openapitools/openapi-generator-cli author template \
+	@docker run --rm -v $$(pwd)/..:/local openapitools/openapi-generator-cli:$(OPENAPI_GENERATOR_VERSION) author template \
 		-g php -o /local/templates/php-default
 	@echo "✅ PHP templates extracted to: ../templates/php-default/"
 	@echo "ℹ️  You can copy and modify templates from there to templates/custom-php/"
@@ -47,6 +50,45 @@ extract-templates: ## Extract default PHP client templates for customization
 extract-laravel-templates: ## Extract default php-laravel templates for customization
 	@echo "📦 Extracting php-laravel templates..."
 	@mkdir -p ../templates/php-laravel-default
-	@docker run --rm -v $$(pwd)/..:/local openapitools/openapi-generator-cli author template \
+	@docker run --rm -v $$(pwd)/..:/local openapitools/openapi-generator-cli:$(OPENAPI_GENERATOR_VERSION) author template \
 		-g php-laravel -o /local/templates/php-laravel-default
 	@echo "✅ Laravel templates extracted to: ../templates/php-laravel-default/"
+
+check-version: ## Check generated code version matches expected (accepts same major.minor, any patch)
+	@echo "🔍 Checking OpenAPI Generator version..."
+	@expected_version=$$(echo $(OPENAPI_GENERATOR_VERSION) | sed 's/^v//'); \
+	expected_major_minor=$$(echo $$expected_version | cut -d. -f1,2); \
+	all_valid=true; \
+	for version_file in ../generated/*/.openapi-generator/VERSION; do \
+		if [ -f "$$version_file" ]; then \
+			api_name=$$(basename $$(dirname $$(dirname $$version_file))); \
+			actual_version=$$(cat $$version_file | tr -d '\n' | sed 's/-SNAPSHOT//'); \
+			actual_major_minor=$$(echo $$actual_version | cut -d. -f1,2); \
+			printf "  📋 %-12s: %s" "$$api_name" "$$actual_version"; \
+			if [ "$$actual_major_minor" != "$$expected_major_minor" ]; then \
+				echo " ❌ (expected $$expected_major_minor.x)"; \
+				all_valid=false; \
+			else \
+				echo " ✅"; \
+			fi; \
+		fi; \
+	done; \
+	if [ "$$all_valid" = "false" ]; then \
+		echo ""; \
+		echo "❌ Version mismatch detected!"; \
+		echo "   Expected: $$expected_major_minor.x"; \
+		echo "   Run: make update-generator-version VERSION=vX.Y.Z"; \
+		exit 1; \
+	fi; \
+	echo "✅ All generated APIs use compatible OpenAPI Generator version ($$expected_major_minor.x)"
+
+update-generator-version: ## Update OpenAPI Generator version (Usage: make update-generator-version VERSION=v7.19.0)
+ifndef VERSION
+	$(error VERSION required. Usage: make update-generator-version VERSION=v7.19.0)
+endif
+	@echo "📥 Updating OpenAPI Generator to $(VERSION)..."
+	@sed -i '' 's/OPENAPI_GENERATOR_VERSION := .*/OPENAPI_GENERATOR_VERSION := $(VERSION)/' Makefile
+	@echo "🐳 Pulling Docker image: openapitools/openapi-generator-cli:$(VERSION)"
+	@docker pull openapitools/openapi-generator-cli:$(VERSION)
+	@echo "✅ Updated to $(VERSION)"
+	@echo "ℹ️  Run 'make generate-server' to regenerate code with new version"

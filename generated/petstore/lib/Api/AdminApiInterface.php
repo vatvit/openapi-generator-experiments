@@ -29,99 +29,10 @@ interface AdminApiInterface {
     /**
      * Operation deletePet
      * @param int $id
-     * @return DeletePetResponseInterface
+     * @return \PetStoreApiV2\Server\Http\Responses\DeletePetResponseInterface
      */
     public function deletePet(
             int $id,
-    ): DeletePetResponseInterface;
+    ): \PetStoreApiV2\Server\Http\Responses\DeletePetResponseInterface;
 
 }
-
-// ============================================================================
-// Response Interfaces - One per operation
-// ============================================================================
-
-/**
- * Response interface for deletePet operation
- * All possible responses for this operation must implement this interface
- */
-interface DeletePetResponseInterface
-{
-    /**
-     * Convert this response to a JSON response
-     * @return JsonResponse
-     */
-    public function toJsonResponse(): JsonResponse;
-}
-
-
-// ============================================================================
-// Concrete Response Classes - One per response code per operation
-// ============================================================================
-
-/**
- * HTTP 204 response for deletePet operation
- * pet deleted
- */
-class DeletePet204Response implements DeletePetResponseInterface
-{
-    public function __construct(
-        private readonly \PetStoreApiV2\Server\Models\NoContent204 $data
-    ) {}
-
-    public function toJsonResponse(): JsonResponse
-    {
-        // Serialize single model
-        $serializer = new \Crell\Serde\SerdeCommon();
-        $serialized = $serializer->serialize($this->data, 'array');
-        $response = response()->json($serialized, 204);
-
-        return $response;
-    }
-}
-
-/**
- * HTTP 0 response for deletePet operation
- * unexpected error
- */
-class DeletePet0Response implements DeletePetResponseInterface
-{
-    public function __construct(
-        private readonly \PetStoreApiV2\Server\Models\Error $data
-    ) {}
-
-    public function toJsonResponse(): JsonResponse
-    {
-        // Serialize single model
-        $serializer = new \Crell\Serde\SerdeCommon();
-        $serialized = $serializer->serialize($this->data, 'array');
-        $response = response()->json($serialized, 0);
-
-        return $response;
-    }
-}
-
-
-// ============================================================================
-// Handler Interfaces - One per operation
-// ============================================================================
-
-/**
- * Handler interface for deletePet operation
- * Implement this interface in your application to provide business logic
- */
-interface DeletePetHandlerInterface
-{
-    /**
-     * Handle deletePet operation
-     *
-     * deletes a single pet based on the ID supplied
-     *
-     * @param int $id ID of pet to delete
-     * @return DeletePetResponseInterface
-     */
-    public function handle(
-        int $id
-    ): DeletePetResponseInterface;
-}
-

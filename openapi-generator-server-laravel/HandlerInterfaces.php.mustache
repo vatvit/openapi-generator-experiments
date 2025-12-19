@@ -1,0 +1,46 @@
+{{>php_file_header}}
+
+namespace {{invokerPackage}}\Handlers;
+
+// ============================================================================
+// Handler Interfaces - All Operations
+// ============================================================================
+
+{{#apiInfo}}
+{{#apis}}
+{{#operations}}
+{{#operation}}
+/**
+ * Handler interface for {{operationId}} operation
+ * Implement this interface in your application to provide business logic
+ */
+interface {{operationIdCamelCase}}HandlerInterface
+{
+    /**
+     * Handle {{operationId}} operation
+     *
+{{#notes}}
+     * {{notes}}
+     *
+{{/notes}}
+{{#allParams}}
+     * @param {{{dataType}}} ${{paramName}} {{description}}
+{{/allParams}}
+     * @return \{{invokerPackage}}\Http\Responses\{{operationIdCamelCase}}ResponseInterface
+     */
+    public function handle(
+{{#allParams}}
+        {{#isContainer}}
+        {{^required}}?{{/required}}array ${{paramName}}{{^-last}},{{/-last}}
+        {{/isContainer}}
+        {{^isContainer}}
+        {{^required}}?{{/required}}{{{dataType}}} ${{paramName}}{{^-last}},{{/-last}}
+        {{/isContainer}}
+{{/allParams}}
+    ): \{{invokerPackage}}\Http\Responses\{{operationIdCamelCase}}ResponseInterface;
+}
+
+{{/operation}}
+{{/operations}}
+{{/apis}}
+{{/apiInfo}}

@@ -50,4 +50,3 @@ class Error
         public array $details,
     ) {}
 }
-

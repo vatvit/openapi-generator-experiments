@@ -62,4 +62,3 @@ class Move
         public \DateTime $timestamp,
     ) {}
 }
-

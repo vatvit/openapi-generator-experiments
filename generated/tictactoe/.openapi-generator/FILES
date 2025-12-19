@@ -6,10 +6,13 @@ lib/Api/GameManagementApiInterface.php
 lib/Api/GameplayApiInterface.php
 lib/Api/StatisticsApiInterface.php
 lib/Api/TicTacApiInterface.php
+lib/Handlers/HandlerInterfaces.php
 lib/Http/Controllers/GameManagementController.php
 lib/Http/Controllers/GameplayController.php
 lib/Http/Controllers/StatisticsController.php
 lib/Http/Controllers/TicTacController.php
+lib/Http/Responses/ResponseClasses.php
+lib/Http/Responses/ResponseInterfaces.php
 lib/Models/BadRequestError.php
 lib/Models/BadRequestErrorAllOfErrorType.php
 lib/Models/CreateGameRequest.php

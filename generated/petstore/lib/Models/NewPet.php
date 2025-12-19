@@ -46,4 +46,3 @@ class NewPet
         public string $tag,
     ) {}
 }
-

@@ -32,5 +32,22 @@
   "hideGenerationTimestamp": true,
   "withGeneratorVersionComment": false,
   "appName": "PetStoreApiController",
-  "skipOperationExample": true
+  "skipOperationExample": true,
+  "files": {
+    "ResponseInterfaces.php.mustache": {
+      "folder": "lib/Http/Responses",
+      "destinationFilename": "ResponseInterfaces.php",
+      "templateType": "SupportingFiles"
+    },
+    "ResponseClasses.php.mustache": {
+      "folder": "lib/Http/Responses",
+      "destinationFilename": "ResponseClasses.php",
+      "templateType": "SupportingFiles"
+    },
+    "HandlerInterfaces.php.mustache": {
+      "folder": "lib/Handlers",
+      "destinationFilename": "HandlerInterfaces.php",
+      "templateType": "SupportingFiles"
+    }
+  }
 }

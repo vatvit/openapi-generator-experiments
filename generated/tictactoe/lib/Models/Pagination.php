@@ -58,4 +58,3 @@ class Pagination
         public bool $hasPrevious,
     ) {}
 }
-

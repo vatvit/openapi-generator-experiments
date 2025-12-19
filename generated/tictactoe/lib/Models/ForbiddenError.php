@@ -55,4 +55,3 @@ class ForbiddenError
         public \TicTacToeApiV2\Server\Models\ForbiddenErrorAllOfErrorType $errorType,
     ) {}
 }
-

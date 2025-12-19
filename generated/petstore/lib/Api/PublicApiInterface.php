@@ -29,99 +29,10 @@ interface PublicApiInterface {
     /**
      * Operation findPetById
      * @param int $id
-     * @return FindPetByIdResponseInterface
+     * @return \PetStoreApiV2\Server\Http\Responses\FindPetByIdResponseInterface
      */
     public function findPetById(
             int $id,
-    ): FindPetByIdResponseInterface;
+    ): \PetStoreApiV2\Server\Http\Responses\FindPetByIdResponseInterface;
 
 }
-
-// ============================================================================
-// Response Interfaces - One per operation
-// ============================================================================
-
-/**
- * Response interface for findPetById operation
- * All possible responses for this operation must implement this interface
- */
-interface FindPetByIdResponseInterface
-{
-    /**
-     * Convert this response to a JSON response
-     * @return JsonResponse
-     */
-    public function toJsonResponse(): JsonResponse;
-}
-
-
-// ============================================================================
-// Concrete Response Classes - One per response code per operation
-// ============================================================================
-
-/**
- * HTTP 200 response for findPetById operation
- * pet response
- */
-class FindPetById200Response implements FindPetByIdResponseInterface
-{
-    public function __construct(
-        private readonly \PetStoreApiV2\Server\Models\Pet $data
-    ) {}
-
-    public function toJsonResponse(): JsonResponse
-    {
-        // Serialize single model
-        $serializer = new \Crell\Serde\SerdeCommon();
-        $serialized = $serializer->serialize($this->data, 'array');
-        $response = response()->json($serialized, 200);
-
-        return $response;
-    }
-}
-
-/**
- * HTTP 0 response for findPetById operation
- * unexpected error
- */
-class FindPetById0Response implements FindPetByIdResponseInterface
-{
-    public function __construct(
-        private readonly \PetStoreApiV2\Server\Models\Error $data
-    ) {}
-
-    public function toJsonResponse(): JsonResponse
-    {
-        // Serialize single model
-        $serializer = new \Crell\Serde\SerdeCommon();
-        $serialized = $serializer->serialize($this->data, 'array');
-        $response = response()->json($serialized, 0);
-
-        return $response;
-    }
-}
-
-
-// ============================================================================
-// Handler Interfaces - One per operation
-// ============================================================================
-
-/**
- * Handler interface for findPetById operation
- * Implement this interface in your application to provide business logic
- */
-interface FindPetByIdHandlerInterface
-{
-    /**
-     * Handle findPetById operation
-     *
-     * Returns a user based on a single ID, if the user does not have access to the pet
-     *
-     * @param int $id ID of pet to fetch
-     * @return FindPetByIdResponseInterface
-     */
-    public function handle(
-        int $id
-    ): FindPetByIdResponseInterface;
-}
-

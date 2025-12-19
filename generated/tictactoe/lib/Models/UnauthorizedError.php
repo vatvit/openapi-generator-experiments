@@ -55,4 +55,3 @@ class UnauthorizedError
         public \TicTacToeApiV2\Server\Models\UnauthorizedErrorAllOfErrorType $errorType,
     ) {}
 }
-

@@ -55,4 +55,3 @@ class BadRequestError
         public \TicTacToeApiV2\Server\Models\BadRequestErrorAllOfErrorType $errorType,
     ) {}
 }
-

@@ -54,4 +54,3 @@ class Player
         public string $avatarUrl,
     ) {}
 }
-
