@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Api\V2;
+namespace App\Api\TicTacToe;
 
 use TicTacToeApiV2\Server\Api\GetMovesApiInterface;
 use TicTacToeApiV2\Server\Http\Responses\GetMovesResponseInterface;

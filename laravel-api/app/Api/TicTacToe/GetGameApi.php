@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Api\V2;
+namespace App\Api\TicTacToe;
 
 use TicTacToeApiV2\Server\Api\GetGameApiInterface;
 use TicTacToeApiV2\Server\Http\Responses\GetGameResponseInterface;

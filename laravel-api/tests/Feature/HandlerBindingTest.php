@@ -35,42 +35,42 @@ class HandlerBindingTest extends TestCase
     {
         // Verify CreateGameApi binding
         $api = app(\TicTacToeApiV2\Server\Api\CreateGameApiInterface::class);
-        $this->assertInstanceOf(\App\Api\V2\CreateGameApi::class, $api);
+        $this->assertInstanceOf(\App\Api\TicTacToe\CreateGameApi::class, $api);
 
         // Verify DeleteGameApi binding
         $api = app(\TicTacToeApiV2\Server\Api\DeleteGameApiInterface::class);
-        $this->assertInstanceOf(\App\Api\V2\DeleteGameApi::class, $api);
+        $this->assertInstanceOf(\App\Api\TicTacToe\DeleteGameApi::class, $api);
 
         // Verify GetBoardApi binding
         $api = app(\TicTacToeApiV2\Server\Api\GetBoardApiInterface::class);
-        $this->assertInstanceOf(\App\Api\V2\GetBoardApi::class, $api);
+        $this->assertInstanceOf(\App\Api\TicTacToe\GetBoardApi::class, $api);
 
         // Verify GetGameApi binding
         $api = app(\TicTacToeApiV2\Server\Api\GetGameApiInterface::class);
-        $this->assertInstanceOf(\App\Api\V2\GetGameApi::class, $api);
+        $this->assertInstanceOf(\App\Api\TicTacToe\GetGameApi::class, $api);
 
         // Verify GetLeaderboardApi binding
         $api = app(\TicTacToeApiV2\Server\Api\GetLeaderboardApiInterface::class);
-        $this->assertInstanceOf(\App\Api\V2\GetLeaderboardApi::class, $api);
+        $this->assertInstanceOf(\App\Api\TicTacToe\GetLeaderboardApi::class, $api);
 
         // Verify GetMovesApi binding
         $api = app(\TicTacToeApiV2\Server\Api\GetMovesApiInterface::class);
-        $this->assertInstanceOf(\App\Api\V2\GetMovesApi::class, $api);
+        $this->assertInstanceOf(\App\Api\TicTacToe\GetMovesApi::class, $api);
 
         // Verify GetPlayerStatsApi binding
         $api = app(\TicTacToeApiV2\Server\Api\GetPlayerStatsApiInterface::class);
-        $this->assertInstanceOf(\App\Api\V2\GetPlayerStatsApi::class, $api);
+        $this->assertInstanceOf(\App\Api\TicTacToe\GetPlayerStatsApi::class, $api);
 
         // Verify GetSquareApi binding
         $api = app(\TicTacToeApiV2\Server\Api\GetSquareApiInterface::class);
-        $this->assertInstanceOf(\App\Api\V2\GetSquareApi::class, $api);
+        $this->assertInstanceOf(\App\Api\TicTacToe\GetSquareApi::class, $api);
 
         // Verify ListGamesApi binding
         $api = app(\TicTacToeApiV2\Server\Api\ListGamesApiInterface::class);
-        $this->assertInstanceOf(\App\Api\V2\ListGamesApi::class, $api);
+        $this->assertInstanceOf(\App\Api\TicTacToe\ListGamesApi::class, $api);
 
         // Verify PutSquareApi binding
         $api = app(\TicTacToeApiV2\Server\Api\PutSquareApiInterface::class);
-        $this->assertInstanceOf(\App\Api\V2\PutSquareApi::class, $api);
+        $this->assertInstanceOf(\App\Api\TicTacToe\PutSquareApi::class, $api);
     }
 }
