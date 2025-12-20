@@ -21,13 +21,13 @@
 namespace TicTacToeApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use TicTacToeApiV2\Server\Http\Responses\PutSquareResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\PutSquareApiInterfaceResponseInterface;
 
 /**
  * Handler interface for putSquare operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements PutSquareResponseInterface
+ * The handler must return a response that implements PutSquareApiInterfaceResponseInterface
  */
 interface PutSquareApiInterface
 {
@@ -40,12 +40,12 @@ interface PutSquareApiInterface
      * @param int $row Board row (vertical coordinate)
      * @param int $column Board column (horizontal coordinate)
      * @param \TicTacToeApiV2\Server\Models\MoveRequest $moveRequest 
-     * @return PutSquareResponseInterface
+     * @return PutSquareApiInterfaceResponseInterface
      */
     public function handle(
         string $gameId,
         int $row,
         int $column,
         \TicTacToeApiV2\Server\Models\MoveRequest $moveRequest
-    ): PutSquareResponseInterface;
+    ): PutSquareApiInterfaceResponseInterface;
 }

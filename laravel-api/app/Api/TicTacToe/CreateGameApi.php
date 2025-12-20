@@ -3,11 +3,15 @@
 namespace App\Api\TicTacToe;
 
 use TicTacToeApiV2\Server\Api\CreateGameApiInterface;
-use TicTacToeApiV2\Server\Http\Responses\CreateGameResponseInterface;
-use TicTacToeApiV2\Server\Http\Responses\CreateGame201Response;
+use TicTacToeApiV2\Server\Http\Responses\CreateGameApiInterfaceResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\CreateGameApiInterfaceResponseFactory;
 use TicTacToeApiV2\Server\Models\Game;
 use TicTacToeApiV2\Server\Models\GameMode;
 use TicTacToeApiV2\Server\Models\GameStatus;
+use TicTacToeApiV2\Server\Models\CreateGameRequest;
+use TicTacToeApiV2\Server\Models\Player;
+use TicTacToeApiV2\Server\Models\Mark;
+use TicTacToeApiV2\Server\Models\Winner;
 
 /**
  * API for createGame operation
@@ -15,7 +19,7 @@ use TicTacToeApiV2\Server\Models\GameStatus;
  */
 class CreateGameApi implements CreateGameApiInterface
 {
-    public function handle(): CreateGameResponseInterface
+    public function handle(\TicTacToeApiV2\Server\Models\CreateGameRequest $createGameRequest): CreateGameApiInterfaceResponseInterface
     {
         // Generate unique game ID
         $gameId = sprintf(
@@ -27,17 +31,43 @@ class CreateGameApi implements CreateGameApiInterface
             mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
         );
 
+        // Create empty 3x3 board
+        $emptyBoard = [
+            [Mark::PERIOD, Mark::PERIOD, Mark::PERIOD],
+            [Mark::PERIOD, Mark::PERIOD, Mark::PERIOD],
+            [Mark::PERIOD, Mark::PERIOD, Mark::PERIOD]
+        ];
+
+        // Create player objects
+        $playerX = new Player(
+            id: 'player-x',
+            username: 'playerx',
+            displayName: 'Player X',
+            avatarUrl: ''
+        );
+        $playerO = new Player(
+            id: 'player-o',
+            username: 'playero',
+            displayName: 'Player O',
+            avatarUrl: ''
+        );
+
+        $now = new \DateTime();
         $game = new Game(
             id: $gameId,
-            mode: GameMode::PVP,
             status: GameStatus::IN_PROGRESS,
-            createdAt: new \DateTime()
+            mode: $createGameRequest->mode,
+            playerX: $playerX,
+            playerO: $playerO,
+            currentTurn: Mark::X,
+            winner: Winner::PERIOD,
+            board: $emptyBoard,
+            createdAt: $now,
+            updatedAt: $now,
+            completedAt: $now
         );
 
         // Return 201 Created with Location header
-        $response = new CreateGame201Response($game);
-        $response->setLocation("/games/{$gameId}");
-
-        return $response;
+        return CreateGameApiInterfaceResponseFactory::status201($game, "/games/{$gameId}");
     }
 }

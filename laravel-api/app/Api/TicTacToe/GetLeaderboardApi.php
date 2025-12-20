@@ -3,8 +3,8 @@
 namespace App\Api\TicTacToe;
 
 use TicTacToeApiV2\Server\Api\GetLeaderboardApiInterface;
-use TicTacToeApiV2\Server\Http\Responses\GetLeaderboardResponseInterface;
-use TicTacToeApiV2\Server\Http\Responses\GetLeaderboard200Response;
+use TicTacToeApiV2\Server\Http\Responses\GetLeaderboardApiInterfaceResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\GetLeaderboardApiInterfaceResponseFactory;
 use TicTacToeApiV2\Server\Models\Leaderboard;
 use TicTacToeApiV2\Server\Models\LeaderboardEntry;
 use TicTacToeApiV2\Server\Models\Player;
@@ -18,7 +18,7 @@ class GetLeaderboardApi implements GetLeaderboardApiInterface
     public function handle(
         ?\TicTacToeApiV2\Server\Models\GetLeaderboardTimeframeParameter $timeframe,
         ?int $limit
-    ): GetLeaderboardResponseInterface
+    ): GetLeaderboardApiInterfaceResponseInterface
     {
         // Success case - return leaderboard with top players
         $entries = [
@@ -70,6 +70,6 @@ class GetLeaderboardApi implements GetLeaderboardApiInterface
             generatedAt: new \DateTime()
         );
 
-        return new GetLeaderboard200Response($leaderboard);
+        return GetLeaderboardApiInterfaceResponseFactory::status200($leaderboard);
     }
 }

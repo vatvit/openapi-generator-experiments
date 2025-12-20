@@ -21,13 +21,13 @@
 namespace TicTacToeApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use TicTacToeApiV2\Server\Http\Responses\GetBoardResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\GetBoardApiInterfaceResponseInterface;
 
 /**
  * Handler interface for getBoard operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements GetBoardResponseInterface
+ * The handler must return a response that implements GetBoardApiInterfaceResponseInterface
  */
 interface GetBoardApiInterface
 {
@@ -37,9 +37,9 @@ interface GetBoardApiInterface
      * Retrieves the current state of the board and the winner.
      *
      * @param string $gameId Unique game identifier
-     * @return GetBoardResponseInterface
+     * @return GetBoardApiInterfaceResponseInterface
      */
     public function handle(
         string $gameId
-    ): GetBoardResponseInterface;
+    ): GetBoardApiInterfaceResponseInterface;
 }

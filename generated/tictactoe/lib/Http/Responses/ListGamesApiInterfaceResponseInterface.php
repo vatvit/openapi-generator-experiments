@@ -23,12 +23,12 @@ namespace TicTacToeApiV2\Server\Http\Responses;
 use Illuminate\Http\JsonResponse;
 
 /**
- * Response interface for getLeaderboard operation
+ * Response interface for listGames operation
  *
  * All possible responses for this operation must implement this interface
  * This enforces that only valid response structures can be returned
  */
-interface GetLeaderboardResponseInterface
+interface ListGamesApiInterfaceResponseInterface
 {
     /**
      * Convert this response to a JSON response

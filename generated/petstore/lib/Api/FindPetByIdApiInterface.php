@@ -21,13 +21,13 @@
 namespace PetStoreApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use PetStoreApiV2\Server\Http\Responses\FindPetByIdResponseInterface;
+use PetStoreApiV2\Server\Http\Responses\FindPetByIdApiInterfaceResponseInterface;
 
 /**
  * Handler interface for findPetById operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements FindPetByIdResponseInterface
+ * The handler must return a response that implements FindPetByIdApiInterfaceResponseInterface
  */
 interface FindPetByIdApiInterface
 {
@@ -37,9 +37,9 @@ interface FindPetByIdApiInterface
      * Returns a user based on a single ID, if the user does not have access to the pet
      *
      * @param int $id ID of pet to fetch
-     * @return FindPetByIdResponseInterface
+     * @return FindPetByIdApiInterfaceResponseInterface
      */
     public function handle(
         int $id
-    ): FindPetByIdResponseInterface;
+    ): FindPetByIdApiInterfaceResponseInterface;
 }

@@ -1,0 +1,88 @@
+{{>php_file_header}}
+
+namespace {{invokerPackage}}\Http\Responses;
+
+{{#operations}}
+{{#operation}}
+{{#responses}}
+{{#dataType}}
+{{#isArray}}
+use {{baseType}};
+{{/isArray}}
+{{^isArray}}
+use {{dataType}};
+{{/isArray}}
+{{/dataType}}
+{{^dataType}}
+use {{invokerPackage}}\Models\NoContent{{code}};
+{{/dataType}}
+{{/responses}}
+{{/operation}}
+{{/operations}}
+
+/**
+ * Static factory for creating {{#operations}}{{#operation}}{{operationId}}{{/operation}}{{/operations}} responses
+ *
+ * Provides type-safe factory methods for all possible HTTP responses:
+{{#operations}}
+{{#operation}}
+{{#responses}}
+ * - {{operationIdCamelCase}}ApiInterfaceResponseFactory::status{{code}}() - {{message}}
+{{/responses}}
+{{/operation}}
+{{/operations}}
+ */
+final class {{#operations}}{{#operation}}{{operationIdCamelCase}}{{/operation}}{{/operations}}ApiInterfaceResponseFactory
+{
+{{#operations}}
+{{#operation}}
+{{#responses}}
+    /**
+     * Create HTTP {{code}} response - {{message}}
+{{#dataType}}
+     * @param {{#isArray}}{{baseType}}[]{{/isArray}}{{^isArray}}{{dataType}}{{/isArray}} $data Response data
+{{/dataType}}
+{{^dataType}}
+     * @param NoContent{{code}} $data Response data
+{{/dataType}}
+{{#hasHeaders}}
+     * Response headers:
+{{#headers}}
+     * @param {{#isString}}string{{/isString}}{{#isInteger}}int{{/isInteger}}{{^isString}}{{^isInteger}}string{{/isInteger}}{{/isString}}|null ${{nameInCamelCase}}{{#required}} (required){{/required}} {{description}}
+{{/headers}}
+{{/hasHeaders}}
+     * @return {{operationIdCamelCase}}ApiInterfaceResponseInterface
+     */
+    public static function status{{code}}(
+{{#dataType}}
+{{#isArray}}
+        array $data{{#hasHeaders}},{{/hasHeaders}}
+{{/isArray}}
+{{^isArray}}
+        {{dataType}} $data{{#hasHeaders}},{{/hasHeaders}}
+{{/isArray}}
+{{/dataType}}
+{{^dataType}}
+        NoContent{{code}} $data{{#hasHeaders}},{{/hasHeaders}}
+{{/dataType}}
+{{#hasHeaders}}
+{{#headers}}
+        ?{{#isString}}string{{/isString}}{{#isInteger}}int{{/isInteger}}{{^isString}}{{^isInteger}}string{{/isInteger}}{{/isString}} ${{nameInCamelCase}} = null{{^-last}},{{/-last}}
+{{/headers}}
+{{/hasHeaders}}
+    ): {{operationIdCamelCase}}ApiInterfaceResponseInterface {
+        $response = new {{operationIdCamelCase}}ApiInterfaceResponse({{code}}, $data);
+{{#hasHeaders}}
+{{#headers}}
+        if (${{nameInCamelCase}} !== null) {
+            $response->set{{nameInCamelCase}}(${{nameInCamelCase}});
+        }
+{{/headers}}
+{{/hasHeaders}}
+        return $response;
+    }
+
+{{/responses}}
+{{/operation}}
+{{/operations}}
+}

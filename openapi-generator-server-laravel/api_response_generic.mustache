@@ -1,0 +1,122 @@
+{{>php_file_header}}
+
+namespace {{invokerPackage}}\Http\Responses;
+
+use Illuminate\Http\JsonResponse;
+
+/**
+ * Generic response class for {{#operations}}{{#operation}}{{operationId}}{{/operation}}{{/operations}} operation
+ *
+ * Handles all possible HTTP status codes for this operation:
+{{#operations}}
+{{#operation}}
+{{#responses}}
+ * - {{code}}: {{message}}
+{{/responses}}
+{{/operation}}
+{{/operations}}
+ */
+final class {{#operations}}{{#operation}}{{operationIdCamelCase}}{{/operation}}{{/operations}}ApiInterfaceResponse implements {{#operations}}{{#operation}}{{operationIdCamelCase}}{{/operation}}{{/operations}}ApiInterfaceResponseInterface
+{
+{{#operations}}
+{{#operation}}
+{{#responses}}
+{{#hasHeaders}}
+{{#headers}}
+    private ?{{#isString}}string{{/isString}}{{#isInteger}}int{{/isInteger}}{{^isString}}{{^isInteger}}string{{/isInteger}}{{/isString}} $header{{nameInCamelCase}} = null;
+{{/headers}}
+{{/hasHeaders}}
+{{/responses}}
+{{/operation}}
+{{/operations}}
+
+    public function __construct(
+        private readonly int $statusCode,
+{{#operations}}
+{{#operation}}
+        private readonly {{#responses}}{{#dataType}}{{#isArray}}array{{/isArray}}{{^isArray}}{{dataType}}{{/isArray}}{{/dataType}}{{^dataType}}\{{invokerPackage}}\Models\NoContent{{code}}{{/dataType}}{{^-last}}|{{/-last}}{{/responses}} $data,
+{{/operation}}
+{{/operations}}
+        private readonly array $headers = []
+    ) {}
+
+{{#operations}}
+{{#operation}}
+{{#responses}}
+{{#hasHeaders}}
+{{#headers}}
+    /**
+     * Set {{baseName}} header{{#required}} (required){{/required}}
+     * {{description}}
+     * @param {{#isString}}string{{/isString}}{{#isInteger}}int{{/isInteger}}{{^isString}}{{^isInteger}}string{{/isInteger}}{{/isString}} $value
+     * @return self
+     */
+    public function set{{nameInCamelCase}}({{#isString}}string{{/isString}}{{#isInteger}}int{{/isInteger}}{{^isString}}{{^isInteger}}string{{/isInteger}}{{/isString}} $value): self
+    {
+        $this->header{{nameInCamelCase}} = $value;
+        return $this;
+    }
+
+{{/headers}}
+{{/hasHeaders}}
+{{/responses}}
+{{/operation}}
+{{/operations}}
+    public function toJsonResponse(): JsonResponse
+    {
+{{#operations}}
+{{#operation}}
+{{#responses}}
+{{#hasHeaders}}
+{{#headers}}
+{{#required}}
+        // Validate required headers
+        if ($this->header{{nameInCamelCase}} === null) {
+            throw new \RuntimeException('Required header "{{baseName}}" is not set for {{operationIdCamelCase}}ApiInterfaceResponse with status ' . $this->statusCode);
+        }
+
+{{/required}}
+{{/headers}}
+{{/hasHeaders}}
+{{/responses}}
+{{/operation}}
+{{/operations}}
+        // Serialize data
+        $serializer = new \Crell\Serde\SerdeCommon();
+
+        if (is_array($this->data)) {
+            // Serialize array of models
+            $serialized = array_map(
+                fn($item) => $serializer->serialize($item, 'array'),
+                $this->data
+            );
+        } else {
+            // Serialize single model
+            $serialized = $serializer->serialize($this->data, 'array');
+        }
+
+        $response = response()->json($serialized, $this->statusCode);
+
+        // Add custom headers from constructor
+        foreach ($this->headers as $name => $value) {
+            $response->header($name, $value);
+        }
+
+{{#operations}}
+{{#operation}}
+{{#responses}}
+{{#hasHeaders}}
+        // Add response-specific headers
+{{#headers}}
+        if ($this->header{{nameInCamelCase}} !== null) {
+            $response->header('{{baseName}}', $this->header{{nameInCamelCase}});
+        }
+{{/headers}}
+{{/hasHeaders}}
+{{/responses}}
+{{/operation}}
+{{/operations}}
+
+        return $response;
+    }
+}

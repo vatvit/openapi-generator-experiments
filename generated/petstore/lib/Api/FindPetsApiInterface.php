@@ -21,13 +21,13 @@
 namespace PetStoreApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use PetStoreApiV2\Server\Http\Responses\FindPetsResponseInterface;
+use PetStoreApiV2\Server\Http\Responses\FindPetsApiInterfaceResponseInterface;
 
 /**
  * Handler interface for findPets operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements FindPetsResponseInterface
+ * The handler must return a response that implements FindPetsApiInterfaceResponseInterface
  */
 interface FindPetsApiInterface
 {
@@ -38,10 +38,10 @@ interface FindPetsApiInterface
      *
      * @param string[] $tags tags to filter by
      * @param int $limit maximum number of results to return
-     * @return FindPetsResponseInterface
+     * @return FindPetsApiInterfaceResponseInterface
      */
     public function handle(
         ?array $tags,
         ?int $limit
-    ): FindPetsResponseInterface;
+    ): FindPetsApiInterfaceResponseInterface;
 }

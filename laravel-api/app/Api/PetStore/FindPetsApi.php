@@ -3,8 +3,8 @@
 namespace App\Api\PetStore;
 
 use PetStoreApiV2\Server\Api\FindPetsApiInterface;
-use PetStoreApiV2\Server\Http\Responses\FindPetsResponseInterface;
-use PetStoreApiV2\Server\Http\Responses\FindPets200Response;
+use PetStoreApiV2\Server\Http\Responses\FindPetsApiInterfaceResponseInterface;
+use PetStoreApiV2\Server\Http\Responses\FindPetsApiInterfaceResponseFactory;
 use PetStoreApiV2\Server\Models\Pet;
 
 /**
@@ -13,7 +13,7 @@ use PetStoreApiV2\Server\Models\Pet;
  */
 class FindPetsApi implements FindPetsApiInterface
 {
-    public function handle(?array $tags, ?int $limit): FindPetsResponseInterface
+    public function handle(?array $tags, ?int $limit): FindPetsApiInterfaceResponseInterface
     {
         // Business logic implementation
         $limit = $limit ?? 10;
@@ -28,6 +28,6 @@ class FindPetsApi implements FindPetsApiInterface
         }
 
         // Return typed response (enforces API spec)
-        return new FindPets200Response($pets);
+        return FindPetsApiInterfaceResponseFactory::status200($pets);
     }
 }

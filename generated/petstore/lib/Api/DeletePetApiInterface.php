@@ -21,13 +21,13 @@
 namespace PetStoreApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use PetStoreApiV2\Server\Http\Responses\DeletePetResponseInterface;
+use PetStoreApiV2\Server\Http\Responses\DeletePetApiInterfaceResponseInterface;
 
 /**
  * Handler interface for deletePet operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements DeletePetResponseInterface
+ * The handler must return a response that implements DeletePetApiInterfaceResponseInterface
  */
 interface DeletePetApiInterface
 {
@@ -37,9 +37,9 @@ interface DeletePetApiInterface
      * deletes a single pet based on the ID supplied
      *
      * @param int $id ID of pet to delete
-     * @return DeletePetResponseInterface
+     * @return DeletePetApiInterfaceResponseInterface
      */
     public function handle(
         int $id
-    ): DeletePetResponseInterface;
+    ): DeletePetApiInterfaceResponseInterface;
 }

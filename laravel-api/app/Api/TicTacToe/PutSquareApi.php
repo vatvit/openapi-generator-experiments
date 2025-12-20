@@ -3,14 +3,13 @@
 namespace App\Api\TicTacToe;
 
 use TicTacToeApiV2\Server\Api\PutSquareApiInterface;
-use TicTacToeApiV2\Server\Http\Responses\PutSquareResponseInterface;
-use TicTacToeApiV2\Server\Http\Responses\PutSquare200Response;
-use TicTacToeApiV2\Server\Http\Responses\PutSquare404Response;
-use TicTacToeApiV2\Server\Http\Responses\PutSquare409Response;
+use TicTacToeApiV2\Server\Http\Responses\PutSquareApiInterfaceResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\PutSquareApiInterfaceResponseFactory;
 use TicTacToeApiV2\Server\Models\MoveRequest;
 use TicTacToeApiV2\Server\Models\Status;
 use TicTacToeApiV2\Server\Models\Winner;
 use TicTacToeApiV2\Server\Models\NotFoundError;
+use TicTacToeApiV2\Server\Models\NotFoundErrorAllOfErrorType;
 
 /**
  * API for putSquare operation
@@ -23,22 +22,23 @@ class PutSquareApi implements PutSquareApiInterface
         int $row,
         int $column,
         MoveRequest $moveRequest
-    ): PutSquareResponseInterface
+    ): PutSquareApiInterfaceResponseInterface
     {
         // Example: Return 404 NotFound if game doesn't exist
         if ($gameId === '00000000-0000-0000-0000-000000000000') {
-            return new PutSquare404Response(
+            return PutSquareApiInterfaceResponseFactory::status404(
                 new NotFoundError(
                     code: 'GAME_NOT_FOUND',
                     message: 'Game not found with the provided ID',
-                    errorType: 'NOT_FOUND'
+                    details: [],
+                    errorType: NotFoundErrorAllOfErrorType::NOT_FOUND
                 )
             );
         }
 
         // Example: Return 409 Conflict if square already occupied
         if ($row === 2 && $column === 2) {
-            return new PutSquare409Response(
+            return PutSquareApiInterfaceResponseFactory::status409(
                 new \TicTacToeApiV2\Server\Models\Error(
                     code: 'SQUARE_OCCUPIED',
                     message: 'Square is already occupied. Please choose another square.'
@@ -48,7 +48,7 @@ class PutSquareApi implements PutSquareApiInterface
 
         // Example: Return 409 Conflict if game is already finished
         if ($gameId === 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa') {
-            return new PutSquare409Response(
+            return PutSquareApiInterfaceResponseFactory::status409(
                 new \TicTacToeApiV2\Server\Models\Error(
                     code: 'GAME_FINISHED',
                     message: 'Game is already finished. Cannot make more moves.'
@@ -104,6 +104,6 @@ class PutSquareApi implements PutSquareApiInterface
             board: $board
         );
 
-        return new PutSquare200Response($status);
+        return PutSquareApiInterfaceResponseFactory::status200($status);
     }
 }

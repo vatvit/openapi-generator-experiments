@@ -3,12 +3,12 @@
 namespace App\Api\TicTacToe;
 
 use TicTacToeApiV2\Server\Api\GetSquareApiInterface;
-use TicTacToeApiV2\Server\Http\Responses\GetSquareResponseInterface;
-use TicTacToeApiV2\Server\Http\Responses\GetSquare200Response;
-use TicTacToeApiV2\Server\Http\Responses\GetSquare404Response;
+use TicTacToeApiV2\Server\Http\Responses\GetSquareApiInterfaceResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\GetSquareApiInterfaceResponseFactory;
 use TicTacToeApiV2\Server\Models\SquareResponse;
 use TicTacToeApiV2\Server\Models\Mark;
 use TicTacToeApiV2\Server\Models\NotFoundError;
+use TicTacToeApiV2\Server\Models\NotFoundErrorAllOfErrorType;
 
 /**
  * API for getSquare operation
@@ -16,15 +16,16 @@ use TicTacToeApiV2\Server\Models\NotFoundError;
  */
 class GetSquareApi implements GetSquareApiInterface
 {
-    public function handle(string $gameId, int $row, int $column): GetSquareResponseInterface
+    public function handle(string $gameId, int $row, int $column): GetSquareApiInterfaceResponseInterface
     {
         // Example: Return 404 NotFound if game doesn't exist
         if ($gameId === '00000000-0000-0000-0000-000000000000') {
-            return new GetSquare404Response(
+            return GetSquareApiInterfaceResponseFactory::status404(
                 new NotFoundError(
                     code: 'GAME_NOT_FOUND',
                     message: 'Game not found with the provided ID',
-                    errorType: 'NOT_FOUND'
+                    details: [],
+                    errorType: NotFoundErrorAllOfErrorType::NOT_FOUND
                 )
             );
         }
@@ -38,6 +39,6 @@ class GetSquareApi implements GetSquareApiInterface
             mark: $mark
         );
 
-        return new GetSquare200Response($squareResponse);
+        return GetSquareApiInterfaceResponseFactory::status200($squareResponse);
     }
 }

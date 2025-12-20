@@ -21,13 +21,13 @@
 namespace TicTacToeApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use TicTacToeApiV2\Server\Http\Responses\CreateGameResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\CreateGameApiInterfaceResponseInterface;
 
 /**
  * Handler interface for createGame operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements CreateGameResponseInterface
+ * The handler must return a response that implements CreateGameApiInterfaceResponseInterface
  */
 interface CreateGameApiInterface
 {
@@ -37,9 +37,9 @@ interface CreateGameApiInterface
      * Creates a new TicTacToe game with specified configuration.
      *
      * @param \TicTacToeApiV2\Server\Models\CreateGameRequest $createGameRequest 
-     * @return CreateGameResponseInterface
+     * @return CreateGameApiInterfaceResponseInterface
      */
     public function handle(
         \TicTacToeApiV2\Server\Models\CreateGameRequest $createGameRequest
-    ): CreateGameResponseInterface;
+    ): CreateGameApiInterfaceResponseInterface;
 }

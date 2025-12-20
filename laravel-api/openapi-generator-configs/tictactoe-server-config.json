@@ -39,9 +39,14 @@
       "destinationFilename": "ResponseInterface.php",
       "templateType": "API"
     },
-    "api_response_classes.mustache": {
+    "api_response_generic.mustache": {
       "folder": "lib/Http/Responses",
-      "destinationFilename": "Classes.php",
+      "destinationFilename": "Response.php",
+      "templateType": "API"
+    },
+    "api_response_factory.mustache": {
+      "folder": "lib/Http/Responses",
+      "destinationFilename": "ResponseFactory.php",
       "templateType": "API"
     }
   }

@@ -21,13 +21,13 @@
 namespace TicTacToeApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use TicTacToeApiV2\Server\Http\Responses\GetSquareResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\GetSquareApiInterfaceResponseInterface;
 
 /**
  * Handler interface for getSquare operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements GetSquareResponseInterface
+ * The handler must return a response that implements GetSquareApiInterfaceResponseInterface
  */
 interface GetSquareApiInterface
 {
@@ -39,11 +39,11 @@ interface GetSquareApiInterface
      * @param string $gameId Unique game identifier
      * @param int $row Board row (vertical coordinate)
      * @param int $column Board column (horizontal coordinate)
-     * @return GetSquareResponseInterface
+     * @return GetSquareApiInterfaceResponseInterface
      */
     public function handle(
         string $gameId,
         int $row,
         int $column
-    ): GetSquareResponseInterface;
+    ): GetSquareApiInterfaceResponseInterface;
 }

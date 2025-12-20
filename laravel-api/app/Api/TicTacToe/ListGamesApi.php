@@ -3,12 +3,12 @@
 namespace App\Api\TicTacToe;
 
 use TicTacToeApiV2\Server\Api\ListGamesApiInterface;
-use TicTacToeApiV2\Server\Http\Responses\ListGamesResponseInterface;
-use TicTacToeApiV2\Server\Http\Responses\ListGames200Response;
-use TicTacToeApiV2\Server\Http\Responses\ListGames400Response;
+use TicTacToeApiV2\Server\Http\Responses\ListGamesApiInterfaceResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\ListGamesApiInterfaceResponseFactory;
 use TicTacToeApiV2\Server\Models\GameListResponse;
 use TicTacToeApiV2\Server\Models\Pagination;
 use TicTacToeApiV2\Server\Models\BadRequestError;
+use TicTacToeApiV2\Server\Models\BadRequestErrorAllOfErrorType;
 
 /**
  * API for listGames operation
@@ -21,15 +21,16 @@ class ListGamesApi implements ListGamesApiInterface
         ?int $limit,
         ?\TicTacToeApiV2\Server\Models\GameStatus $status,
         ?string $playerId
-    ): ListGamesResponseInterface
+    ): ListGamesApiInterfaceResponseInterface
     {
         // Example: Return 400 BadRequest if limit exceeds maximum
         if ($limit !== null && $limit > 100) {
-            return new ListGames400Response(
+            return ListGamesApiInterfaceResponseFactory::status400(
                 new BadRequestError(
                     code: 'INVALID_LIMIT',
                     message: 'Limit parameter cannot exceed 100',
-                    errorType: 'BAD_REQUEST'
+                    details: [],
+                    errorType: BadRequestErrorAllOfErrorType::BAD_REQUEST
                 )
             );
         }
@@ -51,9 +52,7 @@ class ListGamesApi implements ListGamesApiInterface
             pagination: $pagination
         );
 
-        // Return 200 response with pagination headers using setters
-        return (new ListGames200Response($gameListResponse))
-            ->setXTotalCount($totalGames)
-            ->setXPageNumber($currentPage);
+        // Return 200 response with pagination headers
+        return ListGamesApiInterfaceResponseFactory::status200($gameListResponse, $totalGames, $currentPage);
     }
 }

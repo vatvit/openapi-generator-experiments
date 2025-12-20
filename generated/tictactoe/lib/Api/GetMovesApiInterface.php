@@ -21,13 +21,13 @@
 namespace TicTacToeApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use TicTacToeApiV2\Server\Http\Responses\GetMovesResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\GetMovesApiInterfaceResponseInterface;
 
 /**
  * Handler interface for getMoves operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements GetMovesResponseInterface
+ * The handler must return a response that implements GetMovesApiInterfaceResponseInterface
  */
 interface GetMovesApiInterface
 {
@@ -37,9 +37,9 @@ interface GetMovesApiInterface
      * Retrieves the complete move history for a game.
      *
      * @param string $gameId Unique game identifier
-     * @return GetMovesResponseInterface
+     * @return GetMovesApiInterfaceResponseInterface
      */
     public function handle(
         string $gameId
-    ): GetMovesResponseInterface;
+    ): GetMovesApiInterfaceResponseInterface;
 }

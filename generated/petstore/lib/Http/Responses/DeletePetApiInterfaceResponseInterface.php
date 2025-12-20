@@ -28,7 +28,7 @@ use Illuminate\Http\JsonResponse;
  * All possible responses for this operation must implement this interface
  * This enforces that only valid response structures can be returned
  */
-interface DeletePetResponseInterface
+interface DeletePetApiInterfaceResponseInterface
 {
     /**
      * Convert this response to a JSON response

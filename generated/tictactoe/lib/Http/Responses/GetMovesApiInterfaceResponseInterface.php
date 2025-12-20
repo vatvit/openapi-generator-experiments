@@ -23,23 +23,17 @@ namespace TicTacToeApiV2\Server\Http\Responses;
 use Illuminate\Http\JsonResponse;
 
 /**
- * HTTP 200 response for getLeaderboard operation
- * Successful response
+ * Response interface for getMoves operation
+ *
+ * All possible responses for this operation must implement this interface
+ * This enforces that only valid response structures can be returned
  */
-class GetLeaderboard200Response implements GetLeaderboardResponseInterface
+interface GetMovesApiInterfaceResponseInterface
 {
-    public function __construct(
-        private readonly \TicTacToeApiV2\Server\Models\Leaderboard $data
-    ) {}
-
-    public function toJsonResponse(): JsonResponse
-    {
-        // Serialize single model
-        $serializer = new \Crell\Serde\SerdeCommon();
-        $serialized = $serializer->serialize($this->data, 'array');
-        $response = response()->json($serialized, 200);
-
-        return $response;
-    }
+    /**
+     * Convert this response to a JSON response
+     *
+     * @return JsonResponse
+     */
+    public function toJsonResponse(): JsonResponse;
 }
-

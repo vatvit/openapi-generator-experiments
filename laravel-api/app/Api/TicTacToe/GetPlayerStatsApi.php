@@ -3,12 +3,12 @@
 namespace App\Api\TicTacToe;
 
 use TicTacToeApiV2\Server\Api\GetPlayerStatsApiInterface;
-use TicTacToeApiV2\Server\Http\Responses\GetPlayerStatsResponseInterface;
-use TicTacToeApiV2\Server\Http\Responses\GetPlayerStats200Response;
-use TicTacToeApiV2\Server\Http\Responses\GetPlayerStats404Response;
+use TicTacToeApiV2\Server\Http\Responses\GetPlayerStatsApiInterfaceResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\GetPlayerStatsApiInterfaceResponseFactory;
 use TicTacToeApiV2\Server\Models\PlayerStats;
 use TicTacToeApiV2\Server\Models\Player;
 use TicTacToeApiV2\Server\Models\NotFoundError;
+use TicTacToeApiV2\Server\Models\NotFoundErrorAllOfErrorType;
 
 /**
  * API for getPlayerStats operation
@@ -16,15 +16,16 @@ use TicTacToeApiV2\Server\Models\NotFoundError;
  */
 class GetPlayerStatsApi implements GetPlayerStatsApiInterface
 {
-    public function handle(string $playerId): GetPlayerStatsResponseInterface
+    public function handle(string $playerId): GetPlayerStatsApiInterfaceResponseInterface
     {
         // Example: Return 404 NotFound if player doesn't exist
         if ($playerId === '00000000-0000-0000-0000-000000000000') {
-            return new GetPlayerStats404Response(
+            return GetPlayerStatsApiInterfaceResponseFactory::status404(
                 new NotFoundError(
                     code: 'PLAYER_NOT_FOUND',
                     message: 'Player not found with the provided ID',
-                    errorType: 'NOT_FOUND'
+                    details: [],
+                    errorType: NotFoundErrorAllOfErrorType::NOT_FOUND
                 )
             );
         }
@@ -49,6 +50,6 @@ class GetPlayerStatsApi implements GetPlayerStatsApiInterface
             player: $player
         );
 
-        return new GetPlayerStats200Response($stats);
+        return GetPlayerStatsApiInterfaceResponseFactory::status200($stats);
     }
 }

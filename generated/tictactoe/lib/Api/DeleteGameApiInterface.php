@@ -21,13 +21,13 @@
 namespace TicTacToeApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use TicTacToeApiV2\Server\Http\Responses\DeleteGameResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\DeleteGameApiInterfaceResponseInterface;
 
 /**
  * Handler interface for deleteGame operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements DeleteGameResponseInterface
+ * The handler must return a response that implements DeleteGameApiInterfaceResponseInterface
  */
 interface DeleteGameApiInterface
 {
@@ -37,9 +37,9 @@ interface DeleteGameApiInterface
      * Deletes a game. Only allowed for game creators or admins.
      *
      * @param string $gameId Unique game identifier
-     * @return DeleteGameResponseInterface
+     * @return DeleteGameApiInterfaceResponseInterface
      */
     public function handle(
         string $gameId
-    ): DeleteGameResponseInterface;
+    ): DeleteGameApiInterfaceResponseInterface;
 }

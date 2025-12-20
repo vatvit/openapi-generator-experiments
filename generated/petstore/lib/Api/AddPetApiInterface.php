@@ -21,13 +21,13 @@
 namespace PetStoreApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use PetStoreApiV2\Server\Http\Responses\AddPetResponseInterface;
+use PetStoreApiV2\Server\Http\Responses\AddPetApiInterfaceResponseInterface;
 
 /**
  * Handler interface for addPet operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements AddPetResponseInterface
+ * The handler must return a response that implements AddPetApiInterfaceResponseInterface
  */
 interface AddPetApiInterface
 {
@@ -37,9 +37,9 @@ interface AddPetApiInterface
      * Creates a new pet in the store. Duplicates are allowed
      *
      * @param \PetStoreApiV2\Server\Models\NewPet $newPet Pet to add to the store
-     * @return AddPetResponseInterface
+     * @return AddPetApiInterfaceResponseInterface
      */
     public function handle(
         \PetStoreApiV2\Server\Models\NewPet $newPet
-    ): AddPetResponseInterface;
+    ): AddPetApiInterfaceResponseInterface;
 }

@@ -3,8 +3,8 @@
 namespace App\Api\PetStore;
 
 use PetStoreApiV2\Server\Api\DeletePetApiInterface;
-use PetStoreApiV2\Server\Http\Responses\DeletePetResponseInterface;
-use PetStoreApiV2\Server\Http\Responses\DeletePet204Response;
+use PetStoreApiV2\Server\Http\Responses\DeletePetApiInterfaceResponseInterface;
+use PetStoreApiV2\Server\Http\Responses\DeletePetApiInterfaceResponseFactory;
 use PetStoreApiV2\Server\Models\NoContent204;
 
 /**
@@ -13,12 +13,12 @@ use PetStoreApiV2\Server\Models\NoContent204;
  */
 class DeletePetApi implements DeletePetApiInterface
 {
-    public function handle(int $id): DeletePetResponseInterface
+    public function handle(int $id): DeletePetApiInterfaceResponseInterface
     {
         // Business logic implementation - delete pet
         // For demo purposes, just return success
 
         // Return typed response (enforces API spec)
-        return new DeletePet204Response(new NoContent204());
+        return DeletePetApiInterfaceResponseFactory::status204(new NoContent204());
     }
 }

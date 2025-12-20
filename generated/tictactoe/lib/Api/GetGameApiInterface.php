@@ -21,13 +21,13 @@
 namespace TicTacToeApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use TicTacToeApiV2\Server\Http\Responses\GetGameResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\GetGameApiInterfaceResponseInterface;
 
 /**
  * Handler interface for getGame operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements GetGameResponseInterface
+ * The handler must return a response that implements GetGameApiInterfaceResponseInterface
  */
 interface GetGameApiInterface
 {
@@ -37,9 +37,9 @@ interface GetGameApiInterface
      * Retrieves detailed information about a specific game.
      *
      * @param string $gameId Unique game identifier
-     * @return GetGameResponseInterface
+     * @return GetGameApiInterfaceResponseInterface
      */
     public function handle(
         string $gameId
-    ): GetGameResponseInterface;
+    ): GetGameApiInterfaceResponseInterface;
 }

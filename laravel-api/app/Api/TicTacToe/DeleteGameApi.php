@@ -3,11 +3,11 @@
 namespace App\Api\TicTacToe;
 
 use TicTacToeApiV2\Server\Api\DeleteGameApiInterface;
-use TicTacToeApiV2\Server\Http\Responses\DeleteGameResponseInterface;
-use TicTacToeApiV2\Server\Http\Responses\DeleteGame204Response;
-use TicTacToeApiV2\Server\Http\Responses\DeleteGame404Response;
+use TicTacToeApiV2\Server\Http\Responses\DeleteGameApiInterfaceResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\DeleteGameApiInterfaceResponseFactory;
 use TicTacToeApiV2\Server\Models\NoContent204;
 use TicTacToeApiV2\Server\Models\NotFoundError;
+use TicTacToeApiV2\Server\Models\NotFoundErrorAllOfErrorType;
 
 /**
  * API for deleteGame operation
@@ -15,20 +15,21 @@ use TicTacToeApiV2\Server\Models\NotFoundError;
  */
 class DeleteGameApi implements DeleteGameApiInterface
 {
-    public function handle(string $gameId): DeleteGameResponseInterface
+    public function handle(string $gameId): DeleteGameApiInterfaceResponseInterface
     {
         // Example: Return 404 if game doesn't exist
         if ($gameId === '00000000-0000-0000-0000-000000000000') {
-            return new DeleteGame404Response(
+            return DeleteGameApiInterfaceResponseFactory::status404(
                 new NotFoundError(
                     code: 'GAME_NOT_FOUND',
                     message: 'Game not found',
-                    errorType: 'NOT_FOUND'
+                    details: [],
+                    errorType: NotFoundErrorAllOfErrorType::NOT_FOUND
                 )
             );
         }
 
         // Delete the game and return 204 No Content
-        return new DeleteGame204Response(new NoContent204());
+        return DeleteGameApiInterfaceResponseFactory::status204(new NoContent204());
     }
 }

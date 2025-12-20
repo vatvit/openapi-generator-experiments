@@ -3,11 +3,11 @@
 namespace App\Api\TicTacToe;
 
 use TicTacToeApiV2\Server\Api\GetMovesApiInterface;
-use TicTacToeApiV2\Server\Http\Responses\GetMovesResponseInterface;
-use TicTacToeApiV2\Server\Http\Responses\GetMoves200Response;
-use TicTacToeApiV2\Server\Http\Responses\GetMoves404Response;
+use TicTacToeApiV2\Server\Http\Responses\GetMovesApiInterfaceResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\GetMovesApiInterfaceResponseFactory;
 use TicTacToeApiV2\Server\Models\MoveHistory;
 use TicTacToeApiV2\Server\Models\NotFoundError;
+use TicTacToeApiV2\Server\Models\NotFoundErrorAllOfErrorType;
 
 /**
  * API for getMoves operation
@@ -15,15 +15,16 @@ use TicTacToeApiV2\Server\Models\NotFoundError;
  */
 class GetMovesApi implements GetMovesApiInterface
 {
-    public function handle(string $gameId): GetMovesResponseInterface
+    public function handle(string $gameId): GetMovesApiInterfaceResponseInterface
     {
         // Example: Return 404 NotFound if game doesn't exist
         if ($gameId === '00000000-0000-0000-0000-000000000000') {
-            return new GetMoves404Response(
+            return GetMovesApiInterfaceResponseFactory::status404(
                 new NotFoundError(
                     code: 'GAME_NOT_FOUND',
                     message: 'Game not found with the provided ID',
-                    errorType: 'NOT_FOUND'
+                    details: [],
+                    errorType: NotFoundErrorAllOfErrorType::NOT_FOUND
                 )
             );
         }
@@ -61,6 +62,6 @@ class GetMovesApi implements GetMovesApiInterface
             moves: $moves
         );
 
-        return new GetMoves200Response($moveHistory);
+        return GetMovesApiInterfaceResponseFactory::status200($moveHistory);
     }
 }

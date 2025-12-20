@@ -21,13 +21,13 @@
 namespace TicTacToeApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use TicTacToeApiV2\Server\Http\Responses\GetLeaderboardResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\GetLeaderboardApiInterfaceResponseInterface;
 
 /**
  * Handler interface for getLeaderboard operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements GetLeaderboardResponseInterface
+ * The handler must return a response that implements GetLeaderboardApiInterfaceResponseInterface
  */
 interface GetLeaderboardApiInterface
 {
@@ -38,10 +38,10 @@ interface GetLeaderboardApiInterface
      *
      * @param \TicTacToeApiV2\Server\Models\GetLeaderboardTimeframeParameter $timeframe Timeframe for leaderboard statistics
      * @param int $limit Number of top players to return
-     * @return GetLeaderboardResponseInterface
+     * @return GetLeaderboardApiInterfaceResponseInterface
      */
     public function handle(
         ?\TicTacToeApiV2\Server\Models\GetLeaderboardTimeframeParameter $timeframe,
         ?int $limit
-    ): GetLeaderboardResponseInterface;
+    ): GetLeaderboardApiInterfaceResponseInterface;
 }

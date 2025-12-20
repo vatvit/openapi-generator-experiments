@@ -10,13 +10,13 @@ use {{invokerPackage}}\Http\Requests\{{operationIdCamelCase}}Request;
 {{^hasFormParams}}
 use Illuminate\Http\Request;
 {{/hasFormParams}}
-use {{invokerPackage}}\Http\Responses\{{operationIdCamelCase}}ResponseInterface;
+use {{invokerPackage}}\Http\Responses\{{operationIdCamelCase}}ApiInterfaceResponseInterface;
 
 /**
  * Handler interface for {{operationId}} operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements {{operationIdCamelCase}}ResponseInterface
+ * The handler must return a response that implements {{operationIdCamelCase}}ApiInterfaceResponseInterface
  */
 interface {{classname}}
 {
@@ -32,7 +32,7 @@ interface {{classname}}
      * @param {{dataType}} ${{paramName}} {{description}}
 {{/allParams}}
 {{/hasParams}}
-     * @return {{operationIdCamelCase}}ResponseInterface
+     * @return {{operationIdCamelCase}}ApiInterfaceResponseInterface
      */
     public function handle(
 {{#allParams}}
@@ -43,7 +43,7 @@ interface {{classname}}
         {{^required}}?{{/required}}{{{dataType}}} ${{paramName}}{{^-last}},{{/-last}}
         {{/isContainer}}
 {{/allParams}}
-    ): {{operationIdCamelCase}}ResponseInterface;
+    ): {{operationIdCamelCase}}ApiInterfaceResponseInterface;
 }
 {{/operation}}
 {{/operations}}

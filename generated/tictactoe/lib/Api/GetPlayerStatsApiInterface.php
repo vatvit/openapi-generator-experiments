@@ -21,13 +21,13 @@
 namespace TicTacToeApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use TicTacToeApiV2\Server\Http\Responses\GetPlayerStatsResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\GetPlayerStatsApiInterfaceResponseInterface;
 
 /**
  * Handler interface for getPlayerStats operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements GetPlayerStatsResponseInterface
+ * The handler must return a response that implements GetPlayerStatsApiInterfaceResponseInterface
  */
 interface GetPlayerStatsApiInterface
 {
@@ -37,9 +37,9 @@ interface GetPlayerStatsApiInterface
      * Retrieves comprehensive statistics for a player.
      *
      * @param string $playerId Unique player identifier
-     * @return GetPlayerStatsResponseInterface
+     * @return GetPlayerStatsApiInterfaceResponseInterface
      */
     public function handle(
         string $playerId
-    ): GetPlayerStatsResponseInterface;
+    ): GetPlayerStatsApiInterfaceResponseInterface;
 }

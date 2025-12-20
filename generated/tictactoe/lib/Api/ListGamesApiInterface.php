@@ -21,13 +21,13 @@
 namespace TicTacToeApiV2\Server\Api;
 
 use Illuminate\Http\Request;
-use TicTacToeApiV2\Server\Http\Responses\ListGamesResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\ListGamesApiInterfaceResponseInterface;
 
 /**
  * Handler interface for listGames operation
  *
  * Implement this interface in your application to provide business logic
- * The handler must return a response that implements ListGamesResponseInterface
+ * The handler must return a response that implements ListGamesApiInterfaceResponseInterface
  */
 interface ListGamesApiInterface
 {
@@ -40,12 +40,12 @@ interface ListGamesApiInterface
      * @param int $limit Number of items per page
      * @param \TicTacToeApiV2\Server\Models\GameStatus $status Filter by game status
      * @param string $playerId Filter games by player ID
-     * @return ListGamesResponseInterface
+     * @return ListGamesApiInterfaceResponseInterface
      */
     public function handle(
         ?int $page,
         ?int $limit,
         ?\TicTacToeApiV2\Server\Models\GameStatus $status,
         ?string $playerId
-    ): ListGamesResponseInterface;
+    ): ListGamesApiInterfaceResponseInterface;
 }

@@ -3,8 +3,8 @@
 namespace App\Api\PetStore;
 
 use PetStoreApiV2\Server\Api\FindPetByIdApiInterface;
-use PetStoreApiV2\Server\Http\Responses\FindPetByIdResponseInterface;
-use PetStoreApiV2\Server\Http\Responses\FindPetById200Response;
+use PetStoreApiV2\Server\Http\Responses\FindPetByIdApiInterfaceResponseInterface;
+use PetStoreApiV2\Server\Http\Responses\FindPetByIdApiInterfaceResponseFactory;
 use PetStoreApiV2\Server\Models\Pet;
 
 /**
@@ -13,7 +13,7 @@ use PetStoreApiV2\Server\Models\Pet;
  */
 class FindPetByIdApi implements FindPetByIdApiInterface
 {
-    public function handle(int $id): FindPetByIdResponseInterface
+    public function handle(int $id): FindPetByIdApiInterfaceResponseInterface
     {
         // Business logic implementation
         $pet = new Pet(
@@ -23,6 +23,6 @@ class FindPetByIdApi implements FindPetByIdApiInterface
         );
 
         // Return typed response (enforces API spec)
-        return new FindPetById200Response($pet);
+        return FindPetByIdApiInterfaceResponseFactory::status200($pet);
     }
 }

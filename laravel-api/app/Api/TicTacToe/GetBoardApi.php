@@ -3,12 +3,13 @@
 namespace App\Api\TicTacToe;
 
 use TicTacToeApiV2\Server\Api\GetBoardApiInterface;
-use TicTacToeApiV2\Server\Http\Responses\GetBoardResponseInterface;
-use TicTacToeApiV2\Server\Http\Responses\GetBoard200Response;
-use TicTacToeApiV2\Server\Http\Responses\GetBoard404Response;
+use TicTacToeApiV2\Server\Http\Responses\GetBoardApiInterfaceResponseInterface;
+use TicTacToeApiV2\Server\Http\Responses\GetBoardApiInterfaceResponseFactory;
 use TicTacToeApiV2\Server\Models\Status;
 use TicTacToeApiV2\Server\Models\Winner;
 use TicTacToeApiV2\Server\Models\NotFoundError;
+use TicTacToeApiV2\Server\Models\Mark;
+use TicTacToeApiV2\Server\Models\NotFoundErrorAllOfErrorType;
 
 /**
  * API for getBoard operation
@@ -16,24 +17,25 @@ use TicTacToeApiV2\Server\Models\NotFoundError;
  */
 class GetBoardApi implements GetBoardApiInterface
 {
-    public function handle(string $gameId): GetBoardResponseInterface
+    public function handle(string $gameId): GetBoardApiInterfaceResponseInterface
     {
         // Example: Return 404 NotFound if game doesn't exist
         if ($gameId === '00000000-0000-0000-0000-000000000000') {
-            return new GetBoard404Response(
+            return GetBoardApiInterfaceResponseFactory::status404(
                 new NotFoundError(
                     code: 'GAME_NOT_FOUND',
                     message: 'Game not found with the provided ID',
-                    errorType: 'NOT_FOUND'
+                    details: [],
+                    errorType: NotFoundErrorAllOfErrorType::NOT_FOUND
                 )
             );
         }
 
         // Success case - return board with some moves
         $board = [
-            ['X', 'O', '.'],
-            ['.', 'X', 'O'],
-            ['.', '.', 'X']
+            [Mark::X, Mark::O, Mark::PERIOD],
+            [Mark::PERIOD, Mark::X, Mark::O],
+            [Mark::PERIOD, Mark::PERIOD, Mark::X]
         ];
 
         $status = new Status(
@@ -41,6 +43,6 @@ class GetBoardApi implements GetBoardApiInterface
             board: $board
         );
 
-        return new GetBoard200Response($status);
+        return GetBoardApiInterfaceResponseFactory::status200($status);
     }
 }
