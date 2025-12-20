@@ -81,7 +81,7 @@
  *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
  * ]);
  */
-$route = $router->POST('/v1/games', [TicTacToeApiV2\Server\Http\Controllers\GameManagementController::class, 'createGame'])
+$route = $router->POST('/v1/games', [TicTacToeApiV2\Server\Http\Controllers\CreateGameController::class, 'createGame'])
     ->name('api.createGame');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -109,7 +109,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.createGame')) {
  *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
  * ]);
  */
-$route = $router->DELETE('/v1/games/{gameId}', [TicTacToeApiV2\Server\Http\Controllers\GameManagementController::class, 'deleteGame'])
+$route = $router->DELETE('/v1/games/{gameId}', [TicTacToeApiV2\Server\Http\Controllers\DeleteGameController::class, 'deleteGame'])
     ->name('api.deleteGame');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -120,62 +120,6 @@ $route = $router->DELETE('/v1/games/{gameId}', [TicTacToeApiV2\Server\Http\Contr
 // Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.deleteGame')) {
     $route->middleware('api.middlewareGroup.deleteGame');
-}
-
-
-/**
- * GET /games/{gameId}
- * Get game details
- * Retrieves detailed information about a specific game.
- *
- * Security Requirements:
- * - bearerHttpAuthentication (http): Bearer token using a JWT
- *   Format: Bearer token (JWT)
- *
- * Suggested middleware group (in bootstrap/app.php):
- * $middleware->group('api.middlewareGroup.getGame', [
- *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
- * ]);
- */
-$route = $router->GET('/v1/games/{gameId}', [TicTacToeApiV2\Server\Http\Controllers\GameManagementController::class, 'getGame'])
-    ->name('api.getGame');
-
-// SECURITY REQUIREMENT: This operation requires authentication
-// Required security: bearerHttpAuthentication
-// Middleware group 'api.middlewareGroup.getGame' MUST be defined and contain middleware implementing:
-// - TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface
-
-// Attach middleware group (if defined)
-if ($router->hasMiddlewareGroup('api.middlewareGroup.getGame')) {
-    $route->middleware('api.middlewareGroup.getGame');
-}
-
-
-/**
- * GET /games
- * List all games
- * Retrieves a paginated list of games with optional filtering.
- *
- * Security Requirements:
- * - bearerHttpAuthentication (http): Bearer token using a JWT
- *   Format: Bearer token (JWT)
- *
- * Suggested middleware group (in bootstrap/app.php):
- * $middleware->group('api.middlewareGroup.listGames', [
- *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
- * ]);
- */
-$route = $router->GET('/v1/games', [TicTacToeApiV2\Server\Http\Controllers\GameManagementController::class, 'listGames'])
-    ->name('api.listGames');
-
-// SECURITY REQUIREMENT: This operation requires authentication
-// Required security: bearerHttpAuthentication
-// Middleware group 'api.middlewareGroup.listGames' MUST be defined and contain middleware implementing:
-// - TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface
-
-// Attach middleware group (if defined)
-if ($router->hasMiddlewareGroup('api.middlewareGroup.listGames')) {
-    $route->middleware('api.middlewareGroup.listGames');
 }
 
 
@@ -196,7 +140,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.listGames')) {
  *     \App\Http\Middleware\ValidateOAuthScopes::class,  // Validate scopes: board:read
  * ]);
  */
-$route = $router->GET('/v1/games/{gameId}/board', [TicTacToeApiV2\Server\Http\Controllers\GameplayController::class, 'getBoard'])
+$route = $router->GET('/v1/games/{gameId}/board', [TicTacToeApiV2\Server\Http\Controllers\GetBoardController::class, 'getBoard'])
     ->name('api.getBoard');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -225,7 +169,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getBoard')) {
  *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
  * ]);
  */
-$route = $router->GET('/v1/games/{gameId}', [TicTacToeApiV2\Server\Http\Controllers\GameplayController::class, 'getGame'])
+$route = $router->GET('/v1/games/{gameId}', [TicTacToeApiV2\Server\Http\Controllers\GetGameController::class, 'getGame'])
     ->name('api.getGame');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -238,6 +182,20 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getGame')) {
     $route->middleware('api.middlewareGroup.getGame');
 }
 
+
+/**
+ * GET /leaderboard
+ * Get leaderboard
+ * Retrieves the global leaderboard with top players.
+ */
+$route = $router->GET('/v1/leaderboard', [TicTacToeApiV2\Server\Http\Controllers\GetLeaderboardController::class, 'getLeaderboard'])
+    ->name('api.getLeaderboard');
+
+// No security required - public endpoint
+// Middleware can still be attached if group is defined
+if ($router->hasMiddlewareGroup('api.middlewareGroup.getLeaderboard')) {
+    $route->middleware('api.middlewareGroup.getLeaderboard');
+}
 
 /**
  * GET /games/{gameId}/moves
@@ -253,7 +211,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getGame')) {
  *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
  * ]);
  */
-$route = $router->GET('/v1/games/{gameId}/moves', [TicTacToeApiV2\Server\Http\Controllers\GameplayController::class, 'getMoves'])
+$route = $router->GET('/v1/games/{gameId}/moves', [TicTacToeApiV2\Server\Http\Controllers\GetMovesController::class, 'getMoves'])
     ->name('api.getMoves');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -264,6 +222,34 @@ $route = $router->GET('/v1/games/{gameId}/moves', [TicTacToeApiV2\Server\Http\Co
 // Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.getMoves')) {
     $route->middleware('api.middlewareGroup.getMoves');
+}
+
+
+/**
+ * GET /players/{playerId}/stats
+ * Get player statistics
+ * Retrieves comprehensive statistics for a player.
+ *
+ * Security Requirements:
+ * - bearerHttpAuthentication (http): Bearer token using a JWT
+ *   Format: Bearer token (JWT)
+ *
+ * Suggested middleware group (in bootstrap/app.php):
+ * $middleware->group('api.middlewareGroup.getPlayerStats', [
+ *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
+ * ]);
+ */
+$route = $router->GET('/v1/players/{playerId}/stats', [TicTacToeApiV2\Server\Http\Controllers\GetPlayerStatsController::class, 'getPlayerStats'])
+    ->name('api.getPlayerStats');
+
+// SECURITY REQUIREMENT: This operation requires authentication
+// Required security: bearerHttpAuthentication
+// Middleware group 'api.middlewareGroup.getPlayerStats' MUST be defined and contain middleware implementing:
+// - TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface
+
+// Attach middleware group (if defined)
+if ($router->hasMiddlewareGroup('api.middlewareGroup.getPlayerStats')) {
+    $route->middleware('api.middlewareGroup.getPlayerStats');
 }
 
 
@@ -284,7 +270,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getMoves')) {
  *     \App\Http\Middleware\ValidateOAuthScopes::class,  // Validate scopes: board:read
  * ]);
  */
-$route = $router->GET('/v1/games/{gameId}/board/{row}/{column}', [TicTacToeApiV2\Server\Http\Controllers\GameplayController::class, 'getSquare'])
+$route = $router->GET('/v1/games/{gameId}/board/{row}/{column}', [TicTacToeApiV2\Server\Http\Controllers\GetSquareController::class, 'getSquare'])
     ->name('api.getSquare');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -296,6 +282,34 @@ $route = $router->GET('/v1/games/{gameId}/board/{row}/{column}', [TicTacToeApiV2
 // Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.getSquare')) {
     $route->middleware('api.middlewareGroup.getSquare');
+}
+
+
+/**
+ * GET /games
+ * List all games
+ * Retrieves a paginated list of games with optional filtering.
+ *
+ * Security Requirements:
+ * - bearerHttpAuthentication (http): Bearer token using a JWT
+ *   Format: Bearer token (JWT)
+ *
+ * Suggested middleware group (in bootstrap/app.php):
+ * $middleware->group('api.middlewareGroup.listGames', [
+ *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
+ * ]);
+ */
+$route = $router->GET('/v1/games', [TicTacToeApiV2\Server\Http\Controllers\ListGamesController::class, 'listGames'])
+    ->name('api.listGames');
+
+// SECURITY REQUIREMENT: This operation requires authentication
+// Required security: bearerHttpAuthentication
+// Middleware group 'api.middlewareGroup.listGames' MUST be defined and contain middleware implementing:
+// - TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface
+
+// Attach middleware group (if defined)
+if ($router->hasMiddlewareGroup('api.middlewareGroup.listGames')) {
+    $route->middleware('api.middlewareGroup.listGames');
 }
 
 
@@ -316,7 +330,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.getSquare')) {
  *     \App\Http\Middleware\ValidateOAuthScopes::class,  // Validate scopes: board:write
  * ]);
  */
-$route = $router->PUT('/v1/games/{gameId}/board/{row}/{column}', [TicTacToeApiV2\Server\Http\Controllers\GameplayController::class, 'putSquare'])
+$route = $router->PUT('/v1/games/{gameId}/board/{row}/{column}', [TicTacToeApiV2\Server\Http\Controllers\PutSquareController::class, 'putSquare'])
     ->name('api.putSquare');
 
 // SECURITY REQUIREMENT: This operation requires authentication
@@ -328,80 +342,6 @@ $route = $router->PUT('/v1/games/{gameId}/board/{row}/{column}', [TicTacToeApiV2
 // Attach middleware group (if defined)
 if ($router->hasMiddlewareGroup('api.middlewareGroup.putSquare')) {
     $route->middleware('api.middlewareGroup.putSquare');
-}
-
-
-/**
- * GET /leaderboard
- * Get leaderboard
- * Retrieves the global leaderboard with top players.
- */
-$route = $router->GET('/v1/leaderboard', [TicTacToeApiV2\Server\Http\Controllers\StatisticsController::class, 'getLeaderboard'])
-    ->name('api.getLeaderboard');
-
-// No security required - public endpoint
-// Middleware can still be attached if group is defined
-if ($router->hasMiddlewareGroup('api.middlewareGroup.getLeaderboard')) {
-    $route->middleware('api.middlewareGroup.getLeaderboard');
-}
-
-/**
- * GET /players/{playerId}/stats
- * Get player statistics
- * Retrieves comprehensive statistics for a player.
- *
- * Security Requirements:
- * - bearerHttpAuthentication (http): Bearer token using a JWT
- *   Format: Bearer token (JWT)
- *
- * Suggested middleware group (in bootstrap/app.php):
- * $middleware->group('api.middlewareGroup.getPlayerStats', [
- *     \App\Http\Middleware\ValidateBearerToken::class,  // Validate JWT token
- * ]);
- */
-$route = $router->GET('/v1/players/{playerId}/stats', [TicTacToeApiV2\Server\Http\Controllers\StatisticsController::class, 'getPlayerStats'])
-    ->name('api.getPlayerStats');
-
-// SECURITY REQUIREMENT: This operation requires authentication
-// Required security: bearerHttpAuthentication
-// Middleware group 'api.middlewareGroup.getPlayerStats' MUST be defined and contain middleware implementing:
-// - TicTacToeApiV2\Server\Security\bearerHttpAuthenticationInterface
-
-// Attach middleware group (if defined)
-if ($router->hasMiddlewareGroup('api.middlewareGroup.getPlayerStats')) {
-    $route->middleware('api.middlewareGroup.getPlayerStats');
-}
-
-
-/**
- * GET /games/{gameId}/board
- * Get the game board
- * Retrieves the current state of the board and the winner.
- *
- * Security Requirements:
- * - defaultApiKey (apiKey): API key provided in console
- *   Location: api-key in header
- * - app2AppOauth (oauth2)
- *   Required scopes: board:read
- *
- * Suggested middleware group (in bootstrap/app.php):
- * $middleware->group('api.middlewareGroup.getBoard', [
- *     \App\Http\Middleware\ValidateApiKey::class,  // Validate api-key header/query
- *     \App\Http\Middleware\ValidateOAuthScopes::class,  // Validate scopes: board:read
- * ]);
- */
-$route = $router->GET('/v1/games/{gameId}/board', [TicTacToeApiV2\Server\Http\Controllers\TicTacController::class, 'getBoard'])
-    ->name('api.getBoard');
-
-// SECURITY REQUIREMENT: This operation requires authentication
-// Required security: defaultApiKey OR app2AppOauth
-// Middleware group 'api.middlewareGroup.getBoard' MUST be defined and contain middleware implementing:
-// - TicTacToeApiV2\Server\Security\defaultApiKeyInterface
-// - TicTacToeApiV2\Server\Security\app2AppOauthInterface
-
-// Attach middleware group (if defined)
-if ($router->hasMiddlewareGroup('api.middlewareGroup.getBoard')) {
-    $route->middleware('api.middlewareGroup.getBoard');
 }
 
 

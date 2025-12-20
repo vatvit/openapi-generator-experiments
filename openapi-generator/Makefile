@@ -13,7 +13,7 @@ help: ## Show OpenAPI Generator utility commands
 	@echo "  make generate SPEC_NAME=petshop SPEC_FILE=petshop-extended.yaml \\"
 	@echo "                OUTPUT_NAME=petstore CONFIG=petshop-server-config.json"
 
-generate: ## Generate server code (requires: SPEC_NAME, SPEC_FILE, OUTPUT_NAME, CONFIG)
+generate: ## Generate server code (requires: SPEC_NAME, SPEC_FILE, OUTPUT_NAME, CONFIG, optional: PREPROCESS=yes)
 ifndef SPEC_NAME
 	$(error SPEC_NAME is required. Example: SPEC_NAME=petshop)
 endif
@@ -29,6 +29,19 @@ endif
 	@echo "🏗️  Generating $(SPEC_NAME) API server with custom templates (PSR-4 compliant)..."
 	@rm -rf ../generated/$(OUTPUT_NAME)
 	@mkdir -p ../generated
+ifeq ($(PREPROCESS),yes)
+	@echo "🔧 Preprocessing: Setting operation-specific tags..."
+	@SPEC_EXT=$${SPEC_FILE##*.}; \
+	PROCESSED_FILE="../$(SPEC_NAME)/$(SPEC_NAME)-tagged.$$SPEC_EXT"; \
+	./scripts/set-operation-tags.sh "../$(SPEC_NAME)/$(SPEC_FILE)" "$$PROCESSED_FILE"; \
+	echo "📋 Generating from preprocessed spec: $(SPEC_NAME)/$(SPEC_NAME)-tagged.$$SPEC_EXT"; \
+	docker run --rm -v $$(pwd)/..:/local openapitools/openapi-generator-cli:$(OPENAPI_GENERATOR_VERSION) generate \
+		-i /local/$(SPEC_NAME)/$(SPEC_NAME)-tagged.$${SPEC_EXT} \
+		-g php-laravel \
+		-o /local/generated/$(OUTPUT_NAME) \
+		-c /local/laravel-api/openapi-generator-configs/$(CONFIG) \
+		-t /local/openapi-generator-server-laravel
+else
 	@echo "📋 Generating from spec: $(SPEC_NAME)/$(SPEC_FILE)"
 	@docker run --rm -v $$(pwd)/..:/local openapitools/openapi-generator-cli:$(OPENAPI_GENERATOR_VERSION) generate \
 		-i /local/$(SPEC_NAME)/$(SPEC_FILE) \
@@ -36,6 +49,7 @@ endif
 		-o /local/generated/$(OUTPUT_NAME) \
 		-c /local/laravel-api/openapi-generator-configs/$(CONFIG) \
 		-t /local/openapi-generator-server-laravel
+endif
 	@echo "✅ $(SPEC_NAME) API server generated (PSR-4: one class per file)!"
 	@echo "📁 Output: generated/$(OUTPUT_NAME)"
 

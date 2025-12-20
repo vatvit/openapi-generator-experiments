@@ -7,46 +7,70 @@ use Tests\TestCase;
 class HandlerBindingTest extends TestCase
 {
     /**
-     * Test that PetStore handler interfaces are properly bound in DI container
+     * Test that PetStore API interfaces are properly bound in DI container
      */
-    public function test_petstore_handlers_are_bound(): void
+    public function test_petstore_api_bindings_are_bound(): void
     {
-        // Verify AdminApiHandler binding
-        $handler = app(\PetStoreApiV2\Server\Api\AdminApiInterface::class);
-        $this->assertInstanceOf(\App\Handlers\PetStore\AdminApiHandler::class, $handler);
+        // Verify AddPetApi binding
+        $api = app(\PetStoreApiV2\Server\Api\AddPetApiInterface::class);
+        $this->assertInstanceOf(\App\Api\PetStore\AddPetApi::class, $api);
 
-        // Verify AnalyticsApiHandler binding
-        $handler = app(\PetStoreApiV2\Server\Api\AnalyticsApiInterface::class);
-        $this->assertInstanceOf(\App\Handlers\PetStore\AnalyticsApiHandler::class, $handler);
+        // Verify DeletePetApi binding
+        $api = app(\PetStoreApiV2\Server\Api\DeletePetApiInterface::class);
+        $this->assertInstanceOf(\App\Api\PetStore\DeletePetApi::class, $api);
 
-        // Verify CreationApiHandler binding
-        $handler = app(\PetStoreApiV2\Server\Api\CreationApiInterface::class);
-        $this->assertInstanceOf(\App\Handlers\PetStore\CreationApiHandler::class, $handler);
+        // Verify FindPetByIdApi binding
+        $api = app(\PetStoreApiV2\Server\Api\FindPetByIdApiInterface::class);
+        $this->assertInstanceOf(\App\Api\PetStore\FindPetByIdApi::class, $api);
 
-        // Verify DetailsApiHandler binding
-        $handler = app(\PetStoreApiV2\Server\Api\DetailsApiInterface::class);
-        $this->assertInstanceOf(\App\Handlers\PetStore\DetailsApiHandler::class, $handler);
+        // Verify FindPetsApi binding
+        $api = app(\PetStoreApiV2\Server\Api\FindPetsApiInterface::class);
+        $this->assertInstanceOf(\App\Api\PetStore\FindPetsApi::class, $api);
     }
 
     /**
-     * Test that TicTacToe handler interfaces are properly bound in DI container
+     * Test that TicTacToe API interfaces are properly bound in DI container
      */
-    public function test_tictactoe_handlers_are_bound(): void
+    public function test_tictactoe_api_bindings_are_bound(): void
     {
-        // Verify GameManagementApiHandler binding
-        $handler = app(\TicTacToeApiV2\Server\Api\GameManagementApiInterface::class);
-        $this->assertInstanceOf(\App\Handlers\V2\GameManagementApiHandler::class, $handler);
+        // Verify CreateGameApi binding
+        $api = app(\TicTacToeApiV2\Server\Api\CreateGameApiInterface::class);
+        $this->assertInstanceOf(\App\Api\V2\CreateGameApi::class, $api);
 
-        // Verify GameplayApiHandler binding
-        $handler = app(\TicTacToeApiV2\Server\Api\GameplayApiInterface::class);
-        $this->assertInstanceOf(\App\Handlers\V2\GameplayApiHandler::class, $handler);
+        // Verify DeleteGameApi binding
+        $api = app(\TicTacToeApiV2\Server\Api\DeleteGameApiInterface::class);
+        $this->assertInstanceOf(\App\Api\V2\DeleteGameApi::class, $api);
 
-        // Verify StatisticsApiHandler binding
-        $handler = app(\TicTacToeApiV2\Server\Api\StatisticsApiInterface::class);
-        $this->assertInstanceOf(\App\Handlers\V2\StatisticsApiHandler::class, $handler);
+        // Verify GetBoardApi binding
+        $api = app(\TicTacToeApiV2\Server\Api\GetBoardApiInterface::class);
+        $this->assertInstanceOf(\App\Api\V2\GetBoardApi::class, $api);
 
-        // Verify TicTacApiHandler binding
-        $handler = app(\TicTacToeApiV2\Server\Api\TicTacApiInterface::class);
-        $this->assertInstanceOf(\App\Handlers\V2\TicTacApiHandler::class, $handler);
+        // Verify GetGameApi binding
+        $api = app(\TicTacToeApiV2\Server\Api\GetGameApiInterface::class);
+        $this->assertInstanceOf(\App\Api\V2\GetGameApi::class, $api);
+
+        // Verify GetLeaderboardApi binding
+        $api = app(\TicTacToeApiV2\Server\Api\GetLeaderboardApiInterface::class);
+        $this->assertInstanceOf(\App\Api\V2\GetLeaderboardApi::class, $api);
+
+        // Verify GetMovesApi binding
+        $api = app(\TicTacToeApiV2\Server\Api\GetMovesApiInterface::class);
+        $this->assertInstanceOf(\App\Api\V2\GetMovesApi::class, $api);
+
+        // Verify GetPlayerStatsApi binding
+        $api = app(\TicTacToeApiV2\Server\Api\GetPlayerStatsApiInterface::class);
+        $this->assertInstanceOf(\App\Api\V2\GetPlayerStatsApi::class, $api);
+
+        // Verify GetSquareApi binding
+        $api = app(\TicTacToeApiV2\Server\Api\GetSquareApiInterface::class);
+        $this->assertInstanceOf(\App\Api\V2\GetSquareApi::class, $api);
+
+        // Verify ListGamesApi binding
+        $api = app(\TicTacToeApiV2\Server\Api\ListGamesApiInterface::class);
+        $this->assertInstanceOf(\App\Api\V2\ListGamesApi::class, $api);
+
+        // Verify PutSquareApi binding
+        $api = app(\TicTacToeApiV2\Server\Api\PutSquareApiInterface::class);
+        $this->assertInstanceOf(\App\Api\V2\PutSquareApi::class, $api);
     }
 }

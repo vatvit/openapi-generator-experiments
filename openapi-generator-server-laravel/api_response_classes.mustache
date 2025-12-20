@@ -1,0 +1,114 @@
+{{>php_file_header}}
+
+namespace {{invokerPackage}}\Http\Responses;
+
+use Illuminate\Http\JsonResponse;
+
+{{#operations}}
+{{#operation}}
+{{#responses}}
+/**
+ * HTTP {{code}} response for {{operationId}} operation
+ * {{message}}
+{{#hasHeaders}}
+ *
+ * Response Headers:
+{{#headers}}
+ * - {{baseName}}{{#required}} (required){{/required}}: {{description}}
+{{/headers}}
+{{/hasHeaders}}
+ */
+class {{operationIdCamelCase}}{{code}}Response implements {{operationIdCamelCase}}ResponseInterface
+{
+{{#hasHeaders}}
+{{#headers}}
+    private ?{{#isString}}string{{/isString}}{{#isInteger}}int{{/isInteger}}{{^isString}}{{^isInteger}}string{{/isInteger}}{{/isString}} ${{baseName}} = null;
+{{/headers}}
+
+{{/hasHeaders}}
+    public function __construct(
+{{#dataType}}
+{{#isArray}}
+        /** @var {{baseType}}[] */
+        private readonly array $data
+{{/isArray}}
+{{^isArray}}
+        private readonly {{dataType}} $data
+{{/isArray}}
+{{/dataType}}
+{{^dataType}}
+        private readonly \{{invokerPackage}}\Models\NoContent{{code}} $data
+{{/dataType}}
+    ) {}
+
+{{#hasHeaders}}
+    // Header setter methods
+
+{{#headers}}
+    /**
+     * Set {{baseName}} header{{#required}} (required){{/required}}
+     * {{description}}
+     * @param {{#isString}}string{{/isString}}{{#isInteger}}int{{/isInteger}}{{^isString}}{{^isInteger}}string{{/isInteger}}{{/isString}} $value
+     * @return self
+     */
+    public function set{{baseName}}({{#isString}}string{{/isString}}{{#isInteger}}int{{/isInteger}}{{^isString}}{{^isInteger}}string{{/isInteger}}{{/isString}} $value): self
+    {
+        $this->{{baseName}} = $value;
+        return $this;
+    }
+
+{{/headers}}
+{{/hasHeaders}}
+    public function toJsonResponse(): JsonResponse
+    {
+{{#hasHeaders}}
+{{#headers}}
+{{#required}}
+        // Validate required headers
+        if ($this->{{baseName}} === null) {
+            throw new \RuntimeException('Required header "{{baseName}}" is not set for {{operationIdCamelCase}}{{code}}Response');
+        }
+
+{{/required}}
+{{/headers}}
+{{/hasHeaders}}
+{{#dataType}}
+{{#isArray}}
+        // Serialize array of models
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = array_map(
+            fn($item) => $serializer->serialize($item, 'array'),
+            $this->data
+        );
+        $response = response()->json($serialized, {{code}});
+{{/isArray}}
+{{^isArray}}
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, {{code}});
+{{/isArray}}
+{{/dataType}}
+{{^dataType}}
+        // Serialize single model
+        $serializer = new \Crell\Serde\SerdeCommon();
+        $serialized = $serializer->serialize($this->data, 'array');
+        $response = response()->json($serialized, {{code}});
+{{/dataType}}
+{{#hasHeaders}}
+
+        // Add response headers
+{{#headers}}
+        if ($this->{{baseName}} !== null) {
+            $response->header('{{baseName}}', $this->{{baseName}});
+        }
+{{/headers}}
+{{/hasHeaders}}
+
+        return $response;
+    }
+}
+
+{{/responses}}
+{{/operation}}
+{{/operations}}

@@ -34,20 +34,15 @@
   "appName": "TicTacToeApiController",
   "skipOperationExample": true,
   "files": {
-    "ResponseInterfaces.php.mustache": {
+    "api_response_interface.mustache": {
       "folder": "lib/Http/Responses",
-      "destinationFilename": "ResponseInterfaces.php",
-      "templateType": "SupportingFiles"
+      "destinationFilename": "ResponseInterface.php",
+      "templateType": "API"
     },
-    "ResponseClasses.php.mustache": {
+    "api_response_classes.mustache": {
       "folder": "lib/Http/Responses",
-      "destinationFilename": "ResponseClasses.php",
-      "templateType": "SupportingFiles"
-    },
-    "HandlerInterfaces.php.mustache": {
-      "folder": "lib/Handlers",
-      "destinationFilename": "HandlerInterfaces.php",
-      "templateType": "SupportingFiles"
+      "destinationFilename": "Classes.php",
+      "templateType": "API"
     }
   }
 }

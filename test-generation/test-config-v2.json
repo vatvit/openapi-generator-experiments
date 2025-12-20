@@ -1,0 +1,29 @@
+{
+  "invokerPackage": "TicTacToeApiV2Test\\Server",
+  "modelPackage": "Models",
+  "apiPackage": "Api",
+  "packageName": "tictactoe-api-test-v2",
+  "srcBasePath": "lib",
+  "variableNamingConvention": "camelCase",
+  "hideGenerationTimestamp": true,
+  "withGeneratorVersionComment": false,
+  "appName": "TicTacToeApiController",
+  "skipOperationExample": true,
+  "files": {
+    "api_response_interface.mustache": {
+      "folder": "lib/Http/Responses",
+      "destinationFilename": ".php",
+      "templateType": "API"
+    },
+    "api_handler_interface.mustache": {
+      "folder": "lib/Handlers",
+      "destinationFilename": ".php",
+      "templateType": "API"
+    },
+    "api_response_classes.mustache": {
+      "folder": "lib/Http/Responses",
+      "destinationFilename": "Classes.php",
+      "templateType": "API"
+    }
+  }
+}

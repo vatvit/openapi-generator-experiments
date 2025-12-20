@@ -12,28 +12,26 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         // ============================================================
-        // PetStore V2 API Bindings (PSR-4 compliant, default generator)
+        // PetStore V2 API Bindings (PSR-4 compliant, per-operation interfaces)
         // ============================================================
-        $this->app->bind(\PetStoreApiV2\Server\Api\AdminApiInterface::class, \App\Handlers\PetStore\AdminApiHandler::class);
-        $this->app->bind(\PetStoreApiV2\Server\Api\AnalyticsApiInterface::class, \App\Handlers\PetStore\AnalyticsApiHandler::class);
-        $this->app->bind(\PetStoreApiV2\Server\Api\CreationApiInterface::class, \App\Handlers\PetStore\CreationApiHandler::class);
-        $this->app->bind(\PetStoreApiV2\Server\Api\DetailsApiInterface::class, \App\Handlers\PetStore\DetailsApiHandler::class);
-        $this->app->bind(\PetStoreApiV2\Server\Api\InventoryApiInterface::class, \App\Handlers\PetStore\InventoryApiHandler::class);
-        $this->app->bind(\PetStoreApiV2\Server\Api\ManagementApiInterface::class, \App\Handlers\PetStore\ManagementApiHandler::class);
-        $this->app->bind(\PetStoreApiV2\Server\Api\PetsApiInterface::class, \App\Handlers\PetStore\PetsApiHandler::class);
-        $this->app->bind(\PetStoreApiV2\Server\Api\PublicApiInterface::class, \App\Handlers\PetStore\PublicApiHandler::class);
-        $this->app->bind(\PetStoreApiV2\Server\Api\ReportingApiInterface::class, \App\Handlers\PetStore\ReportingApiHandler::class);
-        $this->app->bind(\PetStoreApiV2\Server\Api\RetrievalApiInterface::class, \App\Handlers\PetStore\RetrievalApiHandler::class);
-        $this->app->bind(\PetStoreApiV2\Server\Api\SearchApiInterface::class, \App\Handlers\PetStore\SearchApiHandler::class);
-        $this->app->bind(\PetStoreApiV2\Server\Api\WorkflowApiInterface::class, \App\Handlers\PetStore\WorkflowApiHandler::class);
+        $this->app->bind(\PetStoreApiV2\Server\Api\AddPetApiInterface::class, \App\Api\PetStore\AddPetApi::class);
+        $this->app->bind(\PetStoreApiV2\Server\Api\DeletePetApiInterface::class, \App\Api\PetStore\DeletePetApi::class);
+        $this->app->bind(\PetStoreApiV2\Server\Api\FindPetByIdApiInterface::class, \App\Api\PetStore\FindPetByIdApi::class);
+        $this->app->bind(\PetStoreApiV2\Server\Api\FindPetsApiInterface::class, \App\Api\PetStore\FindPetsApi::class);
 
         // ============================================================
-        // TicTacToe V2 API Bindings (PSR-4 compliant, default generator)
+        // TicTacToe V2 API Bindings (PSR-4 compliant, per-operation interfaces)
         // ============================================================
-        $this->app->bind(\TicTacToeApiV2\Server\Api\GameManagementApiInterface::class, \App\Handlers\V2\GameManagementApiHandler::class);
-        $this->app->bind(\TicTacToeApiV2\Server\Api\GameplayApiInterface::class, \App\Handlers\V2\GameplayApiHandler::class);
-        $this->app->bind(\TicTacToeApiV2\Server\Api\StatisticsApiInterface::class, \App\Handlers\V2\StatisticsApiHandler::class);
-        $this->app->bind(\TicTacToeApiV2\Server\Api\TicTacApiInterface::class, \App\Handlers\V2\TicTacApiHandler::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\CreateGameApiInterface::class, \App\Api\V2\CreateGameApi::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\DeleteGameApiInterface::class, \App\Api\V2\DeleteGameApi::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\GetBoardApiInterface::class, \App\Api\V2\GetBoardApi::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\GetGameApiInterface::class, \App\Api\V2\GetGameApi::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\GetLeaderboardApiInterface::class, \App\Api\V2\GetLeaderboardApi::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\GetMovesApiInterface::class, \App\Api\V2\GetMovesApi::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\GetPlayerStatsApiInterface::class, \App\Api\V2\GetPlayerStatsApi::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\GetSquareApiInterface::class, \App\Api\V2\GetSquareApi::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\ListGamesApiInterface::class, \App\Api\V2\ListGamesApi::class);
+        $this->app->bind(\TicTacToeApiV2\Server\Api\PutSquareApiInterface::class, \App\Api\V2\PutSquareApi::class);
     }
 
     /**

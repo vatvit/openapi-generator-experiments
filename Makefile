@@ -53,15 +53,19 @@ generate-petshop: ## Generate PetStore API server
 		SPEC_NAME=petshop \
 		SPEC_FILE=petshop-extended.yaml \
 		OUTPUT_NAME=petstore \
-		CONFIG=petshop-server-config.json
+		CONFIG=petshop-server-config.json \
+		PREPROCESS=yes
+	@echo "ℹ️  Per-operation interfaces generated (PSR-4 compliant: one interface per file)"
 
 generate-tictactoe: ## Generate TicTacToe API server
 	@$(MAKE) -C openapi-generator generate \
 		SPEC_NAME=tictactoe \
 		SPEC_FILE=tictactoe.json \
 		OUTPUT_NAME=tictactoe \
-		CONFIG=tictactoe-server-config.json
+		CONFIG=tictactoe-server-config.json \
+		PREPROCESS=yes
 	@echo "ℹ️  Security interfaces generated via templates (SecurityInterfaces.php, SecurityValidator.php)"
+	@echo "ℹ️  Per-operation interfaces generated (PSR-4 compliant: one interface per file)"
 
 validate-spec: ## Validate the OpenAPI specifications
 	@echo "📋 Validating PetStore OpenAPI specification..."

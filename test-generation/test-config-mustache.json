@@ -1,0 +1,17 @@
+{
+  "invokerPackage": "TicTacToeApiTest3\\Server",
+  "modelPackage": "Models",
+  "apiPackage": "Api",
+  "srcBasePath": "lib",
+  "variableNamingConvention": "camelCase",
+  "hideGenerationTimestamp": true,
+  "appName": "TicTacToeApiController",
+  "skipOperationExample": true,
+  "files": {
+    "api_handler_interface.mustache": {
+      "folder": "lib/Handlers",
+      "destinationFilename": "{{operationIdCamelCase}}HandlerInterface.php",
+      "templateType": "API"
+    }
+  }
+}

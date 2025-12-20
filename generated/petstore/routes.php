@@ -68,81 +68,11 @@
 // This file expects $router to be available from the including context
 
 /**
- * DELETE /pets/{id}
- * 
- * deletes a single pet based on the ID supplied
- */
-$route = $router->DELETE('/v2/pets/{id}', [PetStoreApiV2\Server\Http\Controllers\AdminController::class, 'deletePet'])
-    ->name('api.deletePet');
-
-// No security required - public endpoint
-// Middleware can still be attached if group is defined
-if ($router->hasMiddlewareGroup('api.middlewareGroup.deletePet')) {
-    $route->middleware('api.middlewareGroup.deletePet');
-}
-
-/**
- * GET /pets
- * 
- * Returns all pets from the system that the user has access to Nam sed condimentum est. Maecenas tempor sagittis sapien, nec rhoncus sem sagittis sit amet. Aenean at gravida augue, ac iaculis sem. Curabitur odio lorem, ornare eget elementum nec, cursus id lectus. Duis mi turpis, pulvinar ac eros ac, tincidunt varius justo. In hac habitasse platea dictumst. Integer at adipiscing ante, a sagittis ligula. Aenean pharetra tempor ante molestie imperdiet. Vivamus id aliquam diam. Cras quis velit non tortor eleifend sagittis. Praesent at enim pharetra urna volutpat venenatis eget eget mauris. In eleifend fermentum facilisis. Praesent enim enim, gravida ac sodales sed, placerat id erat. Suspendisse lacus dolor, consectetur non augue vel, vehicula interdum libero. Morbi euismod sagittis libero sed lacinia.  Sed tempus felis lobortis leo pulvinar rutrum. Nam mattis velit nisl, eu condimentum ligula luctus nec. Phasellus semper velit eget aliquet faucibus. In a mattis elit. Phasellus vel urna viverra, condimentum lorem id, rhoncus nibh. Ut pellentesque posuere elementum. Sed a varius odio. Morbi rhoncus ligula libero, vel eleifend nunc tristique vitae. Fusce et sem dui. Aenean nec scelerisque tortor. Fusce malesuada accumsan magna vel tempus. Quisque mollis felis eu dolor tristique, sit amet auctor felis gravida. Sed libero lorem, molestie sed nisl in, accumsan tempor nisi. Fusce sollicitudin massa ut lacinia mattis. Sed vel eleifend lorem. Pellentesque vitae felis pretium, pulvinar elit eu, euismod sapien.
- */
-$route = $router->GET('/v2/pets', [PetStoreApiV2\Server\Http\Controllers\AnalyticsController::class, 'findPets'])
-    ->name('api.findPets');
-
-// No security required - public endpoint
-// Middleware can still be attached if group is defined
-if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
-    $route->middleware('api.middlewareGroup.findPets');
-}
-
-/**
  * POST /pets
  * 
  * Creates a new pet in the store. Duplicates are allowed
  */
-$route = $router->POST('/v2/pets', [PetStoreApiV2\Server\Http\Controllers\CreationController::class, 'addPet'])
-    ->name('api.addPet');
-
-// No security required - public endpoint
-// Middleware can still be attached if group is defined
-if ($router->hasMiddlewareGroup('api.middlewareGroup.addPet')) {
-    $route->middleware('api.middlewareGroup.addPet');
-}
-
-/**
- * GET /pets/{id}
- * 
- * Returns a user based on a single ID, if the user does not have access to the pet
- */
-$route = $router->GET('/v2/pets/{id}', [PetStoreApiV2\Server\Http\Controllers\DetailsController::class, 'findPetById'])
-    ->name('api.findPetById');
-
-// No security required - public endpoint
-// Middleware can still be attached if group is defined
-if ($router->hasMiddlewareGroup('api.middlewareGroup.findPetById')) {
-    $route->middleware('api.middlewareGroup.findPetById');
-}
-
-/**
- * GET /pets
- * 
- * Returns all pets from the system that the user has access to Nam sed condimentum est. Maecenas tempor sagittis sapien, nec rhoncus sem sagittis sit amet. Aenean at gravida augue, ac iaculis sem. Curabitur odio lorem, ornare eget elementum nec, cursus id lectus. Duis mi turpis, pulvinar ac eros ac, tincidunt varius justo. In hac habitasse platea dictumst. Integer at adipiscing ante, a sagittis ligula. Aenean pharetra tempor ante molestie imperdiet. Vivamus id aliquam diam. Cras quis velit non tortor eleifend sagittis. Praesent at enim pharetra urna volutpat venenatis eget eget mauris. In eleifend fermentum facilisis. Praesent enim enim, gravida ac sodales sed, placerat id erat. Suspendisse lacus dolor, consectetur non augue vel, vehicula interdum libero. Morbi euismod sagittis libero sed lacinia.  Sed tempus felis lobortis leo pulvinar rutrum. Nam mattis velit nisl, eu condimentum ligula luctus nec. Phasellus semper velit eget aliquet faucibus. In a mattis elit. Phasellus vel urna viverra, condimentum lorem id, rhoncus nibh. Ut pellentesque posuere elementum. Sed a varius odio. Morbi rhoncus ligula libero, vel eleifend nunc tristique vitae. Fusce et sem dui. Aenean nec scelerisque tortor. Fusce malesuada accumsan magna vel tempus. Quisque mollis felis eu dolor tristique, sit amet auctor felis gravida. Sed libero lorem, molestie sed nisl in, accumsan tempor nisi. Fusce sollicitudin massa ut lacinia mattis. Sed vel eleifend lorem. Pellentesque vitae felis pretium, pulvinar elit eu, euismod sapien.
- */
-$route = $router->GET('/v2/pets', [PetStoreApiV2\Server\Http\Controllers\InventoryController::class, 'findPets'])
-    ->name('api.findPets');
-
-// No security required - public endpoint
-// Middleware can still be attached if group is defined
-if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
-    $route->middleware('api.middlewareGroup.findPets');
-}
-
-/**
- * POST /pets
- * 
- * Creates a new pet in the store. Duplicates are allowed
- */
-$route = $router->POST('/v2/pets', [PetStoreApiV2\Server\Http\Controllers\ManagementController::class, 'addPet'])
+$route = $router->POST('/v2/pets', [PetStoreApiV2\Server\Http\Controllers\AddPetController::class, 'addPet'])
     ->name('api.addPet');
 
 // No security required - public endpoint
@@ -156,35 +86,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.addPet')) {
  * 
  * deletes a single pet based on the ID supplied
  */
-$route = $router->DELETE('/v2/pets/{id}', [PetStoreApiV2\Server\Http\Controllers\ManagementController::class, 'deletePet'])
-    ->name('api.deletePet');
-
-// No security required - public endpoint
-// Middleware can still be attached if group is defined
-if ($router->hasMiddlewareGroup('api.middlewareGroup.deletePet')) {
-    $route->middleware('api.middlewareGroup.deletePet');
-}
-
-/**
- * POST /pets
- * 
- * Creates a new pet in the store. Duplicates are allowed
- */
-$route = $router->POST('/v2/pets', [PetStoreApiV2\Server\Http\Controllers\PetsController::class, 'addPet'])
-    ->name('api.addPet');
-
-// No security required - public endpoint
-// Middleware can still be attached if group is defined
-if ($router->hasMiddlewareGroup('api.middlewareGroup.addPet')) {
-    $route->middleware('api.middlewareGroup.addPet');
-}
-
-/**
- * DELETE /pets/{id}
- * 
- * deletes a single pet based on the ID supplied
- */
-$route = $router->DELETE('/v2/pets/{id}', [PetStoreApiV2\Server\Http\Controllers\PetsController::class, 'deletePet'])
+$route = $router->DELETE('/v2/pets/{id}', [PetStoreApiV2\Server\Http\Controllers\DeletePetController::class, 'deletePet'])
     ->name('api.deletePet');
 
 // No security required - public endpoint
@@ -198,7 +100,7 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.deletePet')) {
  * 
  * Returns a user based on a single ID, if the user does not have access to the pet
  */
-$route = $router->GET('/v2/pets/{id}', [PetStoreApiV2\Server\Http\Controllers\PetsController::class, 'findPetById'])
+$route = $router->GET('/v2/pets/{id}', [PetStoreApiV2\Server\Http\Controllers\FindPetByIdController::class, 'findPetById'])
     ->name('api.findPetById');
 
 // No security required - public endpoint
@@ -212,83 +114,13 @@ if ($router->hasMiddlewareGroup('api.middlewareGroup.findPetById')) {
  * 
  * Returns all pets from the system that the user has access to Nam sed condimentum est. Maecenas tempor sagittis sapien, nec rhoncus sem sagittis sit amet. Aenean at gravida augue, ac iaculis sem. Curabitur odio lorem, ornare eget elementum nec, cursus id lectus. Duis mi turpis, pulvinar ac eros ac, tincidunt varius justo. In hac habitasse platea dictumst. Integer at adipiscing ante, a sagittis ligula. Aenean pharetra tempor ante molestie imperdiet. Vivamus id aliquam diam. Cras quis velit non tortor eleifend sagittis. Praesent at enim pharetra urna volutpat venenatis eget eget mauris. In eleifend fermentum facilisis. Praesent enim enim, gravida ac sodales sed, placerat id erat. Suspendisse lacus dolor, consectetur non augue vel, vehicula interdum libero. Morbi euismod sagittis libero sed lacinia.  Sed tempus felis lobortis leo pulvinar rutrum. Nam mattis velit nisl, eu condimentum ligula luctus nec. Phasellus semper velit eget aliquet faucibus. In a mattis elit. Phasellus vel urna viverra, condimentum lorem id, rhoncus nibh. Ut pellentesque posuere elementum. Sed a varius odio. Morbi rhoncus ligula libero, vel eleifend nunc tristique vitae. Fusce et sem dui. Aenean nec scelerisque tortor. Fusce malesuada accumsan magna vel tempus. Quisque mollis felis eu dolor tristique, sit amet auctor felis gravida. Sed libero lorem, molestie sed nisl in, accumsan tempor nisi. Fusce sollicitudin massa ut lacinia mattis. Sed vel eleifend lorem. Pellentesque vitae felis pretium, pulvinar elit eu, euismod sapien.
  */
-$route = $router->GET('/v2/pets', [PetStoreApiV2\Server\Http\Controllers\PetsController::class, 'findPets'])
+$route = $router->GET('/v2/pets', [PetStoreApiV2\Server\Http\Controllers\FindPetsController::class, 'findPets'])
     ->name('api.findPets');
 
 // No security required - public endpoint
 // Middleware can still be attached if group is defined
 if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
     $route->middleware('api.middlewareGroup.findPets');
-}
-
-/**
- * GET /pets/{id}
- * 
- * Returns a user based on a single ID, if the user does not have access to the pet
- */
-$route = $router->GET('/v2/pets/{id}', [PetStoreApiV2\Server\Http\Controllers\PublicController::class, 'findPetById'])
-    ->name('api.findPetById');
-
-// No security required - public endpoint
-// Middleware can still be attached if group is defined
-if ($router->hasMiddlewareGroup('api.middlewareGroup.findPetById')) {
-    $route->middleware('api.middlewareGroup.findPetById');
-}
-
-/**
- * GET /pets
- * 
- * Returns all pets from the system that the user has access to Nam sed condimentum est. Maecenas tempor sagittis sapien, nec rhoncus sem sagittis sit amet. Aenean at gravida augue, ac iaculis sem. Curabitur odio lorem, ornare eget elementum nec, cursus id lectus. Duis mi turpis, pulvinar ac eros ac, tincidunt varius justo. In hac habitasse platea dictumst. Integer at adipiscing ante, a sagittis ligula. Aenean pharetra tempor ante molestie imperdiet. Vivamus id aliquam diam. Cras quis velit non tortor eleifend sagittis. Praesent at enim pharetra urna volutpat venenatis eget eget mauris. In eleifend fermentum facilisis. Praesent enim enim, gravida ac sodales sed, placerat id erat. Suspendisse lacus dolor, consectetur non augue vel, vehicula interdum libero. Morbi euismod sagittis libero sed lacinia.  Sed tempus felis lobortis leo pulvinar rutrum. Nam mattis velit nisl, eu condimentum ligula luctus nec. Phasellus semper velit eget aliquet faucibus. In a mattis elit. Phasellus vel urna viverra, condimentum lorem id, rhoncus nibh. Ut pellentesque posuere elementum. Sed a varius odio. Morbi rhoncus ligula libero, vel eleifend nunc tristique vitae. Fusce et sem dui. Aenean nec scelerisque tortor. Fusce malesuada accumsan magna vel tempus. Quisque mollis felis eu dolor tristique, sit amet auctor felis gravida. Sed libero lorem, molestie sed nisl in, accumsan tempor nisi. Fusce sollicitudin massa ut lacinia mattis. Sed vel eleifend lorem. Pellentesque vitae felis pretium, pulvinar elit eu, euismod sapien.
- */
-$route = $router->GET('/v2/pets', [PetStoreApiV2\Server\Http\Controllers\ReportingController::class, 'findPets'])
-    ->name('api.findPets');
-
-// No security required - public endpoint
-// Middleware can still be attached if group is defined
-if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
-    $route->middleware('api.middlewareGroup.findPets');
-}
-
-/**
- * GET /pets/{id}
- * 
- * Returns a user based on a single ID, if the user does not have access to the pet
- */
-$route = $router->GET('/v2/pets/{id}', [PetStoreApiV2\Server\Http\Controllers\RetrievalController::class, 'findPetById'])
-    ->name('api.findPetById');
-
-// No security required - public endpoint
-// Middleware can still be attached if group is defined
-if ($router->hasMiddlewareGroup('api.middlewareGroup.findPetById')) {
-    $route->middleware('api.middlewareGroup.findPetById');
-}
-
-/**
- * GET /pets
- * 
- * Returns all pets from the system that the user has access to Nam sed condimentum est. Maecenas tempor sagittis sapien, nec rhoncus sem sagittis sit amet. Aenean at gravida augue, ac iaculis sem. Curabitur odio lorem, ornare eget elementum nec, cursus id lectus. Duis mi turpis, pulvinar ac eros ac, tincidunt varius justo. In hac habitasse platea dictumst. Integer at adipiscing ante, a sagittis ligula. Aenean pharetra tempor ante molestie imperdiet. Vivamus id aliquam diam. Cras quis velit non tortor eleifend sagittis. Praesent at enim pharetra urna volutpat venenatis eget eget mauris. In eleifend fermentum facilisis. Praesent enim enim, gravida ac sodales sed, placerat id erat. Suspendisse lacus dolor, consectetur non augue vel, vehicula interdum libero. Morbi euismod sagittis libero sed lacinia.  Sed tempus felis lobortis leo pulvinar rutrum. Nam mattis velit nisl, eu condimentum ligula luctus nec. Phasellus semper velit eget aliquet faucibus. In a mattis elit. Phasellus vel urna viverra, condimentum lorem id, rhoncus nibh. Ut pellentesque posuere elementum. Sed a varius odio. Morbi rhoncus ligula libero, vel eleifend nunc tristique vitae. Fusce et sem dui. Aenean nec scelerisque tortor. Fusce malesuada accumsan magna vel tempus. Quisque mollis felis eu dolor tristique, sit amet auctor felis gravida. Sed libero lorem, molestie sed nisl in, accumsan tempor nisi. Fusce sollicitudin massa ut lacinia mattis. Sed vel eleifend lorem. Pellentesque vitae felis pretium, pulvinar elit eu, euismod sapien.
- */
-$route = $router->GET('/v2/pets', [PetStoreApiV2\Server\Http\Controllers\SearchController::class, 'findPets'])
-    ->name('api.findPets');
-
-// No security required - public endpoint
-// Middleware can still be attached if group is defined
-if ($router->hasMiddlewareGroup('api.middlewareGroup.findPets')) {
-    $route->middleware('api.middlewareGroup.findPets');
-}
-
-/**
- * POST /pets
- * 
- * Creates a new pet in the store. Duplicates are allowed
- */
-$route = $router->POST('/v2/pets', [PetStoreApiV2\Server\Http\Controllers\WorkflowController::class, 'addPet'])
-    ->name('api.addPet');
-
-// No security required - public endpoint
-// Middleware can still be attached if group is defined
-if ($router->hasMiddlewareGroup('api.middlewareGroup.addPet')) {
-    $route->middleware('api.middlewareGroup.addPet');
 }
 
 

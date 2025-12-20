@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 {{#operations}}
 {{#operation}}
-use {{apiPackage}}\{{operationIdCamelCase}}HandlerInterface;
-use {{apiPackage}}\{{operationIdCamelCase}}ResponseInterface;
+use {{apiPackage}}\{{classname}};
+use {{invokerPackage}}\Http\Responses\{{operationIdCamelCase}}ResponseInterface;
 {{/operation}}
 {{/operations}}
 {{#operations}}
@@ -63,7 +63,7 @@ class {{controllerName}} extends Controller
      *
 {{/hasPathParams}}
 {{/hasParams}}
-     * @param {{operationIdCamelCase}}HandlerInterface $handler Injected business logic handler
+     * @param {{classname}} $handler Injected business logic handler
      * @param Request $request
 {{#hasPathParams}}
 {{#pathParams}}
@@ -73,7 +73,7 @@ class {{controllerName}} extends Controller
      * @return JsonResponse
      */
     public function {{operationId}}(
-        {{operationIdCamelCase}}HandlerInterface $handler,
+        {{classname}} $handler,
         Request $request{{#hasPathParams}}{{#pathParams}},
         {{dataType}} ${{paramName}}{{/pathParams}}{{/hasPathParams}}
     ): JsonResponse
