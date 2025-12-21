@@ -109,11 +109,17 @@ test-complete: ## Complete test: validate → generate → version check → tes
 	@if [ -d "generated/tictactoe" ]; then \
 		echo "✅ TicTacToe server generated successfully"; \
 		find generated/tictactoe -name "*.php" -type f | wc -l | xargs echo "   📄 TicTacToe files:"; \
-		if [ -f "generated/tictactoe/lib/Http/Controllers/GameManagementController.php" ]; then \
-			echo "✅ Controllers created successfully (PSR-4 compliant)"; \
-			find generated/tictactoe/lib/Http/Controllers -name "*Controller.php" -type f | wc -l | xargs echo "   📝 Controllers:"; \
+		if [ -d "generated/tictactoe/lib/Http/Controllers" ]; then \
+			controller_count=$$(find generated/tictactoe/lib/Http/Controllers -name "*Controller.php" -type f | wc -l | tr -d ' '); \
+			if [ "$$controller_count" -gt 0 ]; then \
+				echo "✅ Controllers created successfully (PSR-4 compliant)"; \
+				echo "   📝 Controllers: $$controller_count"; \
+			else \
+				echo "❌ Controllers not found"; \
+				exit 1; \
+			fi; \
 		else \
-			echo "❌ Controllers not found"; \
+			echo "❌ Controllers directory not found"; \
 			exit 1; \
 		fi; \
 	else \

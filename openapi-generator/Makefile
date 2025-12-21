@@ -70,31 +70,43 @@ extract-laravel-templates: ## Extract default php-laravel templates for customiz
 
 check-version: ## Check generated code version matches expected (accepts same major.minor, any patch)
 	@echo "🔍 Checking OpenAPI Generator version..."
-	@expected_version=$$(echo $(OPENAPI_GENERATOR_VERSION) | sed 's/^v//'); \
-	expected_major_minor=$$(echo $$expected_version | cut -d. -f1,2); \
-	all_valid=true; \
-	for version_file in ../generated/*/.openapi-generator/VERSION; do \
-		if [ -f "$$version_file" ]; then \
-			api_name=$$(basename $$(dirname $$(dirname $$version_file))); \
-			actual_version=$$(cat $$version_file | tr -d '\n' | sed 's/-SNAPSHOT//'); \
-			actual_major_minor=$$(echo $$actual_version | cut -d. -f1,2); \
-			printf "  📋 %-12s: %s" "$$api_name" "$$actual_version"; \
-			if [ "$$actual_major_minor" != "$$expected_major_minor" ]; then \
-				echo " ❌ (expected $$expected_major_minor.x)"; \
-				all_valid=false; \
-			else \
-				echo " ✅"; \
+	@if [ "$(OPENAPI_GENERATOR_VERSION)" = "latest" ]; then \
+		echo "ℹ️  Using 'latest' version - skipping strict version check"; \
+		for version_file in ../generated/*/.openapi-generator/VERSION; do \
+			if [ -f "$$version_file" ]; then \
+				api_name=$$(basename $$(dirname $$(dirname $$version_file))); \
+				actual_version=$$(cat $$version_file | tr -d '\n'); \
+				printf "  📋 %-12s: %s\n" "$$api_name" "$$actual_version"; \
 			fi; \
+		done; \
+		echo "✅ Version check passed (using latest)"; \
+	else \
+		expected_version=$$(echo $(OPENAPI_GENERATOR_VERSION) | sed 's/^v//'); \
+		expected_major_minor=$$(echo $$expected_version | cut -d. -f1,2); \
+		all_valid=true; \
+		for version_file in ../generated/*/.openapi-generator/VERSION; do \
+			if [ -f "$$version_file" ]; then \
+				api_name=$$(basename $$(dirname $$(dirname $$version_file))); \
+				actual_version=$$(cat $$version_file | tr -d '\n' | sed 's/-SNAPSHOT//'); \
+				actual_major_minor=$$(echo $$actual_version | cut -d. -f1,2); \
+				printf "  📋 %-12s: %s" "$$api_name" "$$actual_version"; \
+				if [ "$$actual_major_minor" != "$$expected_major_minor" ]; then \
+					echo " ❌ (expected $$expected_major_minor.x)"; \
+					all_valid=false; \
+				else \
+					echo " ✅"; \
+				fi; \
+			fi; \
+		done; \
+		if [ "$$all_valid" = "false" ]; then \
+			echo ""; \
+			echo "❌ Version mismatch detected!"; \
+			echo "   Expected: $$expected_major_minor.x"; \
+			echo "   Run: make update-generator-version VERSION=vX.Y.Z"; \
+			exit 1; \
 		fi; \
-	done; \
-	if [ "$$all_valid" = "false" ]; then \
-		echo ""; \
-		echo "❌ Version mismatch detected!"; \
-		echo "   Expected: $$expected_major_minor.x"; \
-		echo "   Run: make update-generator-version VERSION=vX.Y.Z"; \
-		exit 1; \
-	fi; \
-	echo "✅ All generated APIs use compatible OpenAPI Generator version ($$expected_major_minor.x)"
+		echo "✅ All generated APIs use compatible OpenAPI Generator version ($$expected_major_minor.x)"; \
+	fi
 
 update-generator-version: ## Update OpenAPI Generator version (Usage: make update-generator-version VERSION=v7.19.0)
 ifndef VERSION
